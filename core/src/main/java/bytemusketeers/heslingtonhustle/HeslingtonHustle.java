@@ -1,34 +1,31 @@
-package bytemusketeers.heslingtonhustle;
+package main.java.bytemusketeers.heslingtonhustle;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import main.java.bytemusketeers.heslingtonhustle.Screens.PlayScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class HeslingtonHustle extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Texture image;
+public class HeslingtonHustle extends Game {
+    public SpriteBatch batch;
+    public static final float W_WIDTH = 800;
+    public static final float W_HEIGHT = 480;
+    public static final float PPM = 100;
+
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+        setScreen(new PlayScreen(this));
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+        super.render();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        image.dispose();
     }
 }

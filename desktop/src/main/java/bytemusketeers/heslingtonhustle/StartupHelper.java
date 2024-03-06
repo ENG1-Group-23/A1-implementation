@@ -14,7 +14,7 @@
  */
 //Note, the above license and copyright applies to this file only.
 
-package bytemusketeers.heslingtonhustle.lwjgl3;
+package main.java.bytemusketeers.heslingtonhustle;
 
 import org.lwjgl.system.macosx.LibC;
 

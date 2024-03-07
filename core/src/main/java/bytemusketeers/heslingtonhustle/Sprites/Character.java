@@ -1,11 +1,7 @@
 package main.java.bytemusketeers.heslingtonhustle.Sprites;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 
 /**

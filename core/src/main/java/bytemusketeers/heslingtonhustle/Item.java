@@ -9,18 +9,8 @@ public class Item extends Interactable {
     private boolean isHidden = false;
 
     public Item(Vector2 position, Texture texture) {
-        super.position = position;
+        this.setPosition(position.x, position.y); //for sprite rendering
         super.texture = texture;
-        super.spriteBatch = new SpriteBatch();
-    }
-
-    @Override
-    public void draw() {
-        this.spriteBatch.begin();
-        if(!this.isHidden) {
-            this.spriteBatch.draw(this.texture, this.position.x, this.position.y);
-        }
-        this.spriteBatch.end();
     }
 
     @Override
@@ -30,5 +20,13 @@ public class Item extends Interactable {
 
     public void toggleHide() {
         this.isHidden = !this.isHidden;
+    }
+
+    public boolean isHidden() {
+        return this.isHidden;
+    }
+
+    public void dispose() {
+        this.getTexture().dispose();
     }
 }

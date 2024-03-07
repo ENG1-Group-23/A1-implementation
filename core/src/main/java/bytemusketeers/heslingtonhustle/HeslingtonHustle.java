@@ -11,6 +11,9 @@ public class HeslingtonHustle extends Game {
     public SpriteBatch batch;
     public static final float W_WIDTH = 800;
     public static final float W_HEIGHT = 480;
+    /**
+     * PIXELS PER METRE!
+     */
     public static final float PPM = 100;
 
 

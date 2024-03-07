@@ -18,6 +18,7 @@ import main.java.bytemusketeers.heslingtonhustle.Item;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The {@code PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen} interface
@@ -31,7 +32,7 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
     private Character character;
-    private HashMap<Integer, Interactable> interactables = new HashMap<>();
+    private Map<Integer, Interactable> interactables = new HashMap<>();
 
     public PlayScreen(HeslingtonHustle game){
         this.game = game;
@@ -46,7 +47,7 @@ public class PlayScreen implements Screen {
 
         float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
         float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
-        Item test = new Item(new Vector2(randomX, randomY), new Texture("missing.png"));
+        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("missing.png"));
         interactables.put(0, test);
     }
 
@@ -118,7 +119,7 @@ public class PlayScreen implements Screen {
         // prepares the batch for drawing textures
         game.batch.begin();
         for(Interactable interactable : interactables.values()) {
-            if(!((Item)interactable).isHidden()) {
+            if(!interactable.isHidden()) {
                 game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), 0.5f, 0.5f);
             }
         }

@@ -1,33 +1,31 @@
 package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
-/**
- * An {@link Interactable} denotes a drawable object with which the
- * {@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} can interact.
- */
-abstract public class Interactable extends Sprite {
+public class Interactable extends Item {
 
-    protected Texture texture;
-    protected Vector2 position;
+    private boolean isHidden = false;
 
-    /**
-     * Facilitates the interaction between items or objects and the player
-     */
-    abstract public void interact();
-
-    public void setTexture(Texture texture) {
-        this.texture = texture;
+    public Interactable(Vector2 position, Texture texture) {
+        this.setPosition(position.x, position.y); //for sprite rendering
+        super.texture = texture;
     }
 
-    public Texture getTexture() {
-        return this.texture;
+    @Override
+    public void interact() {
+        toggleHide();
     }
 
-    public Vector2 getPosition() {
-        return new Vector2(this.getX(), this.getY());
+    public void toggleHide() {
+        this.isHidden = !this.isHidden;
     }
 
+    public boolean isHidden() {
+        return this.isHidden;
+    }
+
+    public void dispose() {
+        this.getTexture().dispose();
+    }
 }

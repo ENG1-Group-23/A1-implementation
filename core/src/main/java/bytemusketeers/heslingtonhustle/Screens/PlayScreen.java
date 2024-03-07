@@ -34,6 +34,7 @@ public class PlayScreen implements Screen {
     private Character character;
     private Map<Integer, Interactable> interactables = new HashMap<>();
 
+
     public PlayScreen(HeslingtonHustle game){
         this.game = game;
         gameCam = new OrthographicCamera();
@@ -47,7 +48,7 @@ public class PlayScreen implements Screen {
 
         float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
         float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
-        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("missing.png"));
+        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("missing.png"), world);
         interactables.put(0, test);
     }
 

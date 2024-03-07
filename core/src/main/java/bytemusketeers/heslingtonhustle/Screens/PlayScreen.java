@@ -6,13 +6,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.java.bytemusketeers.heslingtonhustle.Drawable;
@@ -26,7 +22,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -34,7 +29,7 @@ import java.util.HashMap;
  * It initialises the world map and its contents, configure the world size and game camera
  */
 public class PlayScreen implements Screen {
-    private final int INTERACTION_DISTANCE = 50000;
+    private final static int INTERACTION_DISTANCE = 50000;
     private OrthographicCamera gameCam;
     private HeslingtonHustle game;
     private Viewport gamePort;
@@ -66,8 +61,8 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    public void show() {
-
+    public void show() throws RuntimeException {
+        //throw new RuntimeException("Not implemented");
     }
 
     /**

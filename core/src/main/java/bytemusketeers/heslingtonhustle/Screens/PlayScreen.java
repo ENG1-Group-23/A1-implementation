@@ -6,6 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -16,6 +18,7 @@ import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 import main.java.bytemusketeers.heslingtonhustle.Interactable;
 import main.java.bytemusketeers.heslingtonhustle.Item;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
+import main.java.bytemusketeers.heslingtonhustle.Sprites.TileMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,9 +36,13 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
     private Character character;
     private Map<Integer, Interactable> interactables = new HashMap<>();
+    private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
+    private TileMap tileMap;
 
     public PlayScreen(HeslingtonHustle game){
         this.game = game;
+        this.tileMap = new TileMap();
+        this.orthogonalTiledMapRenderer = tileMap.setupMap();
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
 
@@ -47,7 +54,7 @@ public class PlayScreen implements Screen {
 
         float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
         float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
-        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("missing.png"));
+        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("Test/test-computer.png"));
         interactables.put(0, test);
     }
 
@@ -64,19 +71,19 @@ public class PlayScreen implements Screen {
         float velX = 0, velY = 0;
         boolean moveX = false, moveY = false;
         if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-            velY = 2.0f;
+            velY += 2.0f;
             moveY = true;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-            velX = 2.0f;
+            velX += 2.0f;
             moveX = true;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            velY = -2.0f;
+            velY += -2.0f;
             moveY = true;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-            velX = -2.0f;
+            velX += -2.0f;
             moveX = true;
         }
 
@@ -113,6 +120,9 @@ public class PlayScreen implements Screen {
         // tracking character's moves with the cam
         gameCam.position.x = character.b2body.getPosition().x;
         gameCam.position.y = character.b2body.getPosition().y;
+
+        orthogonalTiledMapRenderer.setView(gameCam);
+
         // update the gamecam with correct coordinates after changes
         gameCam.update();
     }
@@ -126,6 +136,9 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // render the Box2DDebugLines
         b2dr.render(world, gameCam.combined);
+
+        orthogonalTiledMapRenderer.render();
+
         // recognises where the camera is in the game world and render only what the camera can see
         game.batch.setProjectionMatrix(gameCam.combined);
         // prepares the batch for drawing textures

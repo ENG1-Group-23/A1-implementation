@@ -48,7 +48,7 @@ public class PlayScreen implements Screen {
 
         float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
         float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
-        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("missing.png"), world);
+        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("missing.png"), world, 0.5f, 0.5f);
         interactables.put(0, test);
     }
 
@@ -133,7 +133,7 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         for(Interactable interactable : interactables.values()) {
             if(!interactable.isHidden()) {
-                game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), 0.5f, 0.5f);
+                game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), interactable.getWidth(), interactable.getHeight());
             }
         }
         // ends the drawing session

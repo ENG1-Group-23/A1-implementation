@@ -2,7 +2,6 @@ package main.java.bytemusketeers.heslingtonhustle.Sprites;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class TileMap {
@@ -15,6 +14,6 @@ public class TileMap {
 
     public OrthogonalTiledMapRenderer setupMap() {
         tiledMap = new TmxMapLoader().load("Maps/test-map.tmx");
-        return new OrthogonalTiledMapRenderer(tiledMap);
+        return new OrthogonalTiledMapRenderer(tiledMap, 0.05f);
     }
 }

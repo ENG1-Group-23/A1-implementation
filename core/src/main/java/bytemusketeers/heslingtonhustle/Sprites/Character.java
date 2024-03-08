@@ -1,6 +1,8 @@
 package main.java.bytemusketeers.heslingtonhustle.Sprites;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 
@@ -11,6 +13,8 @@ import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 public class Character extends Sprite {
     public World world;
     public Body b2body;
+    public Texture playerTexture;
+    public SpriteBatch spriteBatch;
 
     public Character(World world){
         this.world = world;
@@ -34,5 +38,8 @@ public class Character extends Sprite {
         shape.setRadius(15 / HeslingtonHustle.PPM);
         fdef.shape = shape;
         b2body.createFixture(fdef);
+
+        spriteBatch = new SpriteBatch();
+        playerTexture = new Texture("prototype-4.png");
     }
 }

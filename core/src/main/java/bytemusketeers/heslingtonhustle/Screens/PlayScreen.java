@@ -54,7 +54,7 @@ public class PlayScreen implements Screen {
 
         float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
         float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
-        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("Test/test-computer.png"));
+        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("prototype-1.png"));
         interactables.put(0, test);
     }
 
@@ -143,6 +143,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         // prepares the batch for drawing textures
         game.batch.begin();
+        game.batch.draw(character.playerTexture, gameCam.position.x - 0.25f, gameCam.position.y - 0.25f, 0.5f, 0.5f);
         for(Interactable interactable : interactables.values()) {
             if(!interactable.isHidden()) {
                 game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), 0.5f, 0.5f);
@@ -173,6 +174,7 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
         b2dr.dispose();
+        character.playerTexture.dispose();
         for (Interactable interactable : interactables.values()) {
             interactable.getTexture().dispose();
         }

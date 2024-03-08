@@ -158,7 +158,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         // prepares the batch for drawing textures
         game.batch.begin();
-        game.batch.draw(character.playerTexture, gameCam.position.x - 0.25f, gameCam.position.y - 0.25f, 0.5f, 0.5f);
+        game.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2, character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);
         for(Interactable interactable : interactables.values()) {
             if(!interactable.isHidden()) {
                 game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), 0.5f, 0.5f);

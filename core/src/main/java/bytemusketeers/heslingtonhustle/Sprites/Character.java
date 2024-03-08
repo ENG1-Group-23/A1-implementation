@@ -14,8 +14,8 @@ public class Character extends Sprite {
     public World world;
     public Body b2body;
     public Texture playerTexture;
-    public SpriteBatch spriteBatch;
-
+    public static final float WIDTH = 0.3f;
+    public static final float HEIGHT = 0.3f;
     public Character(World world){
         this.world = world;
         defineCharacter();
@@ -33,13 +33,11 @@ public class Character extends Sprite {
         // Create a body in the game world
         b2body = world.createBody(bdef);
         // Create a fixture for the body and setting its shape
-        FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(15 / HeslingtonHustle.PPM);
-        fdef.shape = shape;
-        b2body.createFixture(fdef);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(15 / HeslingtonHustle.PPM, 15 / HeslingtonHustle.PPM);
+        b2body.createFixture(shape, 0.0f);
+        shape.dispose();
 
-        spriteBatch = new SpriteBatch();
         playerTexture = new Texture("prototype-4.png");
     }
 }

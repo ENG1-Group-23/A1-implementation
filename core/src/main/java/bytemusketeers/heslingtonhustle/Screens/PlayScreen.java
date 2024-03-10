@@ -46,6 +46,7 @@ public class PlayScreen implements Screen {
         this.game = game;
         this.tileMap = new TileMap();
         this.orthogonalTiledMapRenderer = tileMap.setupMap();
+        //improvement: we should move the camera to HeslingtonHustle so that all screens can use the camera
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
 
@@ -81,7 +82,7 @@ public class PlayScreen implements Screen {
      * Handles inputs
      */
     public void handleInput(){
-        // moving the character
+        // moving the character (suggestion: maybe movement should be under character so that it is accessible for all screens)
         final float velocity = 4.0f;
         float velX = 0, velY = 0;
         boolean moveX = false, moveY = false;

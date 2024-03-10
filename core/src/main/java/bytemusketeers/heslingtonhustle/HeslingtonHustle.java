@@ -1,49 +1,45 @@
 package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import main.java.bytemusketeers.heslingtonhustle.Screens.PlayScreen;
+import main.java.bytemusketeers.heslingtonhustle.Screens.TitleScreen;
 
-/**
- * The {@link Game} is the {@link com.badlogic.gdx.ApplicationListener} shared by all platforms
- */
-class HeslingtonHustle extends Game {
-    /**
-     * 'PPM' denotes the number of pixels-per-(in-game)-metre.
-     * TODO: Derive this from Gdx.graphics properties
-     */
-    public static final float PPM = 100;
-    /**
-     * TODO: WIDTH_METRES_BOUND?
-     */
-    public static final float WIDTH_METRES_BOUND = 4;
-    /**
-     * TODO: HEIGHT_METRES_BOUND?
-     */
-    public static final float HEIGHT_METRES_BOUND = 2.4f;
+/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+public class HeslingtonHustle extends Game {
     public SpriteBatch batch;
-    private Screen[] screens;
+    //added for screens
+    public ShapeRenderer shapeRenderer;
+    //added for screens
+    public BitmapFont font;
+    public static final float W_WIDTH = 800;
+    public static final float W_HEIGHT = 480;
+    public static final float PPM = 100;
+    public static final float WIDTH_METRES_BOUND = 4;
+    public static final float HEIGHT_METRES_BOUND = 2.4f;
 
-    /**
-     * Handles the creation of the {@link com.badlogic.gdx.Application}
-     */
+
     @Override
     public void create() {
         batch = new SpriteBatch();
-        screens = new Screen[] { new PlayScreen(batch) };
-
-        setScreen(screens[0]);
+        shapeRenderer = new ShapeRenderer();
+        font = new BitmapFont();
+        setScreen(new TitleScreen(this));
+        //setScreen(new PlayScreen(this));
     }
 
-    /**
-     * Releases all resources used by the {@link Game}
-     */
-    @Override
-    public void dispose() {
-        for (Screen screen : screens)
-            screen.dispose();
+    //@Override
+    //public void render() {super.render();}
 
+
+    //public void dispose() {batch.dispose();}
+    //added for TitleScreen
+    @Override
+    public void dispose () {
         batch.dispose();
-        super.dispose();
+        shapeRenderer.dispose();
+        font.dispose();
     }
 }

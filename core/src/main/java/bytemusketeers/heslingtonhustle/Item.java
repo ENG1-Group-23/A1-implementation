@@ -3,17 +3,17 @@ package main.java.bytemusketeers.heslingtonhustle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
 
 /**
  * An {@link Item} denotes a drawable object with which the
  * {@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} can interact.
  */
 //Item is not abstract for future implementation as an item could be a "Noninteractable
-public class Item extends Sprite {
+public abstract class Item extends Sprite {
 
     protected Texture texture;
     protected Vector2 position;
-
     /**
      * Facilitates the interaction between items or objects and the player
      */

@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 import main.java.bytemusketeers.heslingtonhustle.Interactable;
+import main.java.bytemusketeers.heslingtonhustle.Item;
+import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.TileMap;
 
@@ -37,6 +39,8 @@ public class PlayScreen implements Screen {
     private Map<Integer, Interactable> interactables = new HashMap<>();
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private TileMap tileMap;
+    private String[] studyItems = {"missing.png", "libgdx.png"};
+    private Metrics metrics;
 
     public PlayScreen(HeslingtonHustle game){
         this.game = game;
@@ -55,6 +59,15 @@ public class PlayScreen implements Screen {
         float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
         Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("prototype-1.png"));
         interactables.put(0, test);
+
+        metrics = new Metrics();
+        //Need to add different stages so that we can change to different spawnable items
+        for (int i = 0; i < studyItems.length; i++) {
+            float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
+            float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
+            Interactable interactable = new Interactable(new Vector2(randomX, randomY), new Texture(studyItems[i]));
+            interactables.put(i, interactable);
+        }
     }
 
     @Override
@@ -98,10 +111,12 @@ public class PlayScreen implements Screen {
         // interaction
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             //if there is an interactable nearby the player then interact with it
-            for(Interactable interactable : this.interactables.values()) {
+            for(Map.Entry<Integer, Interactable> entry : this.interactables.entrySet()) {
+                Interactable interactable = entry.getValue();
                 float distance = this.character.b2body.getPosition().dst2(interactable.getPosition());
                 if(distance <= INTERACTION_DISTANCE) {
                         interactable.interact();
+                        metrics.itemPickedUp(entry.getKey());
                 }
             }
         }
@@ -195,4 +210,6 @@ public class PlayScreen implements Screen {
         }
         world.dispose();
     }
+
+
 }

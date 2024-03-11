@@ -42,6 +42,7 @@ public class PlayScreen implements Screen {
     private String[] studyItems = {"missing.png", "libgdx.png"};
     private Metrics metrics;
 
+
     public PlayScreen(HeslingtonHustle game){
         this.game = game;
         this.tileMap = new TileMap();
@@ -57,6 +58,7 @@ public class PlayScreen implements Screen {
 
         float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
         float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
+        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("missing.png"), world, 0.5f, 0.5f);
         Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("prototype-1.png"));
         interactables.put(0, test);
 
@@ -176,7 +178,13 @@ public class PlayScreen implements Screen {
         game.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2, character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);
         for(Interactable interactable : interactables.values()) {
             if(!interactable.isHidden()) {
-                game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), 0.5f, 0.5f);
+                //the position being set to x - width / 2, y - height / 2 makes it so the center of the item is spawned on the position
+                game.batch.draw(interactable.getTexture(),
+                            interactable.getX() - (interactable.getWidth()/2),
+                            interactable.getY() - (interactable.getHeight() /2),
+                                interactable.getWidth(),
+                                interactable.getHeight()
+                );
             }
         }
         // ends the drawing session

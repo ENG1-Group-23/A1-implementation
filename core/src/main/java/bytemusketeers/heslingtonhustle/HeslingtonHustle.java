@@ -4,8 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import main.java.bytemusketeers.heslingtonhustle.Screens.PlayScreen;
 
-import java.util.ArrayList;
-
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class HeslingtonHustle extends Game {
     public SpriteBatch batch;
@@ -15,6 +13,8 @@ public class HeslingtonHustle extends Game {
      * PIXELS PER METRE!
      */
     public static final float PPM = 100;
+    public static final float WIDTH_METRES_BOUND = 4;
+    public static final float HEIGHT_METRES_BOUND = 2.4f;
 
 
     @Override

@@ -78,29 +78,24 @@ public class PlayScreen implements Screen {
         // moving the character
         final float velocity = 4.0f;
         float velX = 0, velY = 0;
-        boolean moveX = false, moveY = false;
         if(Gdx.input.isKeyPressed(Input.Keys.W)) {
             velY += velocity;
-            moveY = true;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             velX += velocity;
-            moveX = true;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.S)) {
             velY += -velocity;
-            moveY = true;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.A)) {
             velX += -velocity;
-            moveX = true;
         }
 
-        // Bools check for both hor and ver movement and then half movement if both return true
+        // Checks vel values
         // This is so that the player doesn't move faster when going diagonal
-        if (moveX && moveY) {
-            velX /= 2;
-            velY /= 2;
+        if (velY != 0 && velX != 0) {
+            velX /= 1.5;
+            velY /= 1.5;
         }
         character.b2body.setLinearVelocity(velX, velY);
 

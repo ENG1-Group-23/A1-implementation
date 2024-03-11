@@ -20,7 +20,7 @@ public class TileMap {
     }
     public OrthogonalTiledMapRenderer setupMap() {
         tiledMap = new TmxMapLoader().load("Maps/test-map.tmx");
-        this.scale = 0.05f;
+        this.scale = 0.04f;
         return new OrthogonalTiledMapRenderer(tiledMap, this.scale);
     }
 }

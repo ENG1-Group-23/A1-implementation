@@ -133,7 +133,13 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         for(Interactable interactable : interactables.values()) {
             if(!interactable.isHidden()) {
-                game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), interactable.getWidth(), interactable.getHeight());
+                //the position being set to x - width / 2, y - height / 2 makes it so the center of the item is spawned on the position
+                game.batch.draw(interactable.getTexture(),
+                            interactable.getX() - (interactable.getWidth()/2),
+                            interactable.getY() - (interactable.getHeight() /2),
+                                interactable.getWidth(),
+                                interactable.getHeight()
+                );
             }
         }
         // ends the drawing session

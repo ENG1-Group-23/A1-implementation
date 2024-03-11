@@ -26,7 +26,8 @@ public class Item extends Sprite {
         BodyDef bodyDef = new BodyDef();
         // Set position for the collision box
         //bodyDef.position.set(position.x + (float) texture.getWidth() / 2 / HeslingtonHustle.PPM, position.y + (float) texture.getHeight() / 2 / HeslingtonHustle.PPM);
-        bodyDef.position.set(position.x +widthInMetres / 2, position.y + heightInMetres / 2);
+        //bodyDef.position.set(position.x +widthInMetres / 2, position.y + heightInMetres / 2); // this aligns the body with the sprite
+        bodyDef.position.set(position.x, position.y);
         // Set the type of the body
         bodyDef.type = BodyDef.BodyType.StaticBody;
         // Create a body in the game world

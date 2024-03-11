@@ -56,18 +56,12 @@ public class PlayScreen implements Screen {
 
         character = new Character(world);
 
-        float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
-        float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
-        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("missing.png"), world, 0.5f, 0.5f);
-        Interactable test = new Interactable(new Vector2(randomX, randomY), new Texture("prototype-1.png"));
-        interactables.put(0, test);
-
         metrics = new Metrics();
         //Need to add different stages so that we can change to different spawnable items
         for (int i = 0; i < studyItems.length; i++) {
             float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
             float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
-            Interactable interactable = new Interactable(new Vector2(randomX, randomY), new Texture(studyItems[i]));
+            Interactable interactable = new Interactable(new Vector2(randomX, randomY), new Texture(studyItems[i]), world, 0.5f, 0.5f);
             interactables.put(i, interactable);
         }
     }

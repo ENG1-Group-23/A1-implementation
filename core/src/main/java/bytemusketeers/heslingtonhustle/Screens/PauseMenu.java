@@ -6,12 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
-
-import java.util.List;
 
 public class PauseMenu extends Menu {
 
@@ -43,15 +40,28 @@ public class PauseMenu extends Menu {
 
         TextButton resumeButton = new TextButton("Continue", style);
         TextButton exitButton = new TextButton("Quit", style);
+        TextButton sceneSwitchButton = new TextButton("Switch", style);
         super.buttons.add(exitButton);
         super.buttons.add(resumeButton);
+        super.buttons.add(sceneSwitchButton);
         //TODO modify/rerender button when window is rescaled
         resumeButton.setPosition(HeslingtonHustle.W_WIDTH / 2 - ((BUTTON_WIDTH + 70.0f) / 2), HeslingtonHustle.W_HEIGHT / 2);
         exitButton.setPosition(HeslingtonHustle.W_WIDTH / 2 - (BUTTON_WIDTH / 2), 100);
+        sceneSwitchButton.setPosition(HeslingtonHustle.W_WIDTH / 2 - (BUTTON_WIDTH / 2), 200);
         resumeButton.setHeight(BUTTON_HEIGHT);
         resumeButton.setWidth(BUTTON_WIDTH + 70.0f); //needs to be wider to fit the text
         exitButton.setHeight(BUTTON_HEIGHT);
         exitButton.setWidth(BUTTON_WIDTH);
+        sceneSwitchButton.setHeight(BUTTON_HEIGHT);
+        sceneSwitchButton.setWidth(BUTTON_WIDTH);
+
+        sceneSwitchButton.addListener(new InputListener() {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                playscreen.changeScene();
+                playscreen.pauseGame();
+                return true;
+            }
+        });
 
         exitButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -64,7 +74,8 @@ public class PauseMenu extends Menu {
            //it removes the current stage (the Pause Menu) from all the stages that need to be rendered
            //this currently means that there are no stages in the stages variable which is the default state
            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-               playscreen.pauseMenu();
+               stage.clear();
+               playscreen.pauseGame();
                return true;
            }
         });

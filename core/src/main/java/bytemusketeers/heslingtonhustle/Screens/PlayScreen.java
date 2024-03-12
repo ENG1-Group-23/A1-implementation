@@ -49,9 +49,12 @@ public class PlayScreen implements Screen {
     protected Metrics metrics;
     private Vector2 initialCharacterPos;
     private Vector2 initialCameraPos;
+    private Boolean isPaused = false;
+    private PauseMenu pauseMenu;
 
 
     public PlayScreen(HeslingtonHustle game, String map, Vector2 initialCharacterPos, Vector2 initialCameraPos){
+        this.pauseMenu = new PauseMenu(this);
         this.game = game;
         this.tileMap = new TileMap();
         this.orthogonalTiledMapRenderer = tileMap.setupMap(map);
@@ -160,10 +163,15 @@ public class PlayScreen implements Screen {
         // Checks vel values
         // This is so that the player doesn't move faster when going diagonal
         if (velY != 0 && velX != 0) {
-            velX /= 1.5;
-            velY /= 1.5;
+            velX /= 1.5f;
+            velY /= 1.5f;
         }
-        character.b2body.setLinearVelocity(velX, velY);
+        if(!isPaused) character.b2body.setLinearVelocity(velX, velY);
+        else character.b2body.setLinearVelocity(0, 0);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            isPaused = !isPaused;
+        }
 
         // interaction
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
@@ -245,6 +253,11 @@ public class PlayScreen implements Screen {
                 );
             }
         }
+
+        if(isPaused) {
+            this.pauseMenu = new PauseMenu(this);
+            this.pauseMenu.stage.draw();
+        }
         // ends the drawing session
         game.batch.end();
     }
@@ -255,6 +268,15 @@ public class PlayScreen implements Screen {
     @Override
     public void pause() {
 
+    }
+
+    public void pauseGame() {
+        this.isPaused = !this.isPaused;
+    }
+
+    public void changeScene() {
+        if (game.getScreen() == game.screens.get(0)) { game.setCurrentScreen(1); }
+        else { game.setCurrentScreen(0); }
     }
 
     @Override

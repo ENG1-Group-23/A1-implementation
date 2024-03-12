@@ -15,8 +15,10 @@ import java.util.List;
  * texture and set of {@link InteractiveTileObject} objects.
  */
 public class Area {
-    private final TiledMap tiledMap;
     public static final float MAP_SCALE = 0.04f;
+    private final TiledMap tiledMap;
+    public final float mapWidth;
+    public final float mapHeight;
     private final List<InteractiveTileObject> interactiveTiles = new ArrayList<>();
     private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
 
@@ -27,15 +29,6 @@ public class Area {
      */
     public void addInteractable(InteractiveTileObject interactable) {
         interactiveTiles.add(interactable);
-    }
-
-    /**
-     * Retrieves the LibGDX-determined {@link MapProperties} of the {@link Area}'s {@link TiledMap}.
-     *
-     * @return The {@link TiledMap} properties
-     */
-    public MapProperties getAreaMapProperties() {
-        return tiledMap.getProperties();
     }
 
     /**
@@ -64,5 +57,10 @@ public class Area {
     public Area(String map) {
         tiledMap = new TmxMapLoader().load(map);
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, MAP_SCALE);
+
+        MapProperties properties = tiledMap.getProperties();
+
+        mapWidth = properties.get("tilewidth", Integer.class) * properties.get("width", Integer.class) * MAP_SCALE;
+        mapHeight = properties.get("tileheight", Integer.class) * properties.get("height", Integer.class) * MAP_SCALE;
     }
 }

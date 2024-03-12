@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -74,28 +73,17 @@ public class PlayScreen implements Screen {
         character.move();
 
         // calculates physics interactions, such as object movement, collisions, and forces, for a specific time interval
+        // TODO: need better documentation here
         world.step(1/60f, 6, 2);
-        MapProperties props = activeArea.getAreaMapProperties();
-        int mapWidthInTiles = props.get("width", Integer.class);
-        int mapHeightInTiles = props.get("height", Integer.class);
 
-        int tileWidth = props.get("tilewidth", Integer.class);
-        int tileHeight = props.get("tileheight", Integer.class);
+        if (character.isOutOfHorizontalBound(activeArea))
+            gameCam.position.x = character.getXPosition();
 
-        int mapWidthInPixels = mapWidthInTiles * tileWidth;
-        int mapHeightInPixels = mapHeightInTiles * tileHeight;
-        float mapWidthInMeters = mapWidthInPixels * Area.MAP_SCALE;
-        float mapHeightInMeters = mapHeightInPixels * Area.MAP_SCALE;
-
-        if (character.b2body.getPosition().x >= HeslingtonHustle.WIDTH_METRES_BOUND &&
-                character.b2body.getPosition().x <= mapWidthInMeters - HeslingtonHustle.WIDTH_METRES_BOUND)
-            gameCam.position.x = character.b2body.getPosition().x;
-
-        if (character.b2body.getPosition().y >= HeslingtonHustle.HEIGHT_METRES_BOUND &&
-                character.b2body.getPosition().y <= mapHeightInMeters - HeslingtonHustle.HEIGHT_METRES_BOUND)
-            gameCam.position.y= character.b2body.getPosition().y;
+        if (character.isOutOfVerticalBound(activeArea))
+            gameCam.position.y = character.getYPosition();
 
         // tracking character's moves with the cam
+        // TODO: need better documentation here
         activeArea.updateView(gameCam);
         gameCam.update();
     }
@@ -103,17 +91,17 @@ public class PlayScreen implements Screen {
     @Override
     public void render(float delta) {
         update();
-        // sets the color specified when the color buffer is cleared
+
         Gdx.gl.glClearColor(1, 0, 0, 1);
-        // GL_COLOR_BUFFER_BIT specifies that the color buffer is to be cleared
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         activeArea.render();
 
         gameReference.batch.setProjectionMatrix(gameCam.combined);
         gameReference.batch.begin();
-        gameReference.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2,
-            character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);
+
+        character.render(gameReference.batch);
+
         gameReference.batch.end();
     }
 
@@ -139,7 +127,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-        character.playerTexture.dispose();
+        character.dispose();
         world.dispose();
 
         // TODO: do we need to dispose the area (and hence all interactables) here?

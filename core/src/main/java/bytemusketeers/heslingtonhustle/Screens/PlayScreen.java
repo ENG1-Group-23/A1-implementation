@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
@@ -17,7 +19,10 @@ import main.java.bytemusketeers.heslingtonhustle.Interactable;
 import main.java.bytemusketeers.heslingtonhustle.Item;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
 
+import javax.lang.model.type.NullType;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,8 +38,11 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
     private Character character;
     private Map<Integer, Interactable> interactables = new HashMap<>();
+    private List<Stage> stages = new ArrayList<>();
+    private PauseMenu pauseMenu;
 
     public PlayScreen(HeslingtonHustle game){
+        this.pauseMenu = new PauseMenu(stages);
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
@@ -76,6 +84,17 @@ public class PlayScreen implements Screen {
         }
         character.b2body.setLinearVelocity(velX, velY);
 
+        // menu
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if(this.stages.contains(this.pauseMenu.stage)) {
+                stages.remove(this.pauseMenu.stage);
+            } else {
+                //TODO clear the world of bodies (character still shows when PauseMenu is up)
+                //the above is if we don't want the world to be visible while the menu is up
+                stages.add(this.pauseMenu.stage);
+            }
+        }
+
         // interaction
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             //if there is an interactable nearby the player then interact with it
@@ -101,7 +120,7 @@ public class PlayScreen implements Screen {
         // tracking character's moves with the cam
         gameCam.position.x = character.b2body.getPosition().x;
         gameCam.position.y = character.b2body.getPosition().y;
-        // update the gamecam with correct coordinates after changes
+        // update the gameCam with correct coordinates after changes
         gameCam.update();
     }
 
@@ -121,6 +140,14 @@ public class PlayScreen implements Screen {
         for(Interactable interactable : interactables.values()) {
             if(!interactable.isHidden()) {
                 game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), 0.5f, 0.5f);
+            }
+        }
+        // at the moment this draws all the stages that are in stages array
+        // even though there can only be one stage in the array at a time and so the array is redundant
+        // might be useful for future?
+        for(Stage stage : this.stages) {
+            if(!(stage instanceof NullType)) {
+                stage.draw();
             }
         }
         // ends the drawing session

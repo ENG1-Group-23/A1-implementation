@@ -2,8 +2,10 @@ package main.java.bytemusketeers.heslingtonhustle.Sprites;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.*;
-import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * The {@link InteractiveTileObject} abstract class provides a functionality which could be inherited

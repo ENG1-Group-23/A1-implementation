@@ -3,31 +3,24 @@ package main.java.bytemusketeers.heslingtonhustle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 
 /**
- * An {@link Item} denotes a drawable object with which the
- * {@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} can interact.
+ * An {@link Item} denotes a drawable non-{@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} object.
  */
-//Item is not abstract for future implementation as an item could be a "Noninteractable
-public abstract class Item extends Sprite {
-
+public class Item extends Sprite {
     protected Texture texture;
-    protected Vector2 position;
-    protected float widthInMetres, heightInMetres;
+    protected float width;
+    protected float height;
     protected Body body;
     protected World world;
-    /**
-     * Facilitates the interaction between items or objects and the player
-     */
-    public void interact() {};
 
     public void defineBody(Vector2 position){
         BodyDef bodyDef = new BodyDef();
         // Set position for the collision box
-        //bodyDef.position.set(position.x + (float) texture.getWidth() / 2 / HeslingtonHustle.PPM, position.y + (float) texture.getHeight() / 2 / HeslingtonHustle.PPM);
-        //bodyDef.position.set(position.x +widthInMetres / 2, position.y + heightInMetres / 2); // this aligns the body with the sprite
         bodyDef.position.set(position.x, position.y);
         // Set the type of the body
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -35,7 +28,7 @@ public abstract class Item extends Sprite {
         body = world.createBody(bodyDef);
         // Create a fixture for the body and setting its shape
         PolygonShape collisionBox = new PolygonShape();
-        collisionBox.setAsBox(widthInMetres / 2,heightInMetres / 2); // Creates a rectangle shaped box around shape
+        collisionBox.setAsBox(width / 2, height / 2); // Creates a rectangle shaped box around shape
         body.createFixture(collisionBox,0.0f);
         collisionBox.dispose();
     }
@@ -52,7 +45,30 @@ public abstract class Item extends Sprite {
         return new Vector2(this.getX(), this.getY());
     }
 
-    public float getWidth(){ return widthInMetres; }
-    public float getHeight(){ return heightInMetres; }
+    public float getWidth() {
+        return width;
+    }
 
+    public float getHeight() {
+        return height;
+    }
+
+    /**
+     * Instantiates a new {@link Item} with the given initial parameters
+     *
+     * @param position The initial position of the {@link Item}
+     * @param texture The initial {@link Sprite} {@link Texture}
+     * @param world The {@link World} into which the {@link Item} should be drawn
+     * @param width The initial width
+     * @param height The initial height
+     */
+    public Item(Vector2 position, Texture texture, World world, float width, float height) {
+        this.texture = texture;
+        this.world = world;
+        this.width = width;
+        this.height = height;
+
+        setPosition(position.x, position.y);
+        defineBody(position);
+    }
 }

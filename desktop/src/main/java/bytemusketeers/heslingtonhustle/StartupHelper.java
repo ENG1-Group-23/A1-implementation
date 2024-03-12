@@ -100,7 +100,6 @@ public class StartupHelper {
 
         // Restart the JVM with -XstartOnFirstThread
         ArrayList<String> jvmArgs = new ArrayList<>();
-        String separator = System.getProperty("file.separator");
         String javaExecPath = ProcessHandle.current().info().command().orElseThrow();
 
         if (!(new File(javaExecPath)).exists()) {
@@ -115,7 +114,9 @@ public class StartupHelper {
         jvmArgs.addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
         jvmArgs.add("-cp");
         jvmArgs.add(System.getProperty("java.class.path"));
+
         String mainClass = System.getenv("JAVA_MAIN_CLASS_" + pid);
+
         if (mainClass == null) {
             StackTraceElement[] trace = Thread.currentThread().getStackTrace();
             if (trace.length > 0) {
@@ -125,6 +126,7 @@ public class StartupHelper {
                 return false;
             }
         }
+
         jvmArgs.add(mainClass);
 
         try {

@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 import main.java.bytemusketeers.heslingtonhustle.Interactable;
-import main.java.bytemusketeers.heslingtonhustle.Item;
 import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.TileMap;
@@ -83,29 +82,30 @@ public class PlayScreen implements Screen {
         // moving the character
         final float velocity = 4.0f;
         float velX = 0, velY = 0;
-        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+
+        if(Gdx.input.isKeyPressed(Input.Keys.W))
             velY += velocity;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+
+        if(Gdx.input.isKeyPressed(Input.Keys.D))
             velX += velocity;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            velY += -velocity;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-            velX += -velocity;
-        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.S))
+            velY -= velocity;
+
+        if(Gdx.input.isKeyPressed(Input.Keys.A))
+            velX -= velocity;
 
         // Checks vel values
         // This is so that the player doesn't move faster when going diagonal
         if (velY != 0 && velX != 0) {
-            velX /= 1.5;
-            velY /= 1.5;
+            velX /= 1.5f;
+            velY /= 1.5f;
         }
+
         character.b2body.setLinearVelocity(velX, velY);
 
         // interaction
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             //if there is an interactable nearby the player then interact with it
             for(Map.Entry<Integer, Interactable> entry : this.interactables.entrySet()) {
                 Interactable interactable = entry.getValue();
@@ -115,7 +115,6 @@ public class PlayScreen implements Screen {
                         metrics.itemPickedUp(entry.getKey());
                 }
             }
-        }
     }
 
     /**
@@ -171,8 +170,9 @@ public class PlayScreen implements Screen {
         // prepares the batch for drawing textures
         game.batch.begin();
         game.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2, character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);
-        for(Interactable interactable : interactables.values()) {
-            if(!interactable.isHidden()) {
+
+        for(Interactable interactable : interactables.values())
+            if(!interactable.isHidden())
                 //the position being set to x - width / 2, y - height / 2 makes it so the center of the item is spawned on the position
                 game.batch.draw(interactable.getTexture(),
                             interactable.getX() - (interactable.getWidth()/2),
@@ -180,14 +180,15 @@ public class PlayScreen implements Screen {
                                 interactable.getWidth(),
                                 interactable.getHeight()
                 );
-            }
-        }
+
         // ends the drawing session
         game.batch.end();
     }
 
     @Override
-    public void resize(int width, int height) { gamePort.update(width,height); }
+    public void resize(int width, int height) {
+        gamePort.update(width, height);
+    }
 
     @Override
     public void pause() {
@@ -208,11 +209,9 @@ public class PlayScreen implements Screen {
     public void dispose() {
         b2dr.dispose();
         character.playerTexture.dispose();
-        for (Interactable interactable : interactables.values()) {
+        for (Interactable interactable : interactables.values())
             interactable.getTexture().dispose();
-        }
+
         world.dispose();
     }
-
-
 }

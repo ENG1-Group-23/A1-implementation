@@ -2,15 +2,16 @@ package main.java.bytemusketeers.heslingtonhustle.Sprites;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 
 import java.util.HashMap;
 
 /**
- * The {@code Character} class represents the avatar of the player in the game, extending {@link Sprite} class
- * It configures the character settings
+ * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}.
  */
 public class Character extends Sprite {
     public World world;
@@ -24,7 +25,7 @@ public class Character extends Sprite {
     }
 
     /**
-     * Defines the new {@code Character} and sets its configuration
+     * Defines the new {@link Character} and sets its configuration
      */
     public void defineCharacter(HashMap<String, Float> position){
         BodyDef bdef = new BodyDef();

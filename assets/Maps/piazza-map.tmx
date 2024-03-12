@@ -25,7 +25,7 @@
 42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,42,36,41,41,37,42,42,42,42,42,42,42,42,42,42,42
 </data>
  </layer>
- <objectgroup id="2" name="walls">
+ <objectgroup id="2" name="borders">
   <object id="3" x="0" y="0" width="7.98441" height="128.15"/>
   <object id="4" x="-0.798441" y="120.565" width="138.13" height="7.18596"/>
   <object id="7" x="0" y="0.39922" width="352.112" height="7.18596"/>

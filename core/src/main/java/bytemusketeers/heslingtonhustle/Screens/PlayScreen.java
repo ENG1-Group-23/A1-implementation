@@ -6,73 +6,92 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 import main.java.bytemusketeers.heslingtonhustle.Interactable;
+import main.java.bytemusketeers.heslingtonhustle.Item;
 import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
+import main.java.bytemusketeers.heslingtonhustle.Sprites.*;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
-import main.java.bytemusketeers.heslingtonhustle.Sprites.TileMap;
 
-import javax.lang.model.type.NullType;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 /**
- * The {@code PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen} interface
+ * The {@link PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen} interface
  * It initialises the world map and its contents, configure the world size and game camera
  */
 public class PlayScreen implements Screen {
-    private final static int INTERACTION_DISTANCE = 3;
-    private Map<Integer, Interactable> interactables = new HashMap<>();
-    private boolean isPaused = false;
-    private PauseMenu pauseMenu;
+    protected final static int INTERACTION_DISTANCE = 3;
     protected OrthographicCamera gameCam;
     protected HeslingtonHustle game;
     protected Viewport gamePort;
     protected World world;
     protected Box2DDebugRenderer b2dr;
     protected Character character;
+    protected Map<Integer, Interactable> interactables = new HashMap<>();
     protected OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     protected TileMap tileMap;
     protected String[] studyItems = {"missing.png", "libgdx.png"};
     protected Metrics metrics;
+    private Vector2 initialCharacterPos;
+    private Vector2 initialCameraPos;
 
-    public PlayScreen(HeslingtonHustle game, String map) {
-        this.pauseMenu = new PauseMenu(this);
+
+    public PlayScreen(HeslingtonHustle game, String map, Vector2 initialCharacterPos, Vector2 initialCameraPos){
         this.game = game;
         this.tileMap = new TileMap();
         this.orthogonalTiledMapRenderer = tileMap.setupMap(map);
+        this.initialCharacterPos = initialCharacterPos;
+        this.initialCameraPos = initialCameraPos;
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
 
-        gameCam.position.set(gamePort.getWorldWidth() / 2, (float) gamePort.getScreenHeight() / 2, 0);
         world = new World(new Vector2(0, 0), true);
         b2dr = new Box2DDebugRenderer();
-
         metrics = new Metrics();
     }
 
     @Override
-    public void show() throws RuntimeException {
+    public void show() {
         // Set gameCam position
-        gameCam.position.set(gamePort.getWorldWidth() / 2, (float) gamePort.getScreenHeight() / 2, 0);
+        gameCam.position.set(initialCameraPos.x, initialCameraPos.y, 0);
 
         // Creating the character
-        HashMap<String, Float> characterPos = new HashMap<>();
-        characterPos.put("x", HeslingtonHustle.W_WIDTH / 2 / HeslingtonHustle.PPM);
-        characterPos.put("y", HeslingtonHustle.W_HEIGHT / 2 / HeslingtonHustle.PPM);
+        Vector2 characterPos = new Vector2(initialCharacterPos.x, initialCharacterPos.y);
         character = new Character(world, characterPos);
 
+        MapLayers layers = tileMap.getTiledMap().getLayers();
+        for (MapLayer layer : layers) {
+            if (layer.getName().equals("borders")) {
+                generateBorders(layers);
+            }
+            if (layer.getName().equals("eating-place")) {
+                generateEatingPlaces(layers);
+            }
+            if (layer.getName().equals("recreation-place")) {
+                generateRecreationalPlaces(layers);
+            }
+        }
+    }
+
+    /**
+     * Generates spawnable objects
+     */
+    public void generateSpawnable () {
         //Need to add different stages so that we can change to different spawnable items
         for (int i = 0; i < studyItems.length; i++) {
             float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
@@ -83,41 +102,73 @@ public class PlayScreen implements Screen {
     }
 
     /**
+     * Creating borders by iterating through all the objects which exist at the walls layer on the tiled map
+     */
+    public void generateBorders (MapLayers layers) {
+        int index = layers.getIndex("borders");
+        for (RectangleMapObject object : layers.get(index).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = object.getRectangle();
+
+            new Border(world, tileMap, rect);
+        }
+    }
+
+    /**
+     * Creating eating places by iterating through all the objects which exist at the eating-place layer on the tiled map
+     */
+    public void generateEatingPlaces (MapLayers layers) {
+        int index = layers.getIndex("eating-place");
+        for (RectangleMapObject object : layers.get(index).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = object.getRectangle();
+
+            new EatingPlace(world, tileMap, rect);
+        }
+    }
+
+    /**
+     * Creating recreation places by iterating through all the objects which exist at the recreation-place layer on the tiled map
+     */
+    public void generateRecreationalPlaces (MapLayers layers) {
+        int index = layers.getIndex("recreation-place");
+        for (RectangleMapObject object : layers.get(index).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = object.getRectangle();
+
+            new RecreationalPlace(world, tileMap, rect);
+        }
+    }
+
+    /**
      * Handles inputs
      */
     public void handleInput(){
         // moving the character
         final float velocity = 4.0f;
         float velX = 0, velY = 0;
-
-        if(Gdx.input.isKeyPressed(Input.Keys.W))
+        if(Gdx.input.isKeyPressed(Input.Keys.W)) {
             velY += velocity;
-
-        if(Gdx.input.isKeyPressed(Input.Keys.D))
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
             velX += velocity;
-
-        if(Gdx.input.isKeyPressed(Input.Keys.S))
-            velY -= velocity;
-
-        if(Gdx.input.isKeyPressed(Input.Keys.A))
-            velX -= velocity;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+            velY += -velocity;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.A)) {
+            velX += -velocity;
+        }
 
         // Checks vel values
         // This is so that the player doesn't move faster when going diagonal
         if (velY != 0 && velX != 0) {
-            velX /= 1.5f;
-            velY /= 1.5f;
+            velX /= 1.5;
+            velY /= 1.5;
         }
-
-        if(!isPaused) character.b2body.setLinearVelocity(velX, velY);
-
-        // menu
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            isPaused = !isPaused;
-        }
+        character.b2body.setLinearVelocity(velX, velY);
 
         // interaction
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            // uncomment if you want to check the screen changing functionality
+//            game.setPiazzaScreen();
             //if there is an interactable nearby the player then interact with it
             for(Map.Entry<Integer, Interactable> entry : this.interactables.entrySet()) {
                 Interactable interactable = entry.getValue();
@@ -149,8 +200,8 @@ public class PlayScreen implements Screen {
 
         int mapWidthInPixels = mapWidthInTiles * tileWidth;
         int mapHeightInPixels = mapHeightInTiles * tileHeight;
-        float mapWidthInMeters = mapWidthInPixels * tileMap.getScale();
-        float mapHeightInMeters = mapHeightInPixels * tileMap.getScale();
+        float mapWidthInMeters = mapWidthInPixels * TileMap.SCALE;
+        float mapHeightInMeters = mapHeightInPixels * TileMap.SCALE;
         if (character.b2body.getPosition().x >= HeslingtonHustle.WIDTH_METRES_BOUND && character.b2body.getPosition().x <= mapWidthInMeters - HeslingtonHustle.WIDTH_METRES_BOUND) {
             gameCam.position.x = character.b2body.getPosition().x;
         }
@@ -183,9 +234,8 @@ public class PlayScreen implements Screen {
         // prepares the batch for drawing textures
         game.batch.begin();
         game.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2, character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);
-
         for(Interactable interactable : interactables.values()) {
-            if(!interactable.isHidden())
+            if(!interactable.isHidden()) {
                 //the position being set to x - width / 2, y - height / 2 makes it so the center of the item is spawned on the position
                 game.batch.draw(interactable.getTexture(),
                             interactable.getX() - (interactable.getWidth()/2),
@@ -193,27 +243,18 @@ public class PlayScreen implements Screen {
                                 interactable.getWidth(),
                                 interactable.getHeight()
                 );
+            }
         }
-        if(isPaused) { pauseMenu.stage.draw(); }
         // ends the drawing session
         game.batch.end();
     }
 
     @Override
-    public void resize(int width, int height) {
-        gamePort.update(width, height);
-    }
+    public void resize(int width, int height) { gamePort.update(width,height); }
 
-    /**
-     *
-     */
     @Override
     public void pause() {
 
-    }
-
-    public void pauseMenu() {
-        this.isPaused = !this.isPaused;
     }
 
     @Override
@@ -230,10 +271,11 @@ public class PlayScreen implements Screen {
     public void dispose() {
         b2dr.dispose();
         character.playerTexture.dispose();
-        for (Interactable interactable : interactables.values())
+        for (Interactable interactable : interactables.values()) {
             interactable.getTexture().dispose();
-
+        }
         world.dispose();
     }
-}
 
+
+}

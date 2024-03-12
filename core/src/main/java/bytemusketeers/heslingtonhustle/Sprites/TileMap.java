@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class TileMap {
+    public static final float SCALE = 0.04f;
     private TiledMap tiledMap;
     private float scale;
 

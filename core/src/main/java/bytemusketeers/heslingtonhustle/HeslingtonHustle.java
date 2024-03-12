@@ -2,6 +2,7 @@ package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import main.java.bytemusketeers.heslingtonhustle.Screens.PiazzaScreen;
 import main.java.bytemusketeers.heslingtonhustle.Screens.PlayScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -20,7 +21,11 @@ public class HeslingtonHustle extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        setScreen(new PlayScreen(this));
+        setScreen(new PlayScreen(this, "Maps/test-map.tmx"));
+    }
+
+    public void setPiazzaScreen () {
+        setScreen(new PiazzaScreen(this, "Maps/pizza-map.tmx"));
     }
 
     @Override

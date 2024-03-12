@@ -18,8 +18,9 @@ public class TileMap {
     public MapProperties getProperties() {
         return tiledMap.getProperties();
     }
-    public OrthogonalTiledMapRenderer setupMap() {
-        tiledMap = new TmxMapLoader().load("Maps/test-map.tmx");
+    public TiledMap getTiledMap() { return this.tiledMap; }
+    public OrthogonalTiledMapRenderer setupMap(String map) {
+        tiledMap = new TmxMapLoader().load(map);
         this.scale = 0.04f;
         return new OrthogonalTiledMapRenderer(tiledMap, this.scale);
     }

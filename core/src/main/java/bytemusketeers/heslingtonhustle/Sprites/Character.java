@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 
+import java.util.HashMap;
+
 /**
  * The {@code Character} class represents the avatar of the player in the game, extending {@link Sprite} class
  * It configures the character settings
@@ -16,18 +18,18 @@ public class Character extends Sprite {
     public Texture playerTexture;
     public static final float WIDTH = 0.3f;
     public static final float HEIGHT = 0.3f;
-    public Character(World world){
+    public Character(World world, HashMap<String, Float> position){
         this.world = world;
-        defineCharacter();
+        defineCharacter(position);
     }
 
     /**
      * Defines the new {@code Character} and sets its configuration
      */
-    public void defineCharacter(){
+    public void defineCharacter(HashMap<String, Float> position){
         BodyDef bdef = new BodyDef();
         // Set position for the character
-        bdef.position.set(HeslingtonHustle.W_WIDTH / 2 / HeslingtonHustle.PPM, HeslingtonHustle.W_HEIGHT / 2 / HeslingtonHustle.PPM);
+        bdef.position.set(position.get("x"), position.get("y"));
         // Set the type of the body
         bdef.type = BodyDef.BodyType.DynamicBody;
         // Create a body in the game world

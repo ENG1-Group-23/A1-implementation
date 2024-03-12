@@ -25,38 +25,48 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The {@code PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen} interface
+ * The {@link PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen} interface
  * It initialises the world map and its contents, configure the world size and game camera
  */
 public class PlayScreen implements Screen {
-    private final static int INTERACTION_DISTANCE = 3;
-    private OrthographicCamera gameCam;
-    private HeslingtonHustle game;
-    private Viewport gamePort;
-    private World world;
-    private Box2DDebugRenderer b2dr;
-    private Character character;
-    private Map<Integer, Interactable> interactables = new HashMap<>();
-    private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
-    private TileMap tileMap;
-    private String[] studyItems = {"missing.png", "libgdx.png"};
-    private Metrics metrics;
+    protected final static int INTERACTION_DISTANCE = 3;
+    protected OrthographicCamera gameCam;
+    protected HeslingtonHustle game;
+    protected Viewport gamePort;
+    protected World world;
+    protected Box2DDebugRenderer b2dr;
+    protected Character character;
+    protected Map<Integer, Interactable> interactables = new HashMap<>();
+    protected OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
+    protected TileMap tileMap;
+    protected String[] studyItems = {"missing.png", "libgdx.png"};
+    protected Metrics metrics;
 
 
-    public PlayScreen(HeslingtonHustle game){
+    public PlayScreen(HeslingtonHustle game, String map){
         this.game = game;
         this.tileMap = new TileMap();
-        this.orthogonalTiledMapRenderer = tileMap.setupMap();
+        this.orthogonalTiledMapRenderer = tileMap.setupMap(map);
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
 
-        gameCam.position.set(gamePort.getWorldWidth() / 2, (float) gamePort.getScreenHeight() / 2, 0);
         world = new World(new Vector2(0, 0), true);
         b2dr = new Box2DDebugRenderer();
 
-        character = new Character(world);
-
         metrics = new Metrics();
+    }
+
+    @Override
+    public void show() throws RuntimeException {
+        // Set gameCam position
+        gameCam.position.set(gamePort.getWorldWidth() / 2, (float) gamePort.getScreenHeight() / 2, 0);
+
+        // Creating the character
+        HashMap<String, Float> characterPos = new HashMap<>();
+        characterPos.put("x", HeslingtonHustle.W_WIDTH / 2 / HeslingtonHustle.PPM);
+        characterPos.put("y", HeslingtonHustle.W_HEIGHT / 2 / HeslingtonHustle.PPM);
+        character = new Character(world, characterPos);
+
         //Need to add different stages so that we can change to different spawnable items
         for (int i = 0; i < studyItems.length; i++) {
             float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
@@ -64,11 +74,6 @@ public class PlayScreen implements Screen {
             Interactable interactable = new Interactable(new Vector2(randomX, randomY), new Texture(studyItems[i]), world, 0.5f, 0.5f);
             interactables.put(i, interactable);
         }
-    }
-
-    @Override
-    public void show() throws RuntimeException {
-        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -157,8 +162,9 @@ public class PlayScreen implements Screen {
 
 
         orthogonalTiledMapRenderer.render();
-        // render the Box2DDebugLines
-        b2dr.render(world, gameCam.combined);
+
+        // render the Box2DDebugLines, uncomment it if you want to see green collision lines
+//        b2dr.render(world, gameCam.combined);
 
         // recognises where the camera is in the game world and render only what the camera can see
         game.batch.setProjectionMatrix(gameCam.combined);

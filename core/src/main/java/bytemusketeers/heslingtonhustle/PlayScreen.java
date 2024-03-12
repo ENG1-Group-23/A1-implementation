@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +143,5 @@ public class PlayScreen implements Screen {
     public void dispose() {
         character.dispose();
         world.dispose();
-
-        // TODO: do we need to dispose the area (and hence all interactables) here?
     }
 }

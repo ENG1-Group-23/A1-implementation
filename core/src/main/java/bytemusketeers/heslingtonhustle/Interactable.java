@@ -6,8 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
- * An {@link Interactable} is an {@link Item} with which the
- * {@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} may interact
+ * An {@link Interactable} is an {@link Item} with which the {@link Character} may interact
  */
 public class Interactable extends Item {
     private boolean isHidden = false;
@@ -25,14 +24,25 @@ public class Interactable extends Item {
         super(position, texture, world, width, height);
     }
 
+    /**
+     * Indicate that the {@link Character} has interacted with the {@link Item}
+     */
     public void interact() {
         toggleHide();
     }
 
-    public void toggleHide() {
+    /**
+     * Toggle the visibility of the {@link Interactable}
+     */
+    private void toggleHide() {
         this.isHidden = !this.isHidden;
     }
 
+    /**
+     * Determine the visibility of the {@link Interactable}
+     *
+     * @return Is the {@link Interactable} hidden?
+     */
     public boolean isHidden() {
         return this.isHidden;
     }

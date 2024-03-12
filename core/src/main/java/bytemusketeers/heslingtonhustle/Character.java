@@ -1,4 +1,4 @@
-package main.java.bytemusketeers.heslingtonhustle.Sprites;
+package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,8 +9,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
-import main.java.bytemusketeers.heslingtonhustle.Area;
-import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 
 /**
  * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}.
@@ -65,7 +63,7 @@ public class Character extends Sprite implements Disposable {
     }
 
     /**
-     * Disposes the {@link Character}'s graphical texture representation
+     * Releases all resources used by the {@link Character}
      */
     @Override
     public void dispose() {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.utils.Disposable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +16,13 @@ import java.util.List;
  * texture and set of {@link Interactable} objects.
  * TODO: document the public attributes, emphasising the relationship between pixels and metres
  */
-public class Area {
+public class Area implements Disposable {
     public static final float MAP_SCALE = 0.04f;
     public final float mapWidth;
     public final float mapHeight;
     private final List<Interactable> interactables = new ArrayList<>();
     private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
+    private final TiledMap tiledMap;
 
     /**
      * Adds an {@link Interactable} to the set of interactable tiles in the current {@link Area}.
@@ -56,12 +58,24 @@ public class Area {
     }
 
     /**
+     * Releases all resources used by the {@link Area}
+     */
+    @Override
+    public void dispose() {
+        for (Interactable interactable : interactables)
+            interactable.dispose();
+
+        orthogonalTiledMapRenderer.dispose();
+        tiledMap.dispose();
+    }
+
+    /**
      * Constructs a new {@link Area} with a {@link TiledMap} with a TMX file at the given path
      *
      * @param map The path of the {@link Area}'s background texture
      */
     public Area(String map) {
-        TiledMap tiledMap = new TmxMapLoader().load(map);
+        tiledMap = new TmxMapLoader().load(map);
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, MAP_SCALE);
 
         MapProperties properties = tiledMap.getProperties();

@@ -8,31 +8,25 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
- * An {@link Item} denotes a drawable non-{@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} object.
- * TODO: need to clean this entire class up
+ * An {@link Item} denotes a drawable non-{@link Character} object.
+ * TODO: Use an AssetManager instead of implementing Disposable everywhere:
+ *  https://libgdx.com/wiki/managing-your-assets
  */
-public class Item extends Sprite {
+public class Item extends Sprite implements Disposable {
     private final Texture texture;
     private final float width;
     private final float height;
-    private Body body;
-    private final World world;
+    private final Body body;
 
-    public void defineBody(Vector2 position){
-        BodyDef bodyDef = new BodyDef();
-        // Set position for the collision box
-        bodyDef.position.set(position.x, position.y);
-        // Set the type of the body
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        // Create a body in the game world
-        body = world.createBody(bodyDef);
-        // Create a fixture for the body and setting its shape
-        PolygonShape collisionBox = new PolygonShape();
-        collisionBox.setAsBox(width / 2, height / 2); // Creates a rectangle shaped box around shape
-        body.createFixture(collisionBox,0.0f);
-        collisionBox.dispose();
+    /**
+     * Releases all resources used by the {@link Item}
+     */
+    @Override
+    public void dispose() {
+        texture.dispose();
     }
 
     /**
@@ -56,11 +50,17 @@ public class Item extends Sprite {
      */
     public Item(Vector2 position, Texture texture, World world, float width, float height) {
         this.texture = texture;
-        this.world = world;
         this.width = width;
         this.height = height;
 
-        setPosition(position.x, position.y);
-        defineBody(position);
+        BodyDef bodyDefinition = new BodyDef();
+        bodyDefinition.position.set(position.x, position.y);
+        bodyDefinition.type = BodyDef.BodyType.StaticBody;
+        body = world.createBody(bodyDefinition);
+
+        PolygonShape collisionBox = new PolygonShape();
+        collisionBox.setAsBox(width / 2, height / 2);
+        body.createFixture(collisionBox,0.0f);
+        collisionBox.dispose();
     }
 }

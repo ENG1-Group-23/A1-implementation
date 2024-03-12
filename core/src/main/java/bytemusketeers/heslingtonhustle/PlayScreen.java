@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -28,17 +30,31 @@ public class PlayScreen implements Screen {
     private final List<Area> areas = new ArrayList<>();
     private Area activeArea;
 
+    private void initialiseAreas() {
+        Area area;
+
+        /* Test Map */
+        area = new Area("Maps/test-map.tmx");
+        area.addInteractable(new Interactable(
+            new Vector2(
+                MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM),
+                MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM)),
+            new Texture("libgdx.png"), world, 0.5f, 0.5f));
+
+        areas.add(area);
+    }
+
     public PlayScreen(HeslingtonHustle gameReference){
         this.gameReference = gameReference;
-
-        areas.add(new Area("Maps/test-map.tmx"));
-        activeArea = areas.get(0);
 
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM,
             HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
 
         world = new World(new Vector2(0, 0), true);
+
+        initialiseAreas();
+        activeArea = areas.get(0);
     }
 
     @Override
@@ -95,11 +111,10 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        activeArea.render();
-
         gameReference.batch.setProjectionMatrix(gameCam.combined);
         gameReference.batch.begin();
 
+        activeArea.render(gameReference.batch);
         character.render(gameReference.batch);
 
         gameReference.batch.end();

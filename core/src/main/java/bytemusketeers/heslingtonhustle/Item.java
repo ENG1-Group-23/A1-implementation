@@ -2,6 +2,7 @@ package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -10,13 +11,14 @@ import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * An {@link Item} denotes a drawable non-{@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} object.
+ * TODO: need to clean this entire class up
  */
 public class Item extends Sprite {
-    protected Texture texture;
-    protected float width;
-    protected float height;
-    protected Body body;
-    protected World world;
+    private final Texture texture;
+    private final float width;
+    private final float height;
+    private Body body;
+    private final World world;
 
     public void defineBody(Vector2 position){
         BodyDef bodyDef = new BodyDef();
@@ -33,24 +35,14 @@ public class Item extends Sprite {
         collisionBox.dispose();
     }
 
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
-
-    public Texture getTexture() {
-        return this.texture;
-    }
-
-    public Vector2 getPosition() {
-        return new Vector2(this.getX(), this.getY());
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
+    /**
+     * Registers the current {@link Item} onto the given game instance {@link SpriteBatch}
+     *
+     * @param batch The {@link SpriteBatch} to which the {@link Item} should be polled
+     */
+    public void render(SpriteBatch batch) {
+        batch.draw(texture, body.getPosition().x - (width / 2),body.getPosition().y - (height / 2), width,
+            height);
     }
 
     /**

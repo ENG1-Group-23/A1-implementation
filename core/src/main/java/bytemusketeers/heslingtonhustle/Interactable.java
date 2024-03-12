@@ -37,5 +37,3 @@ public class Interactable extends Item {
         return this.isHidden;
     }
 }
-
-

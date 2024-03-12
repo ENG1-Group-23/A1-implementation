@@ -19,11 +19,12 @@ public class PauseMenu extends Menu {
     Skin skin;
     TextureAtlas textureAtlas;
     Boolean isPressed = false;
-    List<Stage> stages;
+    Boolean isPaused;
+    PlayScreen playscreen;
 
 
-    public PauseMenu(List<Stage> stages) {
-        this.stages = stages;
+    public PauseMenu(PlayScreen playscreen) {
+        this.playscreen = playscreen;
         this.create();
     }
 
@@ -51,7 +52,6 @@ public class PauseMenu extends Menu {
         resumeButton.setWidth(BUTTON_WIDTH + 70.0f); //needs to be wider to fit the text
         exitButton.setHeight(BUTTON_HEIGHT);
         exitButton.setWidth(BUTTON_WIDTH);
-        PauseMenu thisInstance = this;
 
         exitButton.addListener(new InputListener() {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -64,7 +64,7 @@ public class PauseMenu extends Menu {
            //it removes the current stage (the Pause Menu) from all the stages that need to be rendered
            //this currently means that there are no stages in the stages variable which is the default state
            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-               stages.remove(thisInstance.stage);
+               playscreen.pauseMenu();
                return true;
            }
         });

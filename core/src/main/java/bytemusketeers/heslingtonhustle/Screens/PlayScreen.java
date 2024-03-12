@@ -6,9 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,8 +17,9 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
 import main.java.bytemusketeers.heslingtonhustle.Interactable;
-import main.java.bytemusketeers.heslingtonhustle.Item;
+import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
+import main.java.bytemusketeers.heslingtonhustle.Sprites.TileMap;
 
 import javax.lang.model.type.NullType;
 import java.util.ArrayList;
@@ -30,25 +32,23 @@ import java.util.Map;
  * It initialises the world map and its contents, configure the world size and game camera
  */
 public class PlayScreen implements Screen {
-    private final static int INTERACTION_DISTANCE = 3
+    private final static int INTERACTION_DISTANCE = 3;
     private Map<Integer, Interactable> interactables = new HashMap<>();
-    private List<Stage> stages = new ArrayList<>();
+    private boolean isPaused = false;
     private PauseMenu pauseMenu;
-    protected final static int INTERACTION_DISTANCE = 3;
     protected OrthographicCamera gameCam;
     protected HeslingtonHustle game;
     protected Viewport gamePort;
     protected World world;
     protected Box2DDebugRenderer b2dr;
     protected Character character;
-    protected Map<Integer, Interactable> interactables = new HashMap<>();
     protected OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     protected TileMap tileMap;
     protected String[] studyItems = {"missing.png", "libgdx.png"};
     protected Metrics metrics;
 
-    public PlayScreen(HeslingtonHustle game){
-        this.pauseMenu = new PauseMenu(stages);
+    public PlayScreen(HeslingtonHustle game, String map) {
+        this.pauseMenu = new PauseMenu(this);
         this.game = game;
         this.tileMap = new TileMap();
         this.orthogonalTiledMapRenderer = tileMap.setupMap(map);
@@ -109,21 +109,15 @@ public class PlayScreen implements Screen {
             velY /= 1.5f;
         }
 
-        character.b2body.setLinearVelocity(velX, velY);
+        if(!isPaused) character.b2body.setLinearVelocity(velX, velY);
 
         // menu
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            if(this.stages.contains(this.pauseMenu.stage)) {
-                stages.remove(this.pauseMenu.stage);
-            } else {
-                //TODO clear the world of bodies (character still shows when PauseMenu is up)
-                //the above is if we don't want the world to be visible while the menu is up
-                stages.add(this.pauseMenu.stage);
-            }
+            isPaused = !isPaused;
         }
 
         // interaction
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             //if there is an interactable nearby the player then interact with it
             for(Map.Entry<Integer, Interactable> entry : this.interactables.entrySet()) {
                 Interactable interactable = entry.getValue();
@@ -190,7 +184,7 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         game.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2, character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);
 
-        for(Interactable interactable : interactables.values())
+        for(Interactable interactable : interactables.values()) {
             if(!interactable.isHidden())
                 //the position being set to x - width / 2, y - height / 2 makes it so the center of the item is spawned on the position
                 game.batch.draw(interactable.getTexture(),
@@ -199,20 +193,8 @@ public class PlayScreen implements Screen {
                                 interactable.getWidth(),
                                 interactable.getHeight()
                 );
-
-        for(Interactable interactable : interactables.values()) {
-            if(!interactable.isHidden()) {
-                game.batch.draw(interactable.getTexture(), interactable.getX(), interactable.getY(), 0.5f, 0.5f);
-            }
         }
-        // at the moment this draws all the stages that are in stages array
-        // even though there can only be one stage in the array at a time and so the array is redundant
-        // might be useful for future?
-        for(Stage stage : this.stages) {
-            if(!(stage instanceof NullType)) {
-                stage.draw();
-            }
-        }
+        if(isPaused) { pauseMenu.stage.draw(); }
         // ends the drawing session
         game.batch.end();
     }
@@ -222,9 +204,16 @@ public class PlayScreen implements Screen {
         gamePort.update(width, height);
     }
 
+    /**
+     *
+     */
     @Override
     public void pause() {
 
+    }
+
+    public void pauseMenu() {
+        this.isPaused = !this.isPaused;
     }
 
     @Override
@@ -247,3 +236,4 @@ public class PlayScreen implements Screen {
         world.dispose();
     }
 }
+

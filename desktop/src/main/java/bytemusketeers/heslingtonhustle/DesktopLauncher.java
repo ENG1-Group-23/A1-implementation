@@ -6,8 +6,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 /**
  * Provides the JVM system entry point to launch the desktop {@link Lwjgl3Application} with the {@link HeslingtonHustle}
  * instance, specifying certain fixed application configuration parameters.
- *
- * @author Oliver Dixon
  */
 public class DesktopLauncher {
     private static final int INITIAL_WINDOW_WIDTH = 800;

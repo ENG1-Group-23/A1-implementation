@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
 
 /**
  * An {@link Interactable} is an {@link Item} with which the
@@ -12,7 +11,6 @@ import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
  */
 public class Interactable extends Item {
     private boolean isHidden = false;
-    private Metrics metrics;
 
     /**
      * Instantiates a new {@link Interactable} {@link Item} with the given initial parameters

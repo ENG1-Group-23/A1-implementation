@@ -15,7 +15,7 @@ public class HeslingtonHustle extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        setScreen(new PlayScreen(this, "Maps/test-map.tmx"));
+        setScreen(new PlayScreen(this));
     }
 
     @Override

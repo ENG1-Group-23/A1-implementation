@@ -1,6 +1,5 @@
 package main.java.bytemusketeers.heslingtonhustle.Sprites;
 
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,13 +12,11 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public abstract class InteractiveTileObject {
     protected World world;
-    protected TiledMap tiledMap;
     protected Rectangle bounds;
     protected Body body;
 
-    public InteractiveTileObject(World world, TileMap map, Rectangle bounds) {
+    public InteractiveTileObject(World world, Rectangle bounds, float mapScale) {
         this.world = world;
-        this.tiledMap = map.getTiledMap();
         this.bounds = bounds;
 
         BodyDef bdef = new BodyDef();
@@ -27,13 +24,13 @@ public abstract class InteractiveTileObject {
 
         // Creating new static body and setting its position
         bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) * map.getScale(), (bounds.getY() + bounds.getHeight() / 2) * map.getScale());
+        bdef.position.set((bounds.getX() + bounds.getWidth() / 2) * mapScale, (bounds.getY() + bounds.getHeight() / 2) * mapScale);
 
         // Adding the body to the world
         body = world.createBody(bdef);
 
         // Creating a fixture, setting up is parameters and adding it to a body
-        shape.setAsBox(bounds.getWidth() / 2 * map.getScale(), bounds.getHeight() / 2 * map.getScale());
+        shape.setAsBox(bounds.getWidth() / 2 * mapScale, bounds.getHeight() / 2 * mapScale);
         body.createFixture(shape, 0.0f);
     }
 }

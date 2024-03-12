@@ -6,39 +6,40 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.java.bytemusketeers.heslingtonhustle.Sprites.Character;
-import main.java.bytemusketeers.heslingtonhustle.Sprites.TileMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The {@link PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen}
- * interface. It manages the world map and its contents, and configures the world size and game camera.
+ * interface. It manages the various game cameras, the {@link Character}, and the {@link Area} vector which the player
+ * can explore.
  */
 public class PlayScreen implements Screen {
-    protected OrthographicCamera gameCam;
-    protected HeslingtonHustle game;
-    protected Viewport gamePort;
-    protected World world;
-    protected Box2DDebugRenderer b2dr;
-    protected Character character;
-    protected OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
-    protected TileMap tileMap;
+    private final OrthographicCamera gameCam;
+    private final HeslingtonHustle gameReference;
+    private final Viewport gamePort;
+    private final World world;
+    private Character character;
+    private final List<Area> areas = new ArrayList<>();
+    private Area activeArea;
 
+    public PlayScreen(HeslingtonHustle gameReference){
+        this.gameReference = gameReference;
 
-    public PlayScreen(HeslingtonHustle game, String map){
-        this.game = game;
-        this.tileMap = new TileMap();
-        this.orthogonalTiledMapRenderer = tileMap.setupMap(map);
+        areas.add(new Area("Maps/test-map.tmx"));
+        activeArea = areas.get(0);
+
         gameCam = new OrthographicCamera();
-        gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
+        gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM,
+            HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
 
         world = new World(new Vector2(0, 0), true);
-        b2dr = new Box2DDebugRenderer();
     }
 
     @Override
@@ -74,7 +75,7 @@ public class PlayScreen implements Screen {
 
         // calculates physics interactions, such as object movement, collisions, and forces, for a specific time interval
         world.step(1/60f, 6, 2);
-        MapProperties props = this.tileMap.getProperties();
+        MapProperties props = activeArea.getAreaMapProperties();
         int mapWidthInTiles = props.get("width", Integer.class);
         int mapHeightInTiles = props.get("height", Integer.class);
 
@@ -83,8 +84,8 @@ public class PlayScreen implements Screen {
 
         int mapWidthInPixels = mapWidthInTiles * tileWidth;
         int mapHeightInPixels = mapHeightInTiles * tileHeight;
-        float mapWidthInMeters = mapWidthInPixels * tileMap.getScale();
-        float mapHeightInMeters = mapHeightInPixels * tileMap.getScale();
+        float mapWidthInMeters = mapWidthInPixels * Area.MAP_SCALE;
+        float mapHeightInMeters = mapHeightInPixels * Area.MAP_SCALE;
 
         if (character.b2body.getPosition().x >= HeslingtonHustle.WIDTH_METRES_BOUND &&
                 character.b2body.getPosition().x <= mapWidthInMeters - HeslingtonHustle.WIDTH_METRES_BOUND)
@@ -95,7 +96,7 @@ public class PlayScreen implements Screen {
             gameCam.position.y= character.b2body.getPosition().y;
 
         // tracking character's moves with the cam
-        orthogonalTiledMapRenderer.setView(gameCam);
+        activeArea.updateView(gameCam);
         gameCam.update();
     }
 
@@ -107,13 +108,13 @@ public class PlayScreen implements Screen {
         // GL_COLOR_BUFFER_BIT specifies that the color buffer is to be cleared
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        orthogonalTiledMapRenderer.render();
+        activeArea.render();
 
-        game.batch.setProjectionMatrix(gameCam.combined);
-        game.batch.begin();
-        game.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2,
+        gameReference.batch.setProjectionMatrix(gameCam.combined);
+        gameReference.batch.begin();
+        gameReference.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2,
             character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);
-        game.batch.end();
+        gameReference.batch.end();
     }
 
     @Override
@@ -138,8 +139,9 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-        b2dr.dispose();
         character.playerTexture.dispose();
         world.dispose();
+
+        // TODO: do we need to dispose the area (and hence all interactables) here?
     }
 }

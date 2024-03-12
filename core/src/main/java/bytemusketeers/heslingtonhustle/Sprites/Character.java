@@ -2,6 +2,7 @@ package main.java.bytemusketeers.heslingtonhustle.Sprites;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -19,7 +20,7 @@ public class Character extends Sprite {
     public Texture playerTexture;
     public static final float WIDTH = 0.3f;
     public static final float HEIGHT = 0.3f;
-    public Character(World world, HashMap<String, Float> position){
+    public Character(World world, Vector2 position){
         this.world = world;
         defineCharacter(position);
     }
@@ -27,10 +28,10 @@ public class Character extends Sprite {
     /**
      * Defines the new {@link Character} and sets its configuration
      */
-    public void defineCharacter(HashMap<String, Float> position){
+    public void defineCharacter(Vector2 position){
         BodyDef bdef = new BodyDef();
         // Set position for the character
-        bdef.position.set(position.get("x"), position.get("y"));
+        bdef.position.set(position.x, position.y);
         // Set the type of the body
         bdef.type = BodyDef.BodyType.DynamicBody;
         // Create a body in the game world

@@ -70,8 +70,9 @@ class Character extends Sprite implements Drawable {
      * @return Is the {@link Character} out-of-bounds on the horizontal of the {@link Area}?
      */
     public boolean isOutOfHorizontalBound(Area area) {
-        return (getXPosition() >= HeslingtonHustle.WIDTH_METRES_BOUND &&
-            getXPosition() <= area.getMapWidth() - HeslingtonHustle.WIDTH_METRES_BOUND);
+        Vector2 position = getPosition();
+        return (position.x >= HeslingtonHustle.WIDTH_METRES_BOUND && position.x <= area.getMapWidth() -
+            HeslingtonHustle.WIDTH_METRES_BOUND);
     }
 
     /**
@@ -81,26 +82,18 @@ class Character extends Sprite implements Drawable {
      * @return Is the {@link Character} out-of-bounds on the vertical of the {@link Area}?
      */
     public boolean isOutOfVerticalBound(Area area) {
-        return (getYPosition() >= HeslingtonHustle.HEIGHT_METRES_BOUND &&
-            getYPosition() <= area.getMapHeight() - HeslingtonHustle.HEIGHT_METRES_BOUND);
+        Vector2 position = getPosition();
+        return (position.y >= HeslingtonHustle.HEIGHT_METRES_BOUND && position.y <= area.getMapHeight() -
+            HeslingtonHustle.HEIGHT_METRES_BOUND);
     }
 
     /**
-     * Retrieves the {@link Character} position with respect to the horizontal axis
+     * Retrieves the {@link Character} position
      *
-     * @return The X position
+     * @return The position
      */
-    public float getXPosition() {
-        return body.getPosition().x;
-    }
-
-    /**
-     * Retrieves the {@link Character} position with respect to the vertical axis
-     *
-     * @return The Y position
-     */
-    public float getYPosition() {
-        return body.getPosition().y;
+    public Vector2 getPosition() {
+        return body.getPosition();
     }
 
     /**
@@ -118,8 +111,8 @@ class Character extends Sprite implements Drawable {
      */
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(playerTexture, getXPosition() - WIDTH / 2, getYPosition() - HEIGHT / 2,
-            WIDTH, HEIGHT);
+        Vector2 position = getPosition();
+        batch.draw(playerTexture, position.x - WIDTH / 2, position.y - HEIGHT / 2, WIDTH, HEIGHT);
     }
 
     /**

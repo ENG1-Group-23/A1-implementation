@@ -38,6 +38,15 @@ class Item extends Sprite implements Drawable {
     }
 
     /**
+     * Retrieves the position of the {@link Item}
+     *
+     * @return The position of the body
+     */
+    public Vector2 getPosition() {
+        return body.getPosition();
+    }
+
+    /**
      * Instantiates a new {@link Item} with the given initial parameters
      *
      * @param position The initial position of the {@link Item}

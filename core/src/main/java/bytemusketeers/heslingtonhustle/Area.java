@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,18 @@ class Area implements Drawable {
      */
     public void addInteractable(Interactable interactable) {
         interactables.add(interactable);
+    }
+
+    /**
+     * Given the current position of the {@link Character}, interact with any nearby {@link Interactable} objects
+     *
+     * @param characterPosition The position of the player-controlled {@link Character}
+     */
+    public void triggerInteractables(Vector2 characterPosition) {
+        for (Interactable interactable : interactables)
+            if (interactable.isClose(characterPosition)) {
+                interactable.interact();
+            }
     }
 
     /**

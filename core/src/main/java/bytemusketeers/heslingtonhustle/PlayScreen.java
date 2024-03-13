@@ -37,13 +37,18 @@ class PlayScreen implements Screen {
     private void initialiseAreas() {
         Area area;
 
-        /* Test Map #1 */
+        /* Test Map */
         area = new Area("Maps/test-map.tmx");
         area.addInteractable(new Interactable(
             new Vector2(
                 MathUtils.random(0, Gdx.graphics.getWidth() / HeslingtonHustle.PPM),
                 MathUtils.random(0, Gdx.graphics.getHeight() / HeslingtonHustle.PPM)),
-            new Texture("libgdx.png"), world, 0.5f, 0.5f));
+            new Texture("libgdx.png"),
+            world, 0.5f, 0.5f, character::moveRight));
+        areas.add(area);
+
+        /* Piazza Map */
+        area = new Area("Maps/piazza-map.tmx");
         areas.add(area);
     }
 
@@ -62,6 +67,9 @@ class PlayScreen implements Screen {
 
         if(Gdx.input.isKeyPressed(Input.Keys.D))
             character.moveRight();
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+            activeArea.triggerInteractables(character.getPosition());
     }
 
     /**
@@ -77,11 +85,13 @@ class PlayScreen implements Screen {
 
         // Update the game camera position, such that the character is followed and centralised, unless close to a
         // viewport boundary
+        Vector2 characterPosition = character.getPosition();
+
         if (character.isOutOfHorizontalBound(activeArea))
-            gameCam.position.x = character.getXPosition();
+            gameCam.position.x = characterPosition.x;
 
         if (character.isOutOfVerticalBound(activeArea))
-            gameCam.position.y = character.getYPosition();
+            gameCam.position.y = characterPosition.y;
 
         activeArea.updateView(gameCam);
         gameCam.update();
@@ -110,6 +120,12 @@ class PlayScreen implements Screen {
         batch.end();
     }
 
+    /**
+     * Handles the {@link PlayScreen} being resized
+     *
+     * @param width The new width, in pixels
+     * @param height The new height, in pixels
+     */
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
@@ -174,11 +190,11 @@ class PlayScreen implements Screen {
 
         world = new World(new Vector2(0, 0), true);
 
-        initialiseAreas();
-        activeArea = areas.get(0);
-
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
         character = new Character(world, new Vector2((float) Gdx.graphics.getWidth() / HeslingtonHustle.PPM / 2,
             (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2));
+
+        initialiseAreas();
+        activeArea = areas.get(0);
     }
 }

@@ -2,6 +2,7 @@ package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -9,48 +10,40 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
- * An {@link Item} denotes a drawable non-{@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} object.
+ * An {@link Item} denotes a drawable non-{@link Character} object.
  */
-public class Item extends Sprite {
-    protected Texture texture;
-    protected float width;
-    protected float height;
-    protected Body body;
-    protected World world;
+class Item extends Sprite implements Drawable {
+    private final Texture texture;
+    private final float width;
+    private final float height;
+    private final Body body;
 
-    public void defineBody(Vector2 position){
-        BodyDef bodyDef = new BodyDef();
-        // Set position for the collision box
-        bodyDef.position.set(position.x, position.y);
-        // Set the type of the body
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        // Create a body in the game world
-        body = world.createBody(bodyDef);
-        // Create a fixture for the body and setting its shape
-        PolygonShape collisionBox = new PolygonShape();
-        collisionBox.setAsBox(width / 2, height / 2); // Creates a rectangle shaped box around shape
-        body.createFixture(collisionBox,0.0f);
-        collisionBox.dispose();
+    /**
+     * Releases all resources used by the {@link Item}
+     */
+    @Override
+    public void dispose() {
+        texture.dispose();
     }
 
-    public void setTexture(Texture texture) {
-        this.texture = texture;
+    /**
+     * Registers the current {@link Item} onto the given game instance {@link SpriteBatch}
+     *
+     * @param batch The {@link SpriteBatch} to which the {@link Item} should be polled
+     */
+    @Override
+    public void render(SpriteBatch batch) {
+        batch.draw(texture, body.getPosition().x - (width / 2),body.getPosition().y - (height / 2), width,
+            height);
     }
 
-    public Texture getTexture() {
-        return this.texture;
-    }
-
+    /**
+     * Retrieves the position of the {@link Item}
+     *
+     * @return The position of the body
+     */
     public Vector2 getPosition() {
-        return new Vector2(this.getX(), this.getY());
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
+        return body.getPosition();
     }
 
     /**
@@ -64,11 +57,17 @@ public class Item extends Sprite {
      */
     public Item(Vector2 position, Texture texture, World world, float width, float height) {
         this.texture = texture;
-        this.world = world;
         this.width = width;
         this.height = height;
 
-        setPosition(position.x, position.y);
-        defineBody(position);
+        BodyDef bodyDefinition = new BodyDef();
+        bodyDefinition.position.set(position.x, position.y);
+        bodyDefinition.type = BodyDef.BodyType.StaticBody;
+        body = world.createBody(bodyDefinition);
+
+        PolygonShape collisionBox = new PolygonShape();
+        collisionBox.setAsBox(width / 2, height / 2);
+        body.createFixture(collisionBox,0.0f);
+        collisionBox.dispose();
     }
 }

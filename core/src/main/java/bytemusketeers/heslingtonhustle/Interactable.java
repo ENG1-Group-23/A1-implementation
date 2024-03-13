@@ -2,17 +2,67 @@ package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
 
 /**
- * An {@link Interactable} is an {@link Item} with which the
- * {@link main.java.bytemusketeers.heslingtonhustle.Sprites.Character} may interact
+ * An {@link Interactable} is an {@link Item} with which the {@link Character} may interact
  */
-public class Interactable extends Item {
+class Interactable extends Item {
     private boolean isHidden = false;
-    private Metrics metrics;
+    /**
+     * The square of the maximum interaction distance; that is, the maximum distance, measured by the Euclidean metric,
+     * that a {@link Character} may be from an {@link Interactable} to fire an {@link #interact()}.
+     */
+    private static final float INTERACTION_DISTANCE_SQ = 0.3f;
+    private final Runnable action;
+
+    /**
+     * Indicate that the {@link Character} has interacted with the {@link Item}
+     */
+    public void interact() {
+        toggleHide();
+        action.run();
+    }
+
+    /**
+     * Toggle the visibility of the {@link Interactable}
+     */
+    private void toggleHide() {
+        this.isHidden = !this.isHidden;
+    }
+
+    /**
+     * Determine the visibility of the {@link Interactable}
+     *
+     * @return Is the {@link Interactable} hidden?
+     */
+    public boolean isHidden() {
+        return this.isHidden;
+    }
+
+    /**
+     * Determines if the described {@link Vector2} represents an object that is sufficiently close to the
+     * {@link Interactable}; see {@link #INTERACTION_DISTANCE_SQ}.
+     *
+     * @param position The position to test
+     * @return Is the given {@link Vector2} within the defined Euclidean distance of the {@link Interactable}?
+     */
+    public boolean isClose(Vector2 position) {
+        return getPosition().dst2(position) <= INTERACTION_DISTANCE_SQ;
+    }
+
+    /**
+     * If applicable, renders the {@link Interactable} as an {@link Item}, otherwise do nothing
+     *
+     * @param batch The {@link SpriteBatch} to which the {@link Item} should be polled
+     */
+    @Override
+    public void render(SpriteBatch batch) {
+        if (!isHidden())
+            super.render(batch);
+    }
 
     /**
      * Instantiates a new {@link Interactable} {@link Item} with the given initial parameters
@@ -22,22 +72,10 @@ public class Interactable extends Item {
      * @param world The {@link World} into which the {@link Interactable} should be drawn
      * @param width The initial width
      * @param height The initial height
+     * @param action The {@link Runnable} method to execute upon interaction
      */
-    public Interactable(Vector2 position, Texture texture, World world, float width, float height) {
+    public Interactable(Vector2 position, Texture texture, World world, float width, float height, Runnable action) {
         super(position, texture, world, width, height);
-    }
-
-    public void interact() {
-        toggleHide();
-    }
-
-    public void toggleHide() {
-        this.isHidden = !this.isHidden;
-    }
-
-    public boolean isHidden() {
-        return this.isHidden;
+        this.action = action;
     }
 }
-
-

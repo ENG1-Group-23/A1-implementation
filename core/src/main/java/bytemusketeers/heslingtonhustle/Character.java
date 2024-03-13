@@ -8,15 +8,15 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Disposable;
 
 /**
  * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}.
  */
-public class Character extends Sprite implements Disposable {
+class Character extends Sprite implements Drawable {
     private static final float WIDTH = 0.3f;
     private static final float HEIGHT = 0.3f;
     private static final float MOVEMENT_VELOCITY = 4.0f;
+    private static final String TEXTURE_PATH = "prototype-4.png";
     private final Body body;
     private final Texture playerTexture;
     private final Vector2 velocity = new Vector2();
@@ -51,6 +51,7 @@ public class Character extends Sprite implements Disposable {
 
     /**
      * Updates the position of the {@link Character} given its transient velocity
+     * TODO: consistent movement speeds on a resized window
      */
     public void move() {
         if (velocity.x != 0 && velocity.y != 0) {
@@ -63,24 +64,6 @@ public class Character extends Sprite implements Disposable {
     }
 
     /**
-     * Releases all resources used by the {@link Character}
-     */
-    @Override
-    public void dispose() {
-        playerTexture.dispose();
-    }
-
-    /**
-     * Registers the current {@link Character} onto the given game instance {@link SpriteBatch}
-     *
-     * @param batch The {@link SpriteBatch} to which the {@link Character} should be polled
-     */
-    public void render(SpriteBatch batch) {
-        batch.draw(playerTexture, getXPosition() - WIDTH / 2, getYPosition() - HEIGHT / 2,
-            WIDTH, HEIGHT);
-    }
-
-    /**
      * Checks if the {@link Character} is out of the given {@link Area} boundaries, on the horizontal axis
      *
      * @param area The {@link Area} against which the boundary should be tested
@@ -88,7 +71,7 @@ public class Character extends Sprite implements Disposable {
      */
     public boolean isOutOfHorizontalBound(Area area) {
         return (getXPosition() >= HeslingtonHustle.WIDTH_METRES_BOUND &&
-            getXPosition() <= area.mapWidth - HeslingtonHustle.WIDTH_METRES_BOUND);
+            getXPosition() <= area.getMapWidth() - HeslingtonHustle.WIDTH_METRES_BOUND);
     }
 
     /**
@@ -99,7 +82,7 @@ public class Character extends Sprite implements Disposable {
      */
     public boolean isOutOfVerticalBound(Area area) {
         return (getYPosition() >= HeslingtonHustle.HEIGHT_METRES_BOUND &&
-            getYPosition() <= area.mapHeight - HeslingtonHustle.HEIGHT_METRES_BOUND);
+            getYPosition() <= area.getMapHeight() - HeslingtonHustle.HEIGHT_METRES_BOUND);
     }
 
     /**
@@ -121,6 +104,25 @@ public class Character extends Sprite implements Disposable {
     }
 
     /**
+     * Releases all resources used by the {@link Character}
+     */
+    @Override
+    public void dispose() {
+        playerTexture.dispose();
+    }
+
+    /**
+     * Registers the current {@link Character} onto the given game instance {@link SpriteBatch}
+     *
+     * @param batch The {@link SpriteBatch} to which the {@link Character} should be polled
+     */
+    @Override
+    public void render(SpriteBatch batch) {
+        batch.draw(playerTexture, getXPosition() - WIDTH / 2, getYPosition() - HEIGHT / 2,
+            WIDTH, HEIGHT);
+    }
+
+    /**
      * Initialises a new {@link Character} body as a player-movable {@link Sprite}.
      *
      * @param world The LibGDX {@link World} into which the {@link Character} should exist
@@ -138,6 +140,6 @@ public class Character extends Sprite implements Disposable {
         body.createFixture(shape, 0.0f);
         shape.dispose();
 
-        playerTexture = new Texture("prototype-4.png");
+        playerTexture = new Texture(TEXTURE_PATH);
     }
 }

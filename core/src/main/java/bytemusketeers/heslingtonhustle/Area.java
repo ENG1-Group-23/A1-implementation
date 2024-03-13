@@ -6,7 +6,6 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.utils.Disposable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +13,11 @@ import java.util.List;
 /**
  * An {@link Area} is a single room or outdoor areas in which the player can exist, containing its own {@link TiledMap}
  * texture and set of {@link Interactable} objects.
- * TODO: document the public attributes, emphasising the relationship between pixels and metres
  */
-public class Area implements Disposable {
+class Area implements Drawable {
     public static final float MAP_SCALE = 0.04f;
-    public final float mapWidth;
-    public final float mapHeight;
+    private final float mapWidth;
+    private final float mapHeight;
     private final List<Interactable> interactables = new ArrayList<>();
     private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private final TiledMap tiledMap;
@@ -34,19 +32,6 @@ public class Area implements Disposable {
     }
 
     /**
-     * Registers the current {@link Area} onto the given game instance {@link SpriteBatch}, including all
-     * {@link Interactable} objects
-     *
-     * @param batch The {@link SpriteBatch} to which the {@link Area} should be polled
-     */
-    public void render(SpriteBatch batch) {
-        orthogonalTiledMapRenderer.render();
-
-        for (Interactable interactable : interactables)
-            interactable.render(batch);
-    }
-
-    /**
      * Instructs the {@link OrthogonalTiledMapRenderer} to update its viewing position with respect to the
      * {@link OrthographicCamera} game camera
      *
@@ -55,6 +40,24 @@ public class Area implements Disposable {
      */
     public void updateView(OrthographicCamera gameCam) {
         orthogonalTiledMapRenderer.setView(gameCam);
+    }
+
+    /**
+     * Retrieves the width of the {@link Area} map, in metres
+     *
+     * @return The metre-width of the map
+     */
+    public float getMapWidth() {
+        return mapWidth;
+    }
+
+    /**
+     * Retrieves the height of the {@link Area} map, in metres
+     *
+     * @return The metre-height of the map
+     */
+    public float getMapHeight() {
+        return mapHeight;
     }
 
     /**
@@ -67,6 +70,20 @@ public class Area implements Disposable {
 
         orthogonalTiledMapRenderer.dispose();
         tiledMap.dispose();
+    }
+
+    /**
+     * Registers the current {@link Area} onto the given game instance {@link SpriteBatch}, including all
+     * {@link Interactable} objects
+     *
+     * @param batch The {@link SpriteBatch} to which the {@link Area} should be polled
+     */
+    @Override
+    public void render(SpriteBatch batch) {
+        orthogonalTiledMapRenderer.render();
+
+        for (Interactable interactable : interactables)
+            interactable.render(batch);
     }
 
     /**

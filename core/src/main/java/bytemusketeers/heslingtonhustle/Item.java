@@ -8,14 +8,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Disposable;
 
 /**
  * An {@link Item} denotes a drawable non-{@link Character} object.
- * TODO: Use an AssetManager instead of implementing Disposable everywhere:
- *  https://libgdx.com/wiki/managing-your-assets
  */
-public class Item extends Sprite implements Disposable {
+class Item extends Sprite implements Drawable {
     private final Texture texture;
     private final float width;
     private final float height;
@@ -34,6 +31,7 @@ public class Item extends Sprite implements Disposable {
      *
      * @param batch The {@link SpriteBatch} to which the {@link Item} should be polled
      */
+    @Override
     public void render(SpriteBatch batch) {
         batch.draw(texture, body.getPosition().x - (width / 2),body.getPosition().y - (height / 2), width,
             height);

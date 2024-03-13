@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -18,55 +19,38 @@ import java.util.List;
 /**
  * The {@link PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen}
  * interface. It manages the various game cameras, the {@link Character}, and the {@link Area} vector which the player
- * can explore.
+ * can explore. All assets for the game are preloaded when {@link PlayScreen} is constructed,
  */
-public class PlayScreen implements Screen {
+class PlayScreen implements Screen {
     private final OrthographicCamera gameCam;
-    private final HeslingtonHustle gameReference;
+    private final SpriteBatch batch;
     private final Viewport gamePort;
     private final World world;
-    private Character character;
+    private final Character character;
     private final List<Area> areas = new ArrayList<>();
     private Area activeArea;
 
+    /**
+     * Initialise some sample areas into the {@link PlayScreen}
+     * TODO: Could this be moved into a test?
+     */
     private void initialiseAreas() {
         Area area;
 
-        /* Test Map */
+        /* Test Map #1 */
         area = new Area("Maps/test-map.tmx");
         area.addInteractable(new Interactable(
             new Vector2(
-                MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM),
-                MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM)),
+                MathUtils.random(0, Gdx.graphics.getWidth() / HeslingtonHustle.PPM),
+                MathUtils.random(0, Gdx.graphics.getHeight() / HeslingtonHustle.PPM)),
             new Texture("libgdx.png"), world, 0.5f, 0.5f));
-
         areas.add(area);
     }
 
-    public PlayScreen(HeslingtonHustle gameReference){
-        this.gameReference = gameReference;
-
-        gameCam = new OrthographicCamera();
-        gamePort = new StretchViewport(HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM,
-            HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM, gameCam);
-
-        world = new World(new Vector2(0, 0), true);
-
-        initialiseAreas();
-        activeArea = areas.get(0);
-    }
-
-    @Override
-    public void show() {
-        gameCam.position.set(gamePort.getWorldWidth() / 2, (float) gamePort.getScreenHeight() / 2, 0);
-        character = new Character(world, new Vector2(HeslingtonHustle.W_WIDTH / 2 / HeslingtonHustle.PPM,
-            HeslingtonHustle.W_HEIGHT / 2 / HeslingtonHustle.PPM));
-    }
-
     /**
-     * Handles inputs
+     * Handles user system events, such as key-presses
      */
-    public void handleInput(){
+    private void handleInput(){
         if(Gdx.input.isKeyPressed(Input.Keys.W))
             character.moveUp();
 
@@ -81,28 +65,35 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Handle the game logic and updates the state of the game world
+     * Handles the game logic and updates the state of the game world
      */
-    public void update(){
+    public void update() {
+        // Configure the collision-detection parameters in the game world
+        world.step(1/60f, 6, 2);
+
+        // Handle movement and update the character velocities and position accordingly
         handleInput();
         character.move();
 
-        // calculates physics interactions, such as object movement, collisions, and forces, for a specific time interval
-        // TODO: need better documentation here
-        world.step(1/60f, 6, 2);
-
+        // Update the game camera position, such that the character is followed and centralised, unless close to a
+        // viewport boundary
         if (character.isOutOfHorizontalBound(activeArea))
             gameCam.position.x = character.getXPosition();
 
         if (character.isOutOfVerticalBound(activeArea))
             gameCam.position.y = character.getYPosition();
 
-        // tracking character's moves with the cam
-        // TODO: need better documentation here
         activeArea.updateView(gameCam);
         gameCam.update();
     }
 
+    /**
+     * Handles the graphical rendering obligations of the {@link Screen}. In particular, this involves rendering all
+     * visible objects including the {@link Area}---and hence all {@link Interactable} elements on the
+     * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, and the {@link Character}.
+     *
+     * @param delta The time in seconds since the last render; not currently used
+     */
     @Override
     public void render(float delta) {
         update();
@@ -110,38 +101,84 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        gameReference.batch.setProjectionMatrix(gameCam.combined);
-        gameReference.batch.begin();
+        batch.setProjectionMatrix(gameCam.combined);
+        batch.begin();
 
-        activeArea.render(gameReference.batch);
-        character.render(gameReference.batch);
+        activeArea.render(batch);
+        character.render(batch);
 
-        gameReference.batch.end();
+        batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+        System.out.println("PlayScreen resized");
     }
 
+    /**
+     * Handles the {@link PlayScreen} becoming the active {@link Screen}; currently a placeholder
+     */
     @Override
-    public void pause() {
-        System.out.println("PlayScreen paused");
+    public void show() {
+        System.out.println("PlayScreen shown");
     }
 
-    @Override
-    public void resume() {
-        System.out.println("PlayScreen resumed");
-    }
-
+    /**
+     * Dual of the {@link #show()}, this handles the {@link PlayScreen} being hidden
+     */
     @Override
     public void hide() {
         System.out.println("PlayScreen hidden");
     }
 
+    /**
+     * Handles the {@link PlayScreen}, and hence general gameplay execution, being paused; currently a placeholder
+     */
+    @Override
+    public void pause() {
+        System.out.println("PlayScreen paused");
+    }
+
+    /**
+     * Dual of the {@link #pause()}, this handles the {@link PlayScreen}, and hence general gameplay execution, being
+     * resumed; currently a placeholder
+     */
+    @Override
+    public void resume() {
+        System.out.println("PlayScreen resumed");
+    }
+
+    /**
+     * Releases all resources used by the {@link PlayScreen}
+     */
     @Override
     public void dispose() {
+        for (Area area : areas)
+            area.dispose();
+
         character.dispose();
         world.dispose();
+        System.out.println("Disposing...");
+    }
+
+    /**
+     * Instantiates a new {@link PlayScreen} to be used for the playing area of the game. This constructor loads all
+     * assets for all stages of the playing area, to be manipulated and rendered when required.
+     */
+    public PlayScreen(SpriteBatch batch) {
+        this.batch = batch;
+        gameCam = new OrthographicCamera();
+        gamePort = new StretchViewport(Gdx.graphics.getWidth() / HeslingtonHustle.PPM,
+            Gdx.graphics.getHeight() / HeslingtonHustle.PPM, gameCam);
+
+        world = new World(new Vector2(0, 0), true);
+
+        initialiseAreas();
+        activeArea = areas.get(0);
+
+        gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+        character = new Character(world, new Vector2((float) Gdx.graphics.getWidth() / HeslingtonHustle.PPM / 2,
+            (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2));
     }
 }

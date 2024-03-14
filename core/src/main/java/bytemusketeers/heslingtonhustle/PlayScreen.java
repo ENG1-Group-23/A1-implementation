@@ -3,7 +3,6 @@ package main.java.bytemusketeers.heslingtonhustle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,8 +12,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * The {@link PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen}
@@ -27,7 +26,13 @@ class PlayScreen implements Screen {
     private final Viewport gamePort;
     private final Character character;
     private final HeadsUpDisplay hud;
-    private final List<Area> areas = new ArrayList<>();
+    /**
+     * The relationship between {@link Area} and the {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName}
+     *
+     * @see Area
+     * @see main.java.bytemusketeers.heslingtonhustle.Area.AreaName
+     */
+    private final Map<Area.AreaName, Area> areas = new EnumMap<>(Area.AreaName.class);
     private Area activeArea;
     private final MetricManager metricManager = new MetricManager(new Runnable() {
         /**
@@ -51,18 +56,28 @@ class PlayScreen implements Screen {
         /* Test Map */
         tempArea = new Area("Maps/test-map.tmx",
             new Vector2(screenWidth / 2, screenHeight / 2).scl(1 / HeslingtonHustle.PPM));
+
         tempArea.addInteractable(new Interactable(
             new Vector2(
                 MathUtils.random(0, screenWidth),
                 MathUtils.random(0, screenHeight)).scl(1 / HeslingtonHustle.PPM),
-            new Texture("libgdx.png"),
+            new Texture("prototype-1.png"),
             tempArea, 0.5f, 0.5f,
             () -> metricManager.incrementMetric(MetricManager.Metric.Preparedness, 1)));
-        areas.add(tempArea);
+
+        tempArea.addInteractable(new Interactable(
+            new Vector2(
+                MathUtils.random(0, screenWidth),
+                MathUtils.random(0, screenHeight)).scl(1 / HeslingtonHustle.PPM),
+            new Texture("prototype-2.png"),
+            tempArea, 0.5f, 0.5f,
+            () -> metricManager.decrementMetric(MetricManager.Metric.Preparedness, 1)));
+
+        areas.put(Area.AreaName.TestMap, tempArea);
 
         /* Piazza Map */
         tempArea = new Area("Maps/piazza-map.tmx", new Vector2(304, 32).scl(Area.MAP_SCALE));
-        areas.add(tempArea);
+        areas.put(Area.AreaName.PiazzaBuilding, tempArea);
     }
 
     /**
@@ -84,7 +99,7 @@ class PlayScreen implements Screen {
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             if(!activeArea.triggerInteractables(character.getPosition()))
                 // If no interactions were triggered, switch to Piazza
-                switchArea(1);
+                switchArea(Area.AreaName.PiazzaBuilding);
         }
     }
 
@@ -161,13 +176,13 @@ class PlayScreen implements Screen {
     /**
      * Switch to the {@link Area} identified by the given index
      *
-     * @param areaIdx The index of the new {@link Area}
+     * @param areaName The {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName} of the new {@link Area}
      * @see Area
      */
-    private void switchArea(int areaIdx) {
+    private void switchArea(Area.AreaName areaName) {
         // Switch the active area render target and inform the character of its body context change
-        activeArea = areas.get(areaIdx);
-        character.switchCharacterContext(areaIdx);
+        activeArea = areas.get(areaName);
+        character.switchCharacterContext(areaName);
 
         // Update the game camera, bounding as usual
         Vector3 newCameraPosition = new Vector3(activeArea.getInitialCharacterPosition(), 0);
@@ -186,7 +201,7 @@ class PlayScreen implements Screen {
      */
     @Override
     public void dispose() {
-        for (Area area : areas)
+        for (Area area : areas.values())
             area.dispose();
 
         character.dispose();
@@ -206,9 +221,6 @@ class PlayScreen implements Screen {
     @Override
     public void render(float delta) {
         update();
-
-        Gdx.gl.glClearColor(1, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(gameCam.combined);
         batch.begin();
@@ -234,7 +246,7 @@ class PlayScreen implements Screen {
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         initialiseAreas();
-        activeArea = areas.get(0);
-        character = new Character(areas, 0);
+        activeArea = areas.get(Area.AreaName.TestMap);
+        character = new Character(areas, Area.AreaName.TestMap);
     }
 }

@@ -24,6 +24,9 @@ import java.util.List;
  * texture and set of {@link Interactable} objects.
  */
 class Area implements Drawable {
+    enum AreaName {
+        TestMap, PiazzaBuilding
+    }
     public static final float MAP_SCALE = 0.04f;
     private final float mapWidth;
     private final float mapHeight;

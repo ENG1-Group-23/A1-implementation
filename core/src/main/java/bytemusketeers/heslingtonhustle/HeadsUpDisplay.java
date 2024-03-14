@@ -80,7 +80,8 @@ class HeadsUpDisplay implements Drawable {
         // The table needs to be the sole actor visible on the stage
         stage.addActor(table);
 
-        Label advice = new Label("Press E anywhere away from the interactable to switch to Piazza", labelStyle);
+        // TODO: temporary tooltip advice
+        Label advice = new Label("Press E anywhere away from the interactables to switch to Piazza", labelStyle);
         advice.setPosition(PADDING, PADDING);
         stage.addActor(advice);
     }

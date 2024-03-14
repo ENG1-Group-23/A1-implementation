@@ -6,25 +6,30 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}. The
  * {@link Character} is a unique given its ability to exist in multiple {@link Area}s across gameplay; the
  * {@link PlayScreen} must inform {@link Character} of any {@link Area} changes; see
- * {@link #switchCharacterContext(int)}.
- * TODO: is there a better way to identify areas instead of a numerical index?
+ * {@link #switchCharacterContext(main.java.bytemusketeers.heslingtonhustle.Area.AreaName)}.
  */
 class Character extends Sprite implements Drawable {
     private static final float WIDTH = 0.3f;
     private static final float HEIGHT = 0.3f;
     private static final float MOVEMENT_VELOCITY = 4.0f;
     private static final String TEXTURE_PATH = "prototype-4.png";
-    private final List<Body> bodies = new ArrayList<>();
     private Body activeBody;
     private final Texture playerTexture;
     private final Vector2 velocity = new Vector2();
+    /**
+     * The relationship between the {@link Area} and the {@link Body}, with standard area keys
+     * @see main.java.bytemusketeers.heslingtonhustle.Area.AreaName
+     * @see Body
+     * @see Area
+     */
+    private final Map<Area.AreaName, Body> bodies = new EnumMap<>(Area.AreaName.class);
 
     /**
      * Moves the {@link Character} upwards on the Y-axis
@@ -104,10 +109,10 @@ class Character extends Sprite implements Drawable {
     /**
      * Switch the {@link Character} context to {@link Area} identified by the given index
      *
-     * @param areaIdx The index of the new {@link Area}
+     * @param areaName The {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName} of the new {@link Area}
      */
-    public void switchCharacterContext(int areaIdx) {
-        activeBody = bodies.get(areaIdx);
+    public void switchCharacterContext(Area.AreaName areaName) {
+        activeBody = bodies.get(areaName);
     }
 
     /**
@@ -133,13 +138,13 @@ class Character extends Sprite implements Drawable {
      * Initialises a new {@link Character} body as a player-movable {@link Sprite}
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
-     * @param defaultAreaIdx The initial area index
+     * @param defaultAreaName The initial {@link Area} {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName}
      */
-    public Character(List<Area> areas, int defaultAreaIdx) {
-        for (Area area : areas)
-            bodies.add(area.registerCharacter(WIDTH, HEIGHT));
+    public Character(Map<Area.AreaName, Area> areas, Area.AreaName defaultAreaName) {
+        for (Map.Entry<Area.AreaName, Area> area : areas.entrySet())
+            bodies.put(area.getKey(), area.getValue().registerCharacter(WIDTH, HEIGHT));
 
-        switchCharacterContext(defaultAreaIdx);
+        switchCharacterContext(defaultAreaName);
         playerTexture = new Texture(TEXTURE_PATH);
     }
 }

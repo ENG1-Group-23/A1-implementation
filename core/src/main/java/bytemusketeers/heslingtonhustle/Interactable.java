@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
  * An {@link Interactable} is an {@link Item} with which the {@link Character} may interact
  */
 class Interactable extends Item {
-    private boolean isHidden = false;
     /**
      * The square of the maximum interaction distance; that is, the maximum distance, measured by the Euclidean metric,
      * that a {@link Character} may be from an {@link Interactable} to fire an {@link #interact()}.
@@ -23,22 +22,6 @@ class Interactable extends Item {
     public void interact() {
         if (action != null)
             action.run();
-    }
-
-    /**
-     * Toggle the visibility of the {@link Interactable}
-     */
-    private void toggleHide() {
-        this.isHidden = !this.isHidden;
-    }
-
-    /**
-     * Determine the visibility of the {@link Interactable}
-     *
-     * @return Is the {@link Interactable} hidden?
-     */
-    public boolean isHidden() {
-        return this.isHidden;
     }
 
     /**
@@ -59,8 +42,7 @@ class Interactable extends Item {
      */
     @Override
     public void render(SpriteBatch batch) {
-        if (!isHidden())
-            super.render(batch);
+        super.render(batch);
     }
 
     /**

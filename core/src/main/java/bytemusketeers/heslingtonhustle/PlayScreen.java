@@ -30,10 +30,13 @@ class PlayScreen implements Screen {
     private final List<Area> areas = new ArrayList<>();
     private Area activeArea;
     private final MetricManager metricManager = new MetricManager(new Runnable() {
+        /**
+         * Update the HUD with the last-updated metric from {@link MetricManager}
+         */
         @Override
         public void run() {
             MetricManager.Metric updated = metricManager.getLastChangedMetric();
-            System.out.println("New " + updated.toString() + " value: " + metricManager.getMetricValue(updated));
+            hud.updateMetricElement(updated, metricManager.getMetricValue(updated).toString());
         }
     });
 
@@ -43,7 +46,7 @@ class PlayScreen implements Screen {
     private void initialiseAreas() {
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
-        Area tempArea; // TODO: is this safe?
+        Area tempArea;
 
         /* Test Map */
         tempArea = new Area("Maps/test-map.tmx",
@@ -53,8 +56,8 @@ class PlayScreen implements Screen {
                 MathUtils.random(0, screenWidth),
                 MathUtils.random(0, screenHeight)).scl(1 / HeslingtonHustle.PPM),
             new Texture("libgdx.png"),
-            tempArea,0.5f, 0.5f,
-            () -> metricManager.incrementMetric(MetricManager.Metric.Happiness, 1)));
+            tempArea, 0.5f, 0.5f,
+            () -> metricManager.incrementMetric(MetricManager.Metric.Preparedness, 1)));
         areas.add(tempArea);
 
         /* Piazza Map */
@@ -79,8 +82,9 @@ class PlayScreen implements Screen {
             character.moveRight();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            activeArea.triggerInteractables(character.getPosition());
-            // switchArea(1);
+            if(!activeArea.triggerInteractables(character.getPosition()))
+                // If no interactions were triggered, switch to Piazza
+                switchArea(1);
         }
     }
 

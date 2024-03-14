@@ -7,11 +7,19 @@ import java.util.Map;
  * The {@link MetricManager} manages the storing and manipulation of the game and player metrics, each type of which is
  * identified by a unique {@link Metric} enumerable key.
  */
-class MetricManager {
+final class MetricManager {
     private static final int DELTA = 1;
-    public enum Metric {
+    public static final Float DEFAULT_VALUE = 0f;
+    enum Metric {
         Happiness, Tiredness, Preparedness
     }
+
+    /**
+     * The map associating {@link Metric}s with their {@link Float} value. In the interests of avoiding a
+     * {@link NullPointerException} on the {@link Float} {@link Map}, no non-private method should access this map
+     * directly; some suitable variant of {@link #incrementMetric(Metric, float)} should be used exclusively by external
+     * clients.
+     */
     private final Map<Metric, Float> metrics = new EnumMap<>(Metric.class);
     private final Runnable updateAction;
     private Metric lastChangedMetric;
@@ -22,7 +30,7 @@ class MetricManager {
      * @param metric The {@link Metric} whose value is required
      * @return The value associated with the {@link Metric}
      */
-    public float getMetricValue(Metric metric) {
+    public Float getMetricValue(Metric metric) {
         return metrics.get(metric);
     }
 
@@ -78,6 +86,6 @@ class MetricManager {
         this.updateAction = updateAction;
 
         for (Metric metric : Metric.values())
-            metrics.put(metric, 0f);
+            metrics.put(metric, DEFAULT_VALUE);
     }
 }

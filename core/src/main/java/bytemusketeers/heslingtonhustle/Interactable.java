@@ -21,8 +21,6 @@ class Interactable extends Item {
      * Indicate that the {@link Character} has interacted with the {@link Item}
      */
     public void interact() {
-        toggleHide();
-
         if (action != null)
             action.run();
     }

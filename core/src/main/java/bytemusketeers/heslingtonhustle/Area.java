@@ -46,11 +46,19 @@ class Area implements Drawable {
      * Given the current position of the {@link Character}, interact with any nearby {@link Interactable} objects
      *
      * @param characterPosition The position of the player-controlled {@link Character}
+     * @return Were any interactions triggered?
+     * @see Interactable#interact()
      */
-    public void triggerInteractables(Vector2 characterPosition) {
+    public boolean triggerInteractables(Vector2 characterPosition) {
+        boolean interacted = false;
+
         for (Interactable interactable : interactables)
-            if (interactable.isClose(characterPosition))
+            if (interactable.isClose(characterPosition)) {
                 interactable.interact();
+                interacted = true;
+            }
+
+        return interacted;
     }
 
     /**

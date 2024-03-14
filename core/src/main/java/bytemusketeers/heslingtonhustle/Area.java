@@ -206,7 +206,6 @@ class Area implements Drawable {
             * MAP_SCALE;
 
         for (MapLayer layer : layers)
-            if (layer.getName().equals("borders"))
-                generateBorders(layer.getObjects().getByType(RectangleMapObject.class));
+            generateBorders(layer.getObjects().getByType(RectangleMapObject.class));
     }
 }

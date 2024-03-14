@@ -7,6 +7,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,7 @@ class Area implements Drawable {
     private final List<Interactable> interactables = new ArrayList<>();
     private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private final TiledMap tiledMap;
+    private final World world;
 
     /**
      * Adds an {@link Interactable} to the set of interactable tiles in the current {@link Area}.
@@ -39,9 +44,8 @@ class Area implements Drawable {
      */
     public void triggerInteractables(Vector2 characterPosition) {
         for (Interactable interactable : interactables)
-            if (interactable.isClose(characterPosition)) {
+            if (interactable.isClose(characterPosition))
                 interactable.interact();
-            }
     }
 
     /**
@@ -74,6 +78,40 @@ class Area implements Drawable {
     }
 
     /**
+     * Steps the {@link World} associated with the {@link Area}
+     *
+     * @see World#step(float, int, int)
+     */
+    public void step() {
+        world.step(1/60f, 6, 2);
+    }
+
+    /**
+     * Registers a new body with a standard collision box in the {@link World} corresponding to the {@link Area}
+     *
+     * @param initialPosition The initial position of the body
+     * @param type The type of the body, according to {@link com.badlogic.gdx.physics.box2d.BodyDef.BodyType}
+     * @param width The fixed width of the body
+     * @param height The fixed height of the body
+     * @return The newly registered body
+     */
+    public Body registerCollisionBody(Vector2 initialPosition, BodyDef.BodyType type, float width, float height) {
+        BodyDef bodyDefinition = new BodyDef();
+
+        bodyDefinition.position.set(initialPosition);
+        bodyDefinition.type = type;
+
+        Body body = world.createBody(bodyDefinition);
+
+        PolygonShape collisionBox = new PolygonShape();
+        collisionBox.setAsBox(width / 2, height / 2);
+        body.createFixture(collisionBox,0.0f);
+        collisionBox.dispose();
+
+        return body;
+    }
+
+    /**
      * Releases all resources used by the {@link Area}
      */
     @Override
@@ -83,6 +121,7 @@ class Area implements Drawable {
 
         orthogonalTiledMapRenderer.dispose();
         tiledMap.dispose();
+        world.dispose();
     }
 
     /**
@@ -106,6 +145,7 @@ class Area implements Drawable {
      */
     public Area(String map) {
         tiledMap = new TmxMapLoader().load(map);
+        world = new World(new Vector2(0, 0), true);
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, MAP_SCALE);
 
         MapProperties properties = tiledMap.getProperties();

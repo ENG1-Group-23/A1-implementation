@@ -6,18 +6,24 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}.
+ * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}. The
+ * {@link Character} is a unique given its ability to exist in multiple {@link Area}s across gameplay; the
+ * {@link PlayScreen} must inform {@link Character} of any {@link Area} changes; see
+ * {@link #switchCharacterContext(int)}.
+ * TODO: is there a better way to identify areas instead of a numerical index?
  */
 class Character extends Sprite implements Drawable {
     private static final float WIDTH = 0.3f;
     private static final float HEIGHT = 0.3f;
     private static final float MOVEMENT_VELOCITY = 4.0f;
     private static final String TEXTURE_PATH = "prototype-4.png";
-    private final Body body;
+    private final List<Body> bodies = new ArrayList<>();
+    private Body activeBody;
     private final Texture playerTexture;
     private final Vector2 velocity = new Vector2();
 
@@ -59,7 +65,7 @@ class Character extends Sprite implements Drawable {
             velocity.y /= 1.5f;
         }
 
-        body.setLinearVelocity(velocity);
+        activeBody.setLinearVelocity(velocity);
         velocity.setZero();
     }
 
@@ -93,7 +99,16 @@ class Character extends Sprite implements Drawable {
      * @return The position
      */
     public Vector2 getPosition() {
-        return body.getPosition();
+        return activeBody.getPosition();
+    }
+
+    /**
+     * Switch the {@link Character} context to {@link Area} identified by the given index
+     *
+     * @param areaIdx The index of the new {@link Area}
+     */
+    public void switchCharacterContext(int areaIdx) {
+        activeBody = bodies.get(areaIdx);
     }
 
     /**
@@ -118,21 +133,14 @@ class Character extends Sprite implements Drawable {
     /**
      * Initialises a new {@link Character} body as a player-movable {@link Sprite}.
      *
-     * @param world The LibGDX {@link World} into which the {@link Character} should exist
+     * @param areas All {@link Area}s in which the {@link Character} should exist
      * @param initialPosition The initial position of the {@link Character}
      */
-    public Character(World world, Vector2 initialPosition) {
-        BodyDef bodyDefinition = new BodyDef();
+    public Character(List<Area> areas, Vector2 initialPosition) {
+        for (Area area : areas)
+            bodies.add(area.registerCollisionBody(initialPosition, BodyDef.BodyType.DynamicBody, WIDTH, HEIGHT));
 
-        bodyDefinition.position.set(initialPosition.x, initialPosition.y);
-        bodyDefinition.type = BodyDef.BodyType.DynamicBody;
-        body = world.createBody(bodyDefinition);
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(15 / HeslingtonHustle.PPM, 15 / HeslingtonHustle.PPM);
-        body.createFixture(shape, 0.0f);
-        shape.dispose();
-
+        switchCharacterContext(0);
         playerTexture = new Texture(TEXTURE_PATH);
     }
 }

@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * An {@link Item} denotes a drawable non-{@link Character} object.
@@ -51,23 +49,15 @@ class Item extends Sprite implements Drawable {
      *
      * @param position The initial position of the {@link Item}
      * @param texture The initial {@link Sprite} {@link Texture}
-     * @param world The {@link World} into which the {@link Item} should be drawn
+     * @param area The {@link Area} into which the {@link Item} should be drawn
      * @param width The initial width
      * @param height The initial height
      */
-    public Item(Vector2 position, Texture texture, World world, float width, float height) {
+    public Item(Vector2 position, Texture texture, Area area, float width, float height) {
         this.texture = texture;
         this.width = width;
         this.height = height;
 
-        BodyDef bodyDefinition = new BodyDef();
-        bodyDefinition.position.set(position.x, position.y);
-        bodyDefinition.type = BodyDef.BodyType.StaticBody;
-        body = world.createBody(bodyDefinition);
-
-        PolygonShape collisionBox = new PolygonShape();
-        collisionBox.setAsBox(width / 2, height / 2);
-        body.createFixture(collisionBox,0.0f);
-        collisionBox.dispose();
+        body = area.registerCollisionBody(position, BodyDef.BodyType.StaticBody, width, height);
     }
 }

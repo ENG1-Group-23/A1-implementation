@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * An {@link Interactable} is an {@link Item} with which the {@link Character} may interact
@@ -23,7 +22,9 @@ class Interactable extends Item {
      */
     public void interact() {
         toggleHide();
-        action.run();
+
+        if (action != null)
+            action.run();
     }
 
     /**
@@ -69,13 +70,13 @@ class Interactable extends Item {
      *
      * @param position The initial position of the {@link Interactable}
      * @param texture The initial {@link Sprite} {@link Texture}
-     * @param world The {@link World} into which the {@link Interactable} should be drawn
+     * @param area The {@link Area} into which the {@link Interactable} should be drawn
      * @param width The initial width
      * @param height The initial height
      * @param action The {@link Runnable} method to execute upon interaction
      */
-    public Interactable(Vector2 position, Texture texture, World world, float width, float height, Runnable action) {
-        super(position, texture, world, width, height);
+    public Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
+        super(position, texture, area, width, height);
         this.action = action;
     }
 }

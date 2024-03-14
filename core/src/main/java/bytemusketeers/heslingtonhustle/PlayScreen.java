@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -25,14 +24,12 @@ class PlayScreen implements Screen {
     private final OrthographicCamera gameCam;
     private final SpriteBatch batch;
     private final Viewport gamePort;
-    private final World world;
     private final Character character;
     private final List<Area> areas = new ArrayList<>();
-    private Area activeArea;
+    private Area activeArea; // TODO: should be non-final
 
     /**
      * Initialise some sample areas into the {@link PlayScreen}
-     * TODO: Could this be moved into a test?
      */
     private void initialiseAreas() {
         Area area;
@@ -44,7 +41,7 @@ class PlayScreen implements Screen {
                 MathUtils.random(0, Gdx.graphics.getWidth() / HeslingtonHustle.PPM),
                 MathUtils.random(0, Gdx.graphics.getHeight() / HeslingtonHustle.PPM)),
             new Texture("libgdx.png"),
-            world, 0.5f, 0.5f, character::moveRight));
+            area,0.5f, 0.5f, () -> System.out.println("Interacted with the logo!")));
         areas.add(area);
 
         /* Piazza Map */
@@ -77,7 +74,7 @@ class PlayScreen implements Screen {
      */
     public void update() {
         // Configure the collision-detection parameters in the game world
-        world.step(1/60f, 6, 2);
+        activeArea.step();
 
         // Handle movement and update the character velocities and position accordingly
         handleInput();
@@ -174,7 +171,6 @@ class PlayScreen implements Screen {
             area.dispose();
 
         character.dispose();
-        world.dispose();
         System.out.println("Disposing...");
     }
 
@@ -188,13 +184,12 @@ class PlayScreen implements Screen {
         gamePort = new StretchViewport(Gdx.graphics.getWidth() / HeslingtonHustle.PPM,
             Gdx.graphics.getHeight() / HeslingtonHustle.PPM, gameCam);
 
-        world = new World(new Vector2(0, 0), true);
-
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
-        character = new Character(world, new Vector2((float) Gdx.graphics.getWidth() / HeslingtonHustle.PPM / 2,
-            (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2));
 
         initialiseAreas();
         activeArea = areas.get(0);
+
+        character = new Character(areas, new Vector2((float) Gdx.graphics.getWidth() / HeslingtonHustle.PPM / 2,
+            (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2));
     }
 }

@@ -26,6 +26,7 @@ class PlayScreen implements Screen {
     private final Viewport gamePort;
     private final Character character;
     private final HeadsUpDisplay hud;
+    private final PauseMenu pauseMenu;
     /**
      * The relationship between {@link Area} and the {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName}
      *
@@ -44,6 +45,7 @@ class PlayScreen implements Screen {
             hud.updateMetricElement(updated, metricManager.getMetricValue(updated).toString());
         }
     });
+    private boolean paused = false;
 
     /**
      * Initialise some sample areas into the {@link PlayScreen}
@@ -83,7 +85,16 @@ class PlayScreen implements Screen {
     /**
      * Handles user system events, such as key-presses
      */
-    private void handleInput(){
+    private void handleInput() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
+            Gdx.app.exit();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+            paused = !paused;
+
+        if (paused)
+            return;
+
         if(Gdx.input.isKeyPressed(Input.Keys.W))
             character.moveUp();
 
@@ -111,7 +122,6 @@ class PlayScreen implements Screen {
         activeArea.step();
 
         // Handle movement and update the character velocities and position accordingly
-        handleInput();
         character.move();
 
         // Update the game camera position, such that the character is followed and centralised, unless close to a
@@ -162,6 +172,7 @@ class PlayScreen implements Screen {
     @Override
     public void pause() {
         System.out.println("PlayScreen paused");
+        paused = true;
     }
 
     /**
@@ -171,6 +182,7 @@ class PlayScreen implements Screen {
     @Override
     public void resume() {
         System.out.println("PlayScreen resumed");
+        paused = false;
     }
 
     /**
@@ -220,6 +232,7 @@ class PlayScreen implements Screen {
      */
     @Override
     public void render(float delta) {
+        handleInput();
         update();
 
         batch.setProjectionMatrix(gameCam.combined);
@@ -230,6 +243,9 @@ class PlayScreen implements Screen {
 
         batch.end();
         hud.render(batch);
+
+        if (paused)
+            pauseMenu.render(batch);
     }
 
     /**
@@ -242,6 +258,7 @@ class PlayScreen implements Screen {
         gamePort = new StretchViewport(Gdx.graphics.getWidth() / HeslingtonHustle.PPM,
             Gdx.graphics.getHeight() / HeslingtonHustle.PPM, gameCam);
         hud = new HeadsUpDisplay(batch);
+        pauseMenu = new PauseMenu(batch);
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 

@@ -1,5 +1,7 @@
 package main.java.bytemusketeers.heslingtonhustle;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -7,7 +9,7 @@ import java.util.Map;
  * The {@link MetricManager} manages the storing and manipulation of the game and player metrics, each type of which is
  * identified by a unique {@link Metric} enumerable key.
  */
-final class MetricManager {
+class MetricManager {
     private static final int DELTA = 1;
     public static final Float DEFAULT_VALUE = 0f;
     enum Metric {
@@ -43,7 +45,7 @@ final class MetricManager {
     private void modifyMetric(Metric metric, float value) {
         metrics.put(metric, value);
         lastChangedMetric = metric;
-        updateAction.run();
+        Gdx.app.postRunnable(updateAction);
     }
 
     /**

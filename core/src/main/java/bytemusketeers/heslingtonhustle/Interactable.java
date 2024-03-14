@@ -1,5 +1,6 @@
 package main.java.bytemusketeers.heslingtonhustle;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,7 +22,7 @@ class Interactable extends Item {
      */
     public void interact() {
         if (action != null)
-            action.run();
+            Gdx.app.postRunnable(action);
     }
 
     /**

@@ -26,8 +26,16 @@ class PlayScreen implements Screen {
     private final SpriteBatch batch;
     private final Viewport gamePort;
     private final Character character;
+    private final HeadsUpDisplay hud;
     private final List<Area> areas = new ArrayList<>();
     private Area activeArea;
+    private final MetricManager metricManager = new MetricManager(new Runnable() {
+        @Override
+        public void run() {
+            MetricManager.Metric updated = metricManager.getLastChangedMetric();
+            System.out.println("New " + updated.toString() + " value: " + metricManager.getMetricValue(updated));
+        }
+    });
 
     /**
      * Initialise some sample areas into the {@link PlayScreen}
@@ -45,7 +53,8 @@ class PlayScreen implements Screen {
                 MathUtils.random(0, screenWidth),
                 MathUtils.random(0, screenHeight)).scl(1 / HeslingtonHustle.PPM),
             new Texture("libgdx.png"),
-            tempArea,0.5f, 0.5f, () -> System.out.println("Interacted with the logo!")));
+            tempArea,0.5f, 0.5f,
+            () -> metricManager.incrementMetric(MetricManager.Metric.Happiness, 1)));
         areas.add(tempArea);
 
         /* Piazza Map */
@@ -69,9 +78,10 @@ class PlayScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.D))
             character.moveRight();
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
-            // activeArea.triggerInteractables(character.getPosition());
-            switchArea(1);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            activeArea.triggerInteractables(character.getPosition());
+            // switchArea(1);
+        }
     }
 
     /**
@@ -176,14 +186,18 @@ class PlayScreen implements Screen {
             area.dispose();
 
         character.dispose();
+        hud.dispose();
     }
 
     /**
      * Handles the graphical rendering obligations of the {@link Screen}. In particular, this involves rendering all
      * visible objects including the {@link Area}---and hence all {@link Interactable} elements on the
-     * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, and the {@link Character}.
+     * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, the {@link Character}, and the {@link HeadsUpDisplay}.
      *
      * @param delta The time in seconds since the last render; not currently used
+     * @see Area
+     * @see Character
+     * @see HeadsUpDisplay
      */
     @Override
     public void render(float delta) {
@@ -199,6 +213,7 @@ class PlayScreen implements Screen {
         character.render(batch);
 
         batch.end();
+        hud.render(batch);
     }
 
     /**
@@ -210,6 +225,7 @@ class PlayScreen implements Screen {
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Gdx.graphics.getWidth() / HeslingtonHustle.PPM,
             Gdx.graphics.getHeight() / HeslingtonHustle.PPM, gameCam);
+        hud = new HeadsUpDisplay(batch);
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 

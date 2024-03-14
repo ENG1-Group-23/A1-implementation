@@ -21,7 +21,7 @@ public class HeslingtonHustle extends Game {
     }
 
     public void setPiazzaScreen () {
-        setScreen(new PiazzaScreen(this, "Maps/pizza-map.tmx"));
+        setScreen(new PiazzaScreen(this, "Maps/piazza-map.tmx"));
     }
 
     @Override

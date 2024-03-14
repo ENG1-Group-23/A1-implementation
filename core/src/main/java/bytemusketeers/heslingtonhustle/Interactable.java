@@ -12,7 +12,6 @@ import main.java.bytemusketeers.heslingtonhustle.Player.Metrics;
  */
 public class Interactable extends Item {
     private boolean isHidden = false;
-    private Metrics metrics;
 
     /**
      * Instantiates a new {@link Interactable} {@link Item} with the given initial parameters

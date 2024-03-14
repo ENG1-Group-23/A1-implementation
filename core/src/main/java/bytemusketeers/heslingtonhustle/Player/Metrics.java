@@ -8,10 +8,10 @@ public class Metrics {
         happinessLevel = 100; // Set an initial value
     }
 
-    public void itemPickedUp(int num) {
+    public void itemPickedUp(String name) {
         System.out.println("You've picked up an item!!!");
         // Adjust the happiness level based on the type of item
-        if (num == 0) {
+        if (name.equals("eating-place")) {
             happinessLevel -= 10; // Adjust as needed
             // Add more cases for other item types
         } else {// Default adjustment for unknown items

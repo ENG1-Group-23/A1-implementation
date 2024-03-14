@@ -8,8 +8,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -28,17 +31,14 @@ import java.util.Map;
  * It initialises the world map and its contents, configure the world size and game camera
  */
 public class PlayScreen implements Screen {
-    protected final static int INTERACTION_DISTANCE = 3;
     protected OrthographicCamera gameCam;
     protected HeslingtonHustle game;
     protected Viewport gamePort;
     protected World world;
     protected Box2DDebugRenderer b2dr;
     protected Character character;
-    protected Map<Integer, Interactable> interactables = new HashMap<>();
     protected OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     protected TileMap tileMap;
-    protected String[] studyItems = {"missing.png", "libgdx.png"};
     protected Metrics metrics;
 
 
@@ -65,15 +65,8 @@ public class PlayScreen implements Screen {
         characterPos.put("x", HeslingtonHustle.W_WIDTH / 2 / HeslingtonHustle.PPM);
         characterPos.put("y", HeslingtonHustle.W_HEIGHT / 2 / HeslingtonHustle.PPM);
         character = new Character(world, characterPos);
-
-        //Need to add different stages so that we can change to different spawnable items
-        for (int i = 0; i < studyItems.length; i++) {
-            float randomX = MathUtils.random(0, HeslingtonHustle.W_WIDTH / HeslingtonHustle.PPM);
-            float randomY = MathUtils.random(0, HeslingtonHustle.W_HEIGHT / HeslingtonHustle.PPM);
-            Interactable interactable = new Interactable(new Vector2(randomX, randomY), new Texture(studyItems[i]), world, 0.5f, 0.5f);
-            interactables.put(i, interactable);
-        }
     }
+
 
     /**
      * Handles inputs
@@ -105,17 +98,55 @@ public class PlayScreen implements Screen {
         character.b2body.setLinearVelocity(velX, velY);
 
         // interaction
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P))
+            game.setPiazzaScreen();
+
         if(Gdx.input.isKeyJustPressed(Input.Keys.E))
-            //if there is an interactable nearby the player then interact with it
-            for(Map.Entry<Integer, Interactable> entry : this.interactables.entrySet()) {
-                Interactable interactable = entry.getValue();
-                float distance = this.character.b2body.getPosition().dst2(interactable.getPosition());
-                if(distance <= INTERACTION_DISTANCE) {
-                        interactable.interact();
-                        metrics.itemPickedUp(entry.getKey());
+            checkInteraction();
+
+    }
+
+
+    private void checkInteraction() {
+        String[] layerNames = {"eating-place", "recreation-place"};
+        boolean interactionOccurred = false; // Flag to track if any interaction occurred
+
+        float playerX = this.character.b2body.getPosition().x /4.5f;
+        float playerY = this.character.b2body.getPosition().y /4.5f;
+
+        for (String name : layerNames) {
+            MapObjects mapObjects = tileMap.getObjectLayers(name);
+
+            if (mapObjects != null) {
+                // Iterate through the MapObjects
+                for (MapObject object : mapObjects) {
+                    float objectX = object.getProperties().get("x", Float.class) / HeslingtonHustle.PPM;
+                    float objectY = object.getProperties().get("y", Float.class) / HeslingtonHustle.PPM;
+
+                    // Calculate the distance between the player and the object
+                    float distanceX = objectX - playerX;
+                    float distanceY = objectY - playerY;
+
+                    // Adjust the object coordinates based on the distance
+                    float adjustedObjectX = playerX + distanceX;
+                    float adjustedObjectY = playerY + distanceY;
+
+                    // Check if the player is within a certain distance of the adjusted object's coordinates
+                    float interactionDistance = 0.5f; // Adjust as needed
+
+                    if (Math.abs(playerX - adjustedObjectX) < interactionDistance && Math.abs(playerY - adjustedObjectY) < interactionDistance) {
+                        // Check if interaction already occurred and exit loop if it did
+                        if (interactionOccurred) return;
+                        metrics.itemPickedUp(name);
+                        System.out.println(playerX + " " +playerY + " " + adjustedObjectX +" "+ adjustedObjectY +" " +name);
+                        interactionOccurred = true;
+                    }
                 }
             }
+        }
     }
+
+
 
     /**
      * Handle the game logic and updates the state of the game world
@@ -170,17 +201,6 @@ public class PlayScreen implements Screen {
         // prepares the batch for drawing textures
         game.batch.begin();
         game.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2, character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);
-
-        for(Interactable interactable : interactables.values())
-            if(!interactable.isHidden())
-                //the position being set to x - width / 2, y - height / 2 makes it so the center of the item is spawned on the position
-                game.batch.draw(interactable.getTexture(),
-                            interactable.getX() - (interactable.getWidth()/2),
-                            interactable.getY() - (interactable.getHeight() /2),
-                                interactable.getWidth(),
-                                interactable.getHeight()
-                );
-
         // ends the drawing session
         game.batch.end();
     }
@@ -209,8 +229,6 @@ public class PlayScreen implements Screen {
     public void dispose() {
         b2dr.dispose();
         character.playerTexture.dispose();
-        for (Interactable interactable : interactables.values())
-            interactable.getTexture().dispose();
 
         world.dispose();
     }

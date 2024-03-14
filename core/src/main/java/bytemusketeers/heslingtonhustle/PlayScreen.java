@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -26,27 +27,30 @@ class PlayScreen implements Screen {
     private final Viewport gamePort;
     private final Character character;
     private final List<Area> areas = new ArrayList<>();
-    private Area activeArea; // TODO: should be non-final
+    private Area activeArea;
 
     /**
      * Initialise some sample areas into the {@link PlayScreen}
      */
     private void initialiseAreas() {
-        Area area;
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+        Area tempArea; // TODO: is this safe?
 
         /* Test Map */
-        area = new Area("Maps/test-map.tmx");
-        area.addInteractable(new Interactable(
+        tempArea = new Area("Maps/test-map.tmx",
+            new Vector2(screenWidth / 2, screenHeight / 2).scl(1 / HeslingtonHustle.PPM));
+        tempArea.addInteractable(new Interactable(
             new Vector2(
-                MathUtils.random(0, Gdx.graphics.getWidth() / HeslingtonHustle.PPM),
-                MathUtils.random(0, Gdx.graphics.getHeight() / HeslingtonHustle.PPM)),
+                MathUtils.random(0, screenWidth),
+                MathUtils.random(0, screenHeight)).scl(1 / HeslingtonHustle.PPM),
             new Texture("libgdx.png"),
-            area,0.5f, 0.5f, () -> System.out.println("Interacted with the logo!")));
-        areas.add(area);
+            tempArea,0.5f, 0.5f, () -> System.out.println("Interacted with the logo!")));
+        areas.add(tempArea);
 
         /* Piazza Map */
-        area = new Area("Maps/piazza-map.tmx");
-        areas.add(area);
+        tempArea = new Area("Maps/piazza-map.tmx", new Vector2(304, 32).scl(Area.MAP_SCALE));
+        areas.add(tempArea);
     }
 
     /**
@@ -85,10 +89,10 @@ class PlayScreen implements Screen {
         // viewport boundary
         Vector2 characterPosition = character.getPosition();
 
-        if (character.isOutOfHorizontalBound(activeArea))
+        if (character.isWithinHorizontalBound(activeArea))
             gameCam.position.x = characterPosition.x;
 
-        if (character.isOutOfVerticalBound(activeArea))
+        if (character.isWithinVerticalBound(activeArea))
             gameCam.position.y = characterPosition.y;
 
         activeArea.updateView(gameCam);
@@ -144,10 +148,23 @@ class PlayScreen implements Screen {
      * Switch to the {@link Area} identified by the given index
      *
      * @param areaIdx The index of the new {@link Area}
+     * @see Area
      */
     private void switchArea(int areaIdx) {
+        // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaIdx);
         character.switchCharacterContext(areaIdx);
+
+        // Update the game camera, bounding as usual
+        Vector3 newCameraPosition = new Vector3(activeArea.getInitialCharacterPosition(), 0);
+
+        if (!character.isWithinHorizontalBound(activeArea))
+            newCameraPosition.x = HeslingtonHustle.WIDTH_METRES_BOUND;
+
+        if (!character.isWithinVerticalBound(activeArea))
+            newCameraPosition.y = HeslingtonHustle.HEIGHT_METRES_BOUND;
+
+        gameCam.position.set(newCameraPosition);
     }
 
     /**
@@ -159,7 +176,6 @@ class PlayScreen implements Screen {
             area.dispose();
 
         character.dispose();
-        System.out.println("Disposing...");
     }
 
     /**
@@ -199,8 +215,6 @@ class PlayScreen implements Screen {
 
         initialiseAreas();
         activeArea = areas.get(0);
-
-        character = new Character(areas, new Vector2((float) Gdx.graphics.getWidth() / HeslingtonHustle.PPM / 2,
-            (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2), 0);
+        character = new Character(areas, 0);
     }
 }

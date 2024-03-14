@@ -2,10 +2,14 @@ package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -27,6 +31,7 @@ class Area implements Drawable {
     private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private final TiledMap tiledMap;
     private final World world;
+    private final Vector2 initialCharacterPosition;
 
     /**
      * Adds an {@link Interactable} to the set of interactable tiles in the current {@link Area}.
@@ -112,6 +117,46 @@ class Area implements Drawable {
     }
 
     /**
+     * Registers a new {@link Character} of the given width and height to the current {@link Area}
+     *
+     * @param width The width of the character
+     * @param height The height of the character
+     * @return The newly registered character body
+     * @see #registerCollisionBody(Vector2, BodyDef.BodyType, float, float)
+     * @see Character
+     */
+    public Body registerCharacter(float width, float height) {
+        return registerCollisionBody(initialCharacterPosition, BodyDef.BodyType.DynamicBody, width, height);
+    }
+
+    /**
+     * Retrieves the initial {@link Character} position, as required by the {@link Area}
+     *
+     * @return The requested position vector
+     * @see Character
+     */
+    public Vector2 getInitialCharacterPosition() {
+        return initialCharacterPosition;
+    }
+
+    /**
+     * Generate the static collision bodies for all given border objects, as defined by the {@link TiledMap}
+     *
+     * @param borderObjects The array of {@link RectangleMapObject}s represented the border vector
+     */
+    private void generateBorders(com.badlogic.gdx.utils.Array<RectangleMapObject> borderObjects) {
+        for (RectangleMapObject borderObject : borderObjects) {
+            Rectangle bounds = borderObject.getRectangle();
+            registerCollisionBody(
+                new Vector2((bounds.getX() + bounds.getWidth() / 2), (bounds.getY() + bounds.getHeight() / 2))
+                    .scl(Area.MAP_SCALE), BodyDef.BodyType.StaticBody,
+                bounds.getWidth() * Area.MAP_SCALE,
+                bounds.getHeight() * Area.MAP_SCALE
+            );
+        }
+    }
+
+    /**
      * Releases all resources used by the {@link Area}
      */
     @Override
@@ -142,17 +187,26 @@ class Area implements Drawable {
      * Constructs a new {@link Area} with a {@link TiledMap} with a TMX file at the given path
      *
      * @param map The path of the {@link Area}'s background texture
+     * @param initialCharacterPosition The initial position of the {@link Character} on the {@link Area} map
+     * @see Character
      */
-    public Area(String map) {
+    public Area(String map, Vector2 initialCharacterPosition) {
+        this.initialCharacterPosition = initialCharacterPosition;
+
         tiledMap = new TmxMapLoader().load(map);
         world = new World(new Vector2(0, 0), true);
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, MAP_SCALE);
 
         MapProperties properties = tiledMap.getProperties();
+        MapLayers layers = tiledMap.getLayers();
 
         mapWidth = properties.get("tilewidth", Integer.class) * properties.get("width", Integer.class)
             * MAP_SCALE;
         mapHeight = properties.get("tileheight", Integer.class) * properties.get("height", Integer.class)
             * MAP_SCALE;
+
+        for (MapLayer layer : layers)
+            if (layer.getName().equals("borders"))
+                generateBorders(layer.getObjects().getByType(RectangleMapObject.class));
     }
 }

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +74,7 @@ class Character extends Sprite implements Drawable {
      * @param area The {@link Area} against which the boundary should be tested
      * @return Is the {@link Character} out-of-bounds on the horizontal of the {@link Area}?
      */
-    public boolean isOutOfHorizontalBound(Area area) {
+    public boolean isWithinHorizontalBound(Area area) {
         Vector2 position = getPosition();
         return (position.x >= HeslingtonHustle.WIDTH_METRES_BOUND && position.x <= area.getMapWidth() -
             HeslingtonHustle.WIDTH_METRES_BOUND);
@@ -87,7 +86,7 @@ class Character extends Sprite implements Drawable {
      * @param area The {@link Area} against which the boundary should be tested
      * @return Is the {@link Character} out-of-bounds on the vertical of the {@link Area}?
      */
-    public boolean isOutOfVerticalBound(Area area) {
+    public boolean isWithinVerticalBound(Area area) {
         Vector2 position = getPosition();
         return (position.y >= HeslingtonHustle.HEIGHT_METRES_BOUND && position.y <= area.getMapHeight() -
             HeslingtonHustle.HEIGHT_METRES_BOUND);
@@ -134,12 +133,11 @@ class Character extends Sprite implements Drawable {
      * Initialises a new {@link Character} body as a player-movable {@link Sprite}
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
-     * @param initialPosition The initial position of the {@link Character}
      * @param defaultAreaIdx The initial area index
      */
-    public Character(List<Area> areas, Vector2 initialPosition, int defaultAreaIdx) {
+    public Character(List<Area> areas, int defaultAreaIdx) {
         for (Area area : areas)
-            bodies.add(area.registerCollisionBody(initialPosition, BodyDef.BodyType.DynamicBody, WIDTH, HEIGHT));
+            bodies.add(area.registerCharacter(WIDTH, HEIGHT));
 
         switchCharacterContext(defaultAreaIdx);
         playerTexture = new Texture(TEXTURE_PATH);

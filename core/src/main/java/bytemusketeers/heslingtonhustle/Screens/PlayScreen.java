@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import main.java.bytemusketeers.heslingtonhustle.HeslingtonHustle;
@@ -168,7 +169,7 @@ public class PlayScreen implements Screen {
         // interaction
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             // uncomment if you want to check the screen changing functionality
-//            game.setPiazzaScreen();
+            game.setPiazzaScreen();
             //if there is an interactable nearby the player then interact with it
             for(Map.Entry<Integer, Interactable> entry : this.interactables.entrySet()) {
                 Interactable interactable = entry.getValue();
@@ -219,18 +220,16 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         update(delta);
         // sets the color specified when the color buffer is cleared
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        //Gdx.gl.glClearColor(0, 0, 0, 1);
         // GL_COLOR_BUFFER_BIT specifies that the color buffer is to be cleared
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-
-        orthogonalTiledMapRenderer.render();
+        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // render the Box2DDebugLines, uncomment it if you want to see green collision lines
 //        b2dr.render(world, gameCam.combined);
 
         // recognises where the camera is in the game world and render only what the camera can see
         game.batch.setProjectionMatrix(gameCam.combined);
+        orthogonalTiledMapRenderer.render();
         // prepares the batch for drawing textures
         game.batch.begin();
         game.batch.draw(character.playerTexture, character.b2body.getPosition().x - Character.WIDTH / 2, character.b2body.getPosition().y - Character.HEIGHT / 2, Character.WIDTH, Character.HEIGHT);

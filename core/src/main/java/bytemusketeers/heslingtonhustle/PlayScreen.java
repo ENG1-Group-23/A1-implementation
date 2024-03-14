@@ -66,7 +66,8 @@ class PlayScreen implements Screen {
             character.moveRight();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E))
-            activeArea.triggerInteractables(character.getPosition());
+            // activeArea.triggerInteractables(character.getPosition());
+            switchArea(1);
     }
 
     /**
@@ -92,29 +93,6 @@ class PlayScreen implements Screen {
 
         activeArea.updateView(gameCam);
         gameCam.update();
-    }
-
-    /**
-     * Handles the graphical rendering obligations of the {@link Screen}. In particular, this involves rendering all
-     * visible objects including the {@link Area}---and hence all {@link Interactable} elements on the
-     * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, and the {@link Character}.
-     *
-     * @param delta The time in seconds since the last render; not currently used
-     */
-    @Override
-    public void render(float delta) {
-        update();
-
-        Gdx.gl.glClearColor(1, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        batch.setProjectionMatrix(gameCam.combined);
-        batch.begin();
-
-        activeArea.render(batch);
-        character.render(batch);
-
-        batch.end();
     }
 
     /**
@@ -163,6 +141,16 @@ class PlayScreen implements Screen {
     }
 
     /**
+     * Switch to the {@link Area} identified by the given index
+     *
+     * @param areaIdx The index of the new {@link Area}
+     */
+    private void switchArea(int areaIdx) {
+        activeArea = areas.get(areaIdx);
+        character.switchCharacterContext(areaIdx);
+    }
+
+    /**
      * Releases all resources used by the {@link PlayScreen}
      */
     @Override
@@ -172,6 +160,29 @@ class PlayScreen implements Screen {
 
         character.dispose();
         System.out.println("Disposing...");
+    }
+
+    /**
+     * Handles the graphical rendering obligations of the {@link Screen}. In particular, this involves rendering all
+     * visible objects including the {@link Area}---and hence all {@link Interactable} elements on the
+     * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, and the {@link Character}.
+     *
+     * @param delta The time in seconds since the last render; not currently used
+     */
+    @Override
+    public void render(float delta) {
+        update();
+
+        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        batch.setProjectionMatrix(gameCam.combined);
+        batch.begin();
+
+        activeArea.render(batch);
+        character.render(batch);
+
+        batch.end();
     }
 
     /**
@@ -190,6 +201,6 @@ class PlayScreen implements Screen {
         activeArea = areas.get(0);
 
         character = new Character(areas, new Vector2((float) Gdx.graphics.getWidth() / HeslingtonHustle.PPM / 2,
-            (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2));
+            (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2), 0);
     }
 }

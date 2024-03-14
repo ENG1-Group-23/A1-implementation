@@ -2,10 +2,14 @@ package main.java.bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -27,6 +31,7 @@ class Area implements Drawable {
     private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private final TiledMap tiledMap;
     private final World world;
+    public Vector2 initialPosition;
 
     /**
      * Adds an {@link Interactable} to the set of interactable tiles in the current {@link Area}.
@@ -112,6 +117,17 @@ class Area implements Drawable {
     }
 
     /**
+     * Creating tiled map objects
+     */
+    public void generateTiledObjects (MapLayer layer) {
+        for (RectangleMapObject object : layer.getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = object.getRectangle();
+
+            new InteractiveTileObject(world, rect);
+        }
+    }
+
+    /**
      * Releases all resources used by the {@link Area}
      */
     @Override
@@ -154,5 +170,10 @@ class Area implements Drawable {
             * MAP_SCALE;
         mapHeight = properties.get("tileheight", Integer.class) * properties.get("height", Integer.class)
             * MAP_SCALE;
+
+        MapLayers layers = tiledMap.getLayers();
+        for (MapLayer layer : layers) {
+            generateTiledObjects(layer);
+        }
     }
 }

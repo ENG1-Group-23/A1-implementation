@@ -134,12 +134,11 @@ class Character extends Sprite implements Drawable {
      * Initialises a new {@link Character} body as a player-movable {@link Sprite}
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
-     * @param initialPosition The initial position of the {@link Character}
      * @param defaultAreaIdx The initial area index
      */
-    public Character(List<Area> areas, Vector2 initialPosition, int defaultAreaIdx) {
+    public Character(List<Area> areas, int defaultAreaIdx) {
         for (Area area : areas)
-            bodies.add(area.registerCollisionBody(initialPosition, BodyDef.BodyType.DynamicBody, WIDTH, HEIGHT));
+            bodies.add(area.registerCollisionBody(area.initialPosition, BodyDef.BodyType.DynamicBody, WIDTH, HEIGHT));
 
         switchCharacterContext(defaultAreaIdx);
         playerTexture = new Texture(TEXTURE_PATH);

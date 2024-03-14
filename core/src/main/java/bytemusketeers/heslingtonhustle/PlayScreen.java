@@ -42,10 +42,16 @@ class PlayScreen implements Screen {
                 MathUtils.random(0, Gdx.graphics.getHeight() / HeslingtonHustle.PPM)),
             new Texture("libgdx.png"),
             area,0.5f, 0.5f, () -> System.out.println("Interacted with the logo!")));
+        area.initialPosition = new Vector2(
+            (float) Gdx.graphics.getWidth() / HeslingtonHustle.PPM / 2,
+            (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2);
         areas.add(area);
 
         /* Piazza Map */
         area = new Area("Maps/piazza-map.tmx");
+        area.initialPosition = new Vector2(
+            304f * Area.MAP_SCALE,
+            32f * Area.MAP_SCALE);
         areas.add(area);
     }
 
@@ -85,14 +91,17 @@ class PlayScreen implements Screen {
         // viewport boundary
         Vector2 characterPosition = character.getPosition();
 
-        if (character.isOutOfHorizontalBound(activeArea))
+//        System.out.println(character.isOutOfVerticalBound(activeArea));
+        if (character.isOutOfHorizontalBound(activeArea)) {
             gameCam.position.x = characterPosition.x;
+        }
 
-        if (character.isOutOfVerticalBound(activeArea))
+        if (character.isOutOfVerticalBound(activeArea)) {
             gameCam.position.y = characterPosition.y;
+        }
 
-        activeArea.updateView(gameCam);
         gameCam.update();
+        activeArea.updateView(gameCam);
     }
 
     /**
@@ -146,6 +155,7 @@ class PlayScreen implements Screen {
      * @param areaIdx The index of the new {@link Area}
      */
     private void switchArea(int areaIdx) {
+        if (areaIdx == 1) gameCam.position.y = HeslingtonHustle.HEIGHT_METRES_BOUND;
         activeArea = areas.get(areaIdx);
         character.switchCharacterContext(areaIdx);
     }
@@ -200,7 +210,6 @@ class PlayScreen implements Screen {
         initialiseAreas();
         activeArea = areas.get(0);
 
-        character = new Character(areas, new Vector2((float) Gdx.graphics.getWidth() / HeslingtonHustle.PPM / 2,
-            (float) Gdx.graphics.getHeight() / HeslingtonHustle.PPM / 2), 0);
+        character = new Character(areas, 0);
     }
 }

@@ -11,9 +11,26 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
  * An {@link Item} denotes a drawable non-{@link Character} object.
  */
 class Item extends Sprite implements Drawable {
+    /**
+     * The LibGDX {@link Drawable} graphical representation of the {@link Sprite}
+     */
     private final Texture texture;
+
+    /**
+     * The width of the {@link Item}, in pixels
+     */
     private final float width;
+
+    /**
+     * The height of the {@link Item}, in pixels
+     */
     private final float height;
+
+    /**
+     * The collision and interaction {@link Body} zone of the {@link Item}
+     *
+     * @see com.badlogic.gdx.physics.box2d.World
+     */
     private final Body body;
 
     /**

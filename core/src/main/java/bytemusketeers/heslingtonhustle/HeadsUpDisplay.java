@@ -15,6 +15,12 @@ import java.util.Map;
  * @see PlayScreen
  */
 class HeadsUpDisplay extends Overlay {
+    /**
+     * A persistent mapping between {@link MetricManager.Metric} elements and the {@link Overlay}-specific {@link Label}
+     * form elements
+     *
+     * @see MetricManager
+     */
     private final Map<MetricManager.Metric, Label> metricLabels = new EnumMap<>(MetricManager.Metric.class);
 
     /**
@@ -40,14 +46,14 @@ class HeadsUpDisplay extends Overlay {
         // Create the HUD table: each row consists of a metric label and its value label
         Table table = new Table();
         table.setFillParent(true);
-        table.top().left().pad(GENERAL_PADDING);
+        table.top().left().pad(GENERAL_FORM_PADDING);
 
         for (MetricManager.Metric metric : MetricManager.Metric.values()) {
             Label value = new Label(MetricManager.DEFAULT_VALUE.toString(), labelStyle);
             metricLabels.put(metric, value);
 
             table.add(new Label(metric.toString(), labelStyle)).right();
-            table.add(value).padLeft(GENERAL_PADDING).left();
+            table.add(value).padLeft(GENERAL_FORM_PADDING).left();
             table.row();
         }
 
@@ -56,7 +62,7 @@ class HeadsUpDisplay extends Overlay {
 
         // TODO: temporary tooltip advice
         Label advice = new Label("Press E anywhere away from the interactables to switch to Piazza", labelStyle);
-        advice.setPosition(GENERAL_PADDING, GENERAL_PADDING);
+        advice.setPosition(GENERAL_FORM_PADDING, GENERAL_FORM_PADDING);
         super.addActor(advice);
     }
 }

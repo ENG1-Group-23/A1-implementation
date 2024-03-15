@@ -10,18 +10,35 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 class HeslingtonHustle extends Game {
     /**
      * 'PPM' denotes the number of pixels-per-(in-game)-metre.
-     * TODO: Derive this from Gdx.graphics properties
+     * TODO: what is this? Need to review.
      */
     public static final float PPM = 100;
+
     /**
      * TODO: WIDTH_METRES_BOUND?
+     * TODO: what is this? Need to review.
      */
     public static final float WIDTH_METRES_BOUND = 4;
+
     /**
      * TODO: HEIGHT_METRES_BOUND?
+     * TODO: what is this? Need to review.
      */
     public static final float HEIGHT_METRES_BOUND = 2.4f;
+
+    /**
+     * The LibGDX {@link SpriteBatch} used during render-time
+     *
+     * @see Drawable#render(SpriteBatch)
+     * @see com.badlogic.gdx.graphics.g2d.Sprite
+     */
     public SpriteBatch batch;
+
+    /**
+     * The LibGDX {@link Screen} array used to store all active {@link Game}-wide {@link Screen} instantiations
+     *
+     * @see #setScreen(Screen)
+     */
     private Screen[] screens;
 
     /**

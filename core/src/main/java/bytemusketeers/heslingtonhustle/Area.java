@@ -24,16 +24,67 @@ import java.util.List;
  * texture and set of {@link Interactable} objects.
  */
 class Area implements Drawable {
+    /**
+     * Distinguish between instantiations of particular {@link Area} objects
+     */
     enum AreaName {
         TestMap, PiazzaBuilding
     }
+
+    /**
+     * TODO: what is this? Need to review. Should be private/protected and defined in the factory
+     */
     public static final float MAP_SCALE = 0.04f;
+
+    /**
+     * The width of the map, in pixels
+     *
+     * @see #tiledMap
+     */
     private final float mapWidth;
+
+    /**
+     * The height of the map, in pixels
+     *
+     * @see #tiledMap
+     */
     private final float mapHeight;
+
+    /**
+     * The list of {@link Interactable} objects existing in the {@link Area}
+     *
+     * @see Interactable
+     */
     private final List<Interactable> interactables = new ArrayList<>();
+
+    /**
+     * The LibGDX rendering object responsible for the rendering of the {@link TiledMap}
+     *
+     * @see #tiledMap
+     * @see #render(SpriteBatch)
+     */
     private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
+
+    /**
+     * The tiled background of the playable zone of the particular {@link Area}
+     *
+     * @see TmxMapLoader
+     * @see #orthogonalTiledMapRenderer
+     */
     private final TiledMap tiledMap;
+
+    /**
+     * The LibGDX world responsible for holding {@link com.badlogic.gdx.physics.box2d.BodyDef.BodyType#StaticBody}
+     * and {@link com.badlogic.gdx.physics.box2d.BodyDef.BodyType#DynamicBody} collision zones, generally used for
+     * {@link Interactable} and {@link TiledMap} border objects
+     */
     private final World world;
+
+    /**
+     * The initial position of the player-controlled {@link Character} upon being spawned into the {@link Area}.
+     *
+     * @see Character#setPosition(Vector2)
+     */
     private final Vector2 initialCharacterPosition;
 
     /**

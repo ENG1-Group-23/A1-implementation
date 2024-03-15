@@ -13,8 +13,19 @@ class Interactable extends Item {
     /**
      * The square of the maximum interaction distance; that is, the maximum distance, measured by the Euclidean metric,
      * that a {@link Character} may be from an {@link Interactable} to fire an {@link #interact()}.
+     *
+     * @see #isClose(Vector2)
      */
     private static final float INTERACTION_DISTANCE_SQ = 0.3f;
+
+    /**
+     * The action to execute after {@link #interact()} has been finished. The execution should be deferred to LibGDX to
+     * avoid potential threading-related race conditions.
+     *
+     * @see Runnable#run()
+     * @see com.badlogic.gdx.Application#postRunnable(Runnable)
+     * @see #interact()
+     */
     private final Runnable action;
 
     /**

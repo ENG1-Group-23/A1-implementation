@@ -11,7 +11,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * {@link com.badlogic.gdx.Screen}
  */
 abstract class Overlay implements Drawable {
-    protected static final int GENERAL_PADDING = 10;
+    /**
+     *
+     */
+    protected static final int GENERAL_FORM_PADDING = 10;
+
+    /**
+     *
+     */
     private final Stage stage;
 
     /**

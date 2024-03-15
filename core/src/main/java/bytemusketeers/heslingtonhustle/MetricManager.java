@@ -10,8 +10,26 @@ import java.util.Map;
  * identified by a unique {@link Metric} enumerable key.
  */
 class MetricManager {
-    private static final int DELTA = 1;
+    /**
+     * The standard amount by which a metric value may be increased or decreased. An integer multiplier may be used.
+     *
+     * @see #incrementMetric(Metric, float)
+     * @see #decrementMetric(Metric, float)
+     */
+    private static final int INCREMENT_DELTA = 1;
+
+    /**
+     * The default value of each {@link Float} associated with a {@link Metric}
+     */
     public static final Float DEFAULT_VALUE = 0f;
+
+    /**
+     * The discriminating key for each metric
+     *
+     * @see #getMetricValue(Metric)
+     * @see #incrementMetric(Metric, float)
+     * @see #decrementMetric(Metric, float)
+     */
     enum Metric {
         Happiness, Tiredness, Preparedness
     }
@@ -23,7 +41,22 @@ class MetricManager {
      * clients.
      */
     private final Map<Metric, Float> metrics = new EnumMap<>(Metric.class);
+
+    /**
+     * The action to execute upon any value of a {@link Metric} being changed. The execution should be deferred to
+     * LibGDX to avoid potential threading-related race conditions.
+     *
+     * @see Runnable#run()
+     * @see com.badlogic.gdx.Application#postRunnable(Runnable)
+     * @see #modifyMetric(Metric, float)
+     */
     private final Runnable updateAction;
+
+    /**
+     * The last-updated {@link Metric}
+     *
+     * @see #getLastChangedMetric()
+     */
     private Metric lastChangedMetric;
 
     /**
@@ -53,10 +86,10 @@ class MetricManager {
      *
      * @param metric The {@link Metric} to increment
      * @param multiplier The amount by which to scale the magnitude of the increment
-     * @see #DELTA
+     * @see #INCREMENT_DELTA
      */
     public void incrementMetric(Metric metric, float multiplier) {
-        modifyMetric(metric, getMetricValue(metric) + DELTA * multiplier);
+        modifyMetric(metric, getMetricValue(metric) + INCREMENT_DELTA * multiplier);
     }
 
     /**
@@ -66,7 +99,7 @@ class MetricManager {
      * @param multiplier The amount by which to scale the magnitude of the decrement
      */
     public void decrementMetric(Metric metric, float multiplier) {
-        modifyMetric(metric, getMetricValue(metric) - DELTA * multiplier);
+        modifyMetric(metric, getMetricValue(metric) - INCREMENT_DELTA * multiplier);
     }
 
     /**

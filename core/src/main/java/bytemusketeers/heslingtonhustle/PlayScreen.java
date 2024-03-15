@@ -21,12 +21,43 @@ import java.util.Map;
  * can explore. All assets for the game are preloaded when {@link PlayScreen} is constructed,
  */
 class PlayScreen implements Screen {
+    /**
+     * The {@link OrthographicCamera} associated with the parental {@link com.badlogic.gdx.Game} instance
+     */
     private final OrthographicCamera gameCam;
+
+    /**
+     * The {@link SpriteBatch} associated with the parental {@link com.badlogic.gdx.Game} instance
+     */
     private final SpriteBatch batch;
+
+    /**
+     * The render {@link Viewport} associated with the parental {@link com.badlogic.gdx.Game}
+     */
     private final Viewport gamePort;
+
+    /**
+     * The player-controlled {@link com.badlogic.gdx.graphics.g2d.Sprite} that is tracked by the game camera
+     *
+     * @see Character
+     * @see OrthographicCamera
+     */
     private final Character character;
+
+    /**
+     * The persistent {@link HeadsUpDisplay} {@link Overlay} presenting real-time metric information to the player
+     *
+     * @see MetricManager
+     * @see MetricManager.Metric
+     */
     private final HeadsUpDisplay hud;
+
+    /**
+     * The transient-rendered {@link PauseMenu} {@link Overlay}, intended to be displayed to the user upon request,
+     * or a system event such as loss of {@link PlayScreen} focus
+     */
     private final PauseMenu pauseMenu;
+
     /**
      * The relationship between {@link Area} and the {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName}
      *
@@ -34,7 +65,22 @@ class PlayScreen implements Screen {
      * @see main.java.bytemusketeers.heslingtonhustle.Area.AreaName
      */
     private final Map<Area.AreaName, Area> areas = new EnumMap<>(Area.AreaName.class);
+
+    /**
+     * The {@link Area} subject to world collision, interaction, and rendering
+     *
+     * @see Area#step()
+     * @see #update()
+     * @see #render(float)
+     */
     private Area activeArea;
+
+    /**
+     * The controller for collating, managing, and reporting {@link MetricManager.Metric} information, principally
+     * passing real-time information to {@link Overlay} components.
+     *
+     * @see HeadsUpDisplay#updateMetricElement(MetricManager.Metric, String)
+     */
     private final MetricManager metricManager = new MetricManager(new Runnable() {
         /**
          * Update the HUD with the last-updated metric from {@link MetricManager}
@@ -45,14 +91,23 @@ class PlayScreen implements Screen {
             hud.updateMetricElement(updated, metricManager.getMetricValue(updated).toString());
         }
     });
+
+    /**
+     * Indicates the game-state; currently a binary selector of 'paused' or 'not paused'; intended to inform the
+     * input-handler and update cycles
+     *
+     * @see #handleInput()
+     * @see #update()
+     */
     private boolean paused = false;
 
     /**
      * Initialise some sample areas into the {@link PlayScreen}
+     * TODO: need to turn this into a factory, not necessarily static methods in {@link Area}
      */
     private void initialiseAreas() {
-        float screenWidth = Gdx.graphics.getWidth();
-        float screenHeight = Gdx.graphics.getHeight();
+        final float screenWidth = Gdx.graphics.getWidth();
+        final float screenHeight = Gdx.graphics.getHeight();
         Area tempArea;
 
         /* Test Map */
@@ -109,7 +164,7 @@ class PlayScreen implements Screen {
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             if(!activeArea.triggerInteractables(character.getPosition()))
-                // If no interactions were triggered, switch to Piazza
+                // TODO: If no interactions were triggered, switch to Piazza
                 switchArea(Area.AreaName.PiazzaBuilding);
         }
     }
@@ -195,6 +250,7 @@ class PlayScreen implements Screen {
         // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaName);
         character.switchCharacterContext(areaName);
+        character.setPosition(activeArea.getInitialCharacterPosition());
 
         // Update the game camera, bounding as usual
         Vector3 newCameraPosition = new Vector3(activeArea.getInitialCharacterPosition(), 0);

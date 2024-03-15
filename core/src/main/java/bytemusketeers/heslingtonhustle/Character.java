@@ -107,6 +107,15 @@ class Character extends Sprite implements Drawable {
     }
 
     /**
+     * Sets the position of the {@link Character}
+     *
+     * @param position The new position
+     */
+    public void setPosition(Vector2 position) {
+        activeBody.setTransform(position, 0);
+    }
+
+    /**
      * Switch the {@link Character} context to {@link Area} identified by the given index
      *
      * @param areaName The {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName} of the new {@link Area}

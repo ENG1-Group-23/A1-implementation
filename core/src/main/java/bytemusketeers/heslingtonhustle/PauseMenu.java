@@ -23,7 +23,7 @@ class PauseMenu extends Overlay {
         final Table table = new Table();
 
         table.setFillParent(true);
-        table.add(new Label("GAME PAUSED", labelStyle)).padBottom(GENERAL_PADDING);
+        table.add(new Label("GAME PAUSED", labelStyle)).padBottom(GENERAL_FORM_PADDING);
         table.row();
         table.add(new Label("Press Escape to Resume Gameplay", labelStyle));
         table.row();

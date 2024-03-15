@@ -4,9 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -103,38 +101,12 @@ class PlayScreen implements Screen {
 
     /**
      * Initialise some sample areas into the {@link PlayScreen}
-     * TODO: need to turn this into a factory, not necessarily static methods in {@link Area}
      */
     private void initialiseAreas() {
-        final float screenWidth = Gdx.graphics.getWidth();
-        final float screenHeight = Gdx.graphics.getHeight();
-        Area tempArea;
+        AreaFactory factory = new AreaFactory(metricManager);
 
-        /* Test Map */
-        tempArea = new Area("Maps/test-map.tmx",
-            new Vector2(screenWidth / 2, screenHeight / 2).scl(1 / HeslingtonHustle.PPM));
-
-        tempArea.addInteractable(new Interactable(
-            new Vector2(
-                MathUtils.random(0, screenWidth),
-                MathUtils.random(0, screenHeight)).scl(1 / HeslingtonHustle.PPM),
-            new Texture("prototype-1.png"),
-            tempArea, 0.5f, 0.5f,
-            () -> metricManager.incrementMetric(MetricManager.Metric.Preparedness, 1)));
-
-        tempArea.addInteractable(new Interactable(
-            new Vector2(
-                MathUtils.random(0, screenWidth),
-                MathUtils.random(0, screenHeight)).scl(1 / HeslingtonHustle.PPM),
-            new Texture("prototype-2.png"),
-            tempArea, 0.5f, 0.5f,
-            () -> metricManager.decrementMetric(MetricManager.Metric.Preparedness, 1)));
-
-        areas.put(Area.AreaName.TestMap, tempArea);
-
-        /* Piazza Map */
-        tempArea = new Area("Maps/piazza-map.tmx", new Vector2(304, 32).scl(Area.MAP_SCALE));
-        areas.put(Area.AreaName.PiazzaBuilding, tempArea);
+        areas.put(Area.AreaName.TestMap, factory.createTestMap());
+        areas.put(Area.AreaName.PiazzaBuilding, factory.createPiazzaMap());
     }
 
     /**

@@ -12,12 +12,16 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  */
 abstract class Overlay implements Drawable {
     /**
-     *
+     * The standard level of padding, specified in pixels, to be used for form {@link Actor} elements being used in
+     * extensions of the {@link Overlay}
      */
     protected static final int GENERAL_FORM_PADDING = 10;
 
     /**
+     * The LibGDX {@link Stage} used for rendering {@link Actor} elements onto the visible {@link Overlay}
      *
+     * @see #addActor(Actor)
+     * @see #render(SpriteBatch)
      */
     private final Stage stage;
 

@@ -16,8 +16,8 @@ import java.util.Map;
  * {@link #switchCharacterContext(main.java.bytemusketeers.heslingtonhustle.Area.AreaName)}.
  */
 class Character extends Sprite implements Drawable {
-    private static final float WIDTH = 0.3f;
-    private static final float HEIGHT = 0.3f;
+    public static final float WIDTH = 0.3f;
+    public static final float HEIGHT = 0.3f;
     private static final float MOVEMENT_VELOCITY = 4.0f;
     private static final String TEXTURE_PATH = "prototype-4.png";
     private Body activeBody;

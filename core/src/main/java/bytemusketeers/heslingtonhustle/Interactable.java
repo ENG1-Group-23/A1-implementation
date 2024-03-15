@@ -14,7 +14,7 @@ class Interactable extends Item {
      * The square of the maximum interaction distance; that is, the maximum distance, measured by the Euclidean metric,
      * that a {@link Character} may be from an {@link Interactable} to fire an {@link #interact()}.
      */
-    private static final float INTERACTION_DISTANCE_SQ = 0.3f;
+    private float interaction_distance_sq;
     private final Runnable action;
 
     /**
@@ -27,13 +27,13 @@ class Interactable extends Item {
 
     /**
      * Determines if the described {@link Vector2} represents an object that is sufficiently close to the
-     * {@link Interactable}; see {@link #INTERACTION_DISTANCE_SQ}.
+     * {@link Interactable}; see {@link #interaction_distance_sq}.
      *
      * @param position The position to test
      * @return Is the given {@link Vector2} within the defined Euclidean distance of the {@link Interactable}?
      */
     public boolean isClose(Vector2 position) {
-        return getPosition().dst2(position) <= INTERACTION_DISTANCE_SQ;
+        return getPosition().dst2(position) <= interaction_distance_sq;
     }
 
     /**
@@ -58,6 +58,7 @@ class Interactable extends Item {
      */
     public Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
         super(position, texture, area, width, height);
+        this.interaction_distance_sq = (float) ((Math.pow(width/2, 2) + Math.pow(height/2, 2)) + (Math.pow(Character.HEIGHT/2, 2) + Math.pow(Character.WIDTH/2,2)));
         this.action = action;
     }
 }

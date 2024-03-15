@@ -62,6 +62,26 @@ final class AreaFactory {
     }
 
     /**
+     * Creates an {@link Area} of the Ian Wand Computer Science building
+     * TODO: currently incomplete
+     *
+     * @return The generated Computer Science building
+     */
+    public Area createCSMap() {
+        return new Area("Maps/comp-sci-map.tmx", new Vector2(398, 16).scl(Area.MAP_SCALE));
+    }
+
+    /**
+     * Creates an {@link Area} of the bedroom building
+     * TODO: currently incomplete
+     *
+     * @return The generated bedroom building
+     */
+    public Area createBedroomMap() {
+        return new Area("Maps/bedroom-map.tmx", new Vector2(160, 16).scl(Area.MAP_SCALE));
+    }
+
+    /**
      * Instantiates a new {@link AreaFactory} with the given contextual {@link MetricManager}
      *
      * @param metricManager The {@link MetricManager} belonging to the parental {@link PlayScreen}

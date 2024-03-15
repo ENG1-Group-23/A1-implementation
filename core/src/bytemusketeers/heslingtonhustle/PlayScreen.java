@@ -107,6 +107,8 @@ class PlayScreen implements Screen {
 
         areas.put(Area.AreaName.TestMap, factory.createTestMap());
         areas.put(Area.AreaName.PiazzaBuilding, factory.createPiazzaMap());
+        areas.put(Area.AreaName.CompSciBuilding, factory.createCSMap());
+        areas.put(Area.AreaName.BedroomBuilding, factory.createBedroomMap());
     }
 
     /**
@@ -134,11 +136,19 @@ class PlayScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.D))
             character.moveRight();
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
             if(!activeArea.triggerInteractables(character.getPosition()))
                 // TODO: If no interactions were triggered, switch to Piazza. Just a temporary test.
                 switchArea(Area.AreaName.PiazzaBuilding);
-        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.M))
+            switchArea(Area.AreaName.CompSciBuilding);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.N))
+            switchArea(Area.AreaName.BedroomBuilding);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B))
+            switchArea(Area.AreaName.TestMap);
     }
 
     /**

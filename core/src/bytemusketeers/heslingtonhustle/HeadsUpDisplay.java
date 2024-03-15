@@ -61,7 +61,8 @@ class HeadsUpDisplay extends Overlay {
         super.addActor(table);
 
         // TODO: temporary tooltip advice
-        Label advice = new Label("Press E anywhere away from the interactables to switch to Piazza", labelStyle);
+        Label advice = new Label("Press E anywhere away from the interactables to switch to Piazza; M = CompSci;" +
+            "N = Bedroom; B = World Map", labelStyle);
         advice.setPosition(GENERAL_FORM_PADDING, GENERAL_FORM_PADDING);
         super.addActor(advice);
     }

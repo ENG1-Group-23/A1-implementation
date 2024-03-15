@@ -28,7 +28,7 @@ class Area implements Drawable {
      * Distinguish between instantiations of particular {@link Area} objects
      */
     enum AreaName {
-        TestMap, PiazzaBuilding
+        TestMap, PiazzaBuilding, CompSciBuilding, BedroomBuilding
     }
 
     /**

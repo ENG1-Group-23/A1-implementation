@@ -26,7 +26,7 @@ class PlayScreen implements Screen {
     private final Viewport gamePort;
     private final Character character;
     private final HeadsUpDisplay hud;
-    private final PauseMenu pauseMenu;
+    private boolean onMainMenu = true;
     /**
      * The relationship between {@link Area} and the {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName}
      *
@@ -46,6 +46,7 @@ class PlayScreen implements Screen {
         }
     });
     private boolean paused = false;
+    private MainMenu mainMenu;
 
     /**
      * Initialise some sample areas into the {@link PlayScreen}
@@ -234,8 +235,13 @@ class PlayScreen implements Screen {
     public void render(float delta) {
         handleInput();
         update();
-
         batch.setProjectionMatrix(gameCam.combined);
+        if(onMainMenu) {
+            mainMenu = new MainMenu(batch, this);
+            mainMenu.render(batch); //ew
+            return;
+        }
+
         batch.begin();
 
         activeArea.render(batch);
@@ -245,7 +251,10 @@ class PlayScreen implements Screen {
         hud.render(batch);
 
         if (paused)
-            pauseMenu.render(batch);
+            new PauseMenu(batch, this).render(batch);
+        if(!onMainMenu) {
+            mainMenu.dispose();
+        }
     }
 
     /**
@@ -254,16 +263,20 @@ class PlayScreen implements Screen {
      */
     public PlayScreen(SpriteBatch batch) {
         this.batch = batch;
+        mainMenu = new MainMenu(batch, this);
         gameCam = new OrthographicCamera();
         gamePort = new StretchViewport(Gdx.graphics.getWidth() / HeslingtonHustle.PPM,
             Gdx.graphics.getHeight() / HeslingtonHustle.PPM, gameCam);
         hud = new HeadsUpDisplay(batch);
-        pauseMenu = new PauseMenu(batch);
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         initialiseAreas();
         activeArea = areas.get(Area.AreaName.TestMap);
         character = new Character(areas, Area.AreaName.TestMap);
+    }
+
+    void toggleMainMenu() {
+        onMainMenu = !onMainMenu;
     }
 }

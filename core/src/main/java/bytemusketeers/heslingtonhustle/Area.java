@@ -46,6 +46,16 @@ class Area implements Drawable {
     }
 
     /**
+     * Removes an {@link Interactable}.
+     *
+     * @param interactable The {@link Interactable} to remove
+     */
+    public void removeInteractable(Interactable interactable) {
+        interactables.remove(interactable);
+        interactable.dispose();
+    }
+
+    /**
      * Given the current position of the {@link Character}, interact with any nearby {@link Interactable} objects
      *
      * @param characterPosition The position of the player-controlled {@link Character}
@@ -92,6 +102,13 @@ class Area implements Drawable {
     public float getMapHeight() {
         return mapHeight;
     }
+
+    /**
+     * Gets this instance of area's world
+     *
+     * @return The world of this area
+     */
+    public World getWorld() { return world; }
 
     /**
      * Steps the {@link World} associated with the {@link Area}
@@ -165,6 +182,15 @@ class Area implements Drawable {
                 bounds.getHeight() * Area.MAP_SCALE
             );
         }
+    }
+
+    /**
+     *
+     */
+    public com.badlogic.gdx.utils.Array<RectangleMapObject> getLayerObjects (String nameOfTheLayer) {
+        MapLayers layers = tiledMap.getLayers();
+
+        return layers.get(nameOfTheLayer).getObjects().getByType(RectangleMapObject.class);
     }
 
     /**

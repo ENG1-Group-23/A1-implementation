@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -26,6 +27,8 @@ class PlayScreen implements Screen {
     private final Viewport gamePort;
     private final Character character;
     private final HeadsUpDisplay hud;
+    private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
+
     private final PauseMenu pauseMenu;
     /**
      * The relationship between {@link Area} and the {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName}
@@ -243,6 +246,8 @@ class PlayScreen implements Screen {
 
         batch.end();
         hud.render(batch);
+
+        debugRenderer.render(activeArea.getWorld(), gameCam.combined);
 
         if (paused)
             pauseMenu.render(batch);

@@ -94,6 +94,13 @@ class Area implements Drawable {
     }
 
     /**
+     * Gets this instance of area's world
+     *
+     * @return The world of this area
+     */
+    public World getWorld() { return world; }
+
+    /**
      * Steps the {@link World} associated with the {@link Area}
      *
      * @see World#step(float, int, int)

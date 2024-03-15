@@ -58,7 +58,7 @@ class Interactable extends Item {
      */
     public Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
         super(position, texture, area, width, height);
-        this.interaction_distance_sq = (float) ((Math.pow(width/2, 2) + Math.pow(height/2, 2)) + (Math.pow(Character.HEIGHT/2, 2) + Math.pow(Character.WIDTH/2,2)));
+        this.interaction_distance_sq = (float) ((Math.pow(width/2, 2) + Math.pow(height/2, 2)) + (Math.pow(Character.HEIGHT/2, 2) + Math.pow(Character.WIDTH/2,2))+0.1f);
         this.action = action;
     }
 }

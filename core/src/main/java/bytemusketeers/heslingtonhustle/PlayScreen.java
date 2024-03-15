@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -73,7 +74,8 @@ class PlayScreen implements Screen {
         tempArea.addInteractable(new Interactable(
             new Vector2(
                 MathUtils.random(0, screenWidth),
-                MathUtils.random(0, screenHeight)).scl(1 / HeslingtonHustle.PPM),
+                MathUtils.random(0, screenHeight)
+            ).scl(1 / HeslingtonHustle.PPM),
             new Texture("prototype-2.png"),
             tempArea, 0.5f, 0.5f,
             () -> metricManager.decrementMetric(MetricManager.Metric.Preparedness, 1)));
@@ -82,7 +84,28 @@ class PlayScreen implements Screen {
 
         /* Piazza Map */
         tempArea = new Area("Maps/piazza-map.tmx", new Vector2(304, 32).scl(Area.MAP_SCALE));
+        for (RectangleMapObject plate: tempArea.getLayerObjects("plates")) {
+            if (MathUtils.random(0,1) == 1)
+            {
+                float x = plate.getRectangle().getX() + plate.getRectangle().getWidth() / 2;
+                float y = plate.getRectangle().getY() + plate.getRectangle().getHeight() / 2;
+                Area finalTempArea = tempArea;
+                final Interactable[] interactable = new Interactable[1];
+                interactable[0] = new Interactable(
+                    new Vector2(x, y).scl(Area.MAP_SCALE),
+                    new Texture("prototype-1.png"),
+                    tempArea, 0.08f, 0.08f,
+                    () -> {
+                        metricManager.incrementMetric(MetricManager.Metric.Preparedness, 1);
+                        finalTempArea.removeInteractable(interactable[0]);
+                    }
+                );
+
+                tempArea.addInteractable(interactable[0]);
+            }
+        }
         areas.put(Area.AreaName.PiazzaBuilding, tempArea);
+
     }
 
     /**

@@ -80,6 +80,14 @@ class PlayScreen implements Screen {
         /* Piazza Map */
         tempArea = new Area("Maps/piazza-map.tmx", new Vector2(304, 32).scl(Area.MAP_SCALE));
         areas.put(Area.AreaName.PiazzaBuilding, tempArea);
+
+        /* Computer Science Map */
+        tempArea = new Area("Maps/comp-sci-map.tmx", new Vector2(398, 16).scl(Area.MAP_SCALE));
+        areas.put(Area.AreaName.CompSciBuilding, tempArea);
+
+        /* Bedroom Map */
+        tempArea = new Area("Maps/bedroom-map.tmx", new Vector2(160, 16).scl(Area.MAP_SCALE));
+        areas.put(Area.AreaName.BedroomBuilding, tempArea);
     }
 
     /**
@@ -111,6 +119,18 @@ class PlayScreen implements Screen {
             if(!activeArea.triggerInteractables(character.getPosition()))
                 // If no interactions were triggered, switch to Piazza
                 switchArea(Area.AreaName.PiazzaBuilding);
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            switchArea(Area.AreaName.CompSciBuilding);
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            switchArea(Area.AreaName.BedroomBuilding);
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+            switchArea(Area.AreaName.TestMap);
         }
     }
 

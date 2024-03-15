@@ -25,7 +25,7 @@ import java.util.List;
  */
 class Area implements Drawable {
     enum AreaName {
-        TestMap, PiazzaBuilding
+        TestMap, PiazzaBuilding, CompSciBuilding, BedroomBuilding
     }
     public static final float MAP_SCALE = 0.04f;
     private final float mapWidth;

@@ -1,4 +1,4 @@
-package main.java.bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,7 +13,7 @@ import java.util.Map;
  * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}. The
  * {@link Character} is a unique given its ability to exist in multiple {@link Area}s across gameplay; the
  * {@link PlayScreen} must inform {@link Character} of any {@link Area} changes; see
- * {@link #switchCharacterContext(main.java.bytemusketeers.heslingtonhustle.Area.AreaName)}.
+ * {@link #switchCharacterContext(Area.AreaName)}.
  */
 class Character extends Sprite implements Drawable {
     private static final float WIDTH = 0.3f;
@@ -25,7 +25,7 @@ class Character extends Sprite implements Drawable {
     private final Vector2 velocity = new Vector2();
     /**
      * The relationship between the {@link Area} and the {@link Body}, with standard area keys
-     * @see main.java.bytemusketeers.heslingtonhustle.Area.AreaName
+     * @see Area.AreaName
      * @see Body
      * @see Area
      */
@@ -118,7 +118,7 @@ class Character extends Sprite implements Drawable {
     /**
      * Switch the {@link Character} context to {@link Area} identified by the given index
      *
-     * @param areaName The {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName} of the new {@link Area}
+     * @param areaName The {@link Area.AreaName} of the new {@link Area}
      */
     public void switchCharacterContext(Area.AreaName areaName) {
         activeBody = bodies.get(areaName);
@@ -147,7 +147,7 @@ class Character extends Sprite implements Drawable {
      * Initialises a new {@link Character} body as a player-movable {@link Sprite}
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
-     * @param defaultAreaName The initial {@link Area} {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName}
+     * @param defaultAreaName The initial {@link Area} {@link Area.AreaName}
      */
     public Character(Map<Area.AreaName, Area> areas, Area.AreaName defaultAreaName) {
         for (Map.Entry<Area.AreaName, Area> area : areas.entrySet())

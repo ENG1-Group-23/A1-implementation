@@ -1,4 +1,4 @@
-package main.java.bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.Gdx;
 

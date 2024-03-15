@@ -1,4 +1,4 @@
-package main.java.bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -57,10 +57,10 @@ class PlayScreen implements Screen {
     private final PauseMenu pauseMenu;
 
     /**
-     * The relationship between {@link Area} and the {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName}
+     * The relationship between {@link Area} and the {@link Area.AreaName}
      *
      * @see Area
-     * @see main.java.bytemusketeers.heslingtonhustle.Area.AreaName
+     * @see Area.AreaName
      */
     private final Map<Area.AreaName, Area> areas = new EnumMap<>(Area.AreaName.class);
 
@@ -136,7 +136,7 @@ class PlayScreen implements Screen {
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             if(!activeArea.triggerInteractables(character.getPosition()))
-                // TODO: If no interactions were triggered, switch to Piazza
+                // TODO: If no interactions were triggered, switch to Piazza. Just a temporary test.
                 switchArea(Area.AreaName.PiazzaBuilding);
         }
     }
@@ -215,10 +215,10 @@ class PlayScreen implements Screen {
     /**
      * Switch to the {@link Area} identified by the given index
      *
-     * @param areaName The {@link main.java.bytemusketeers.heslingtonhustle.Area.AreaName} of the new {@link Area}
+     * @param areaName The {@link Area.AreaName} of the new {@link Area}
      * @see Area
      */
-    private void switchArea(Area.AreaName areaName) {
+    private void switchArea(@SuppressWarnings("SameParameterValue") Area.AreaName areaName) {
         // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaName);
         character.switchCharacterContext(areaName);

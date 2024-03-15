@@ -1,4 +1,4 @@
-package main.java.bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,7 +24,7 @@ final class AreaFactory {
     /**
      * Creates an {@link Area} for testing purposes with a couple of {@link Interactable} objects at randomly generated
      * locations, incrementing and decrementing the
-     * {@link main.java.bytemusketeers.heslingtonhustle.MetricManager.Metric#Preparedness} metric.
+     * {@link MetricManager.Metric#Preparedness} metric.
      *
      * @return The generated test map
      */
@@ -52,7 +52,8 @@ final class AreaFactory {
     }
 
     /**
-     * Creates an {@link Area} of the Piazza building; currently incomplete
+     * Creates an {@link Area} of the Piazza building
+     * TODO: currently incomplete
      *
      * @return The generated Piazza map
      */

@@ -14,7 +14,7 @@
  */
 //Note, the above license and copyright applies to this file only.
 
-package main.java.bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle;
 
 import org.lwjgl.system.macosx.LibC;
 
@@ -145,6 +145,7 @@ public class StartupHelper {
             }
         } catch (Exception e) {
             System.err.println("There was a problem restarting the JVM");
+            //noinspection CallToPrintStackTrace
             e.printStackTrace();
         }
 

@@ -112,7 +112,17 @@ class PlayScreen implements Screen {
     }
 
     /**
-     * Handles user system events, such as key-presses
+     * Handles user system events, such as key-presses.
+     * TODO: upon {@link Character} movement, the collision {@link com.badlogic.gdx.physics.box2d.Body} does not move
+     *       at the same rate as its corresponding visual {@link com.badlogic.gdx.graphics.g2d.Sprite}. This can be
+     *       seen graphically with the LibGDX {@link com.badlogic.gdx.physics.box2d.Box2DDebugRenderer}.
+     *
+     * @implNote In the future, this implementation should be replaced by an implementation of
+     *           {@link com.badlogic.gdx.InputProcessor} or an extension of {@link com.badlogic.gdx.InputAdapter}. In
+     *           that case, {@link Input.Keys} could be switched over by overrides of
+     *           {@link com.badlogic.gdx.InputProcessor#keyDown(int)},
+     *           {@link com.badlogic.gdx.InputProcessor#keyUp(int)},
+     *           {@link com.badlogic.gdx.InputProcessor#keyTyped(char)}, etc.
      */
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
@@ -124,30 +134,30 @@ class PlayScreen implements Screen {
         if (paused)
             return;
 
-        if(Gdx.input.isKeyPressed(Input.Keys.W))
+        if (Gdx.input.isKeyPressed(Input.Keys.W))
             character.moveUp();
 
-        if(Gdx.input.isKeyPressed(Input.Keys.S))
+        if (Gdx.input.isKeyPressed(Input.Keys.S))
             character.moveDown();
 
-        if(Gdx.input.isKeyPressed(Input.Keys.A))
+        if (Gdx.input.isKeyPressed(Input.Keys.A))
             character.moveLeft();
 
-        if(Gdx.input.isKeyPressed(Input.Keys.D))
+        if (Gdx.input.isKeyPressed(Input.Keys.D))
             character.moveRight();
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E))
-            if(!activeArea.triggerInteractables(character.getPosition()))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E))
+            if (!activeArea.triggerInteractables(character.getPosition()))
                 // TODO: If no interactions were triggered, switch to Piazza. Just a temporary test.
                 switchArea(Area.AreaName.PiazzaBuilding);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.M))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M))
             switchArea(Area.AreaName.CompSciBuilding);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.N))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.N))
             switchArea(Area.AreaName.BedroomBuilding);
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.B))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B))
             switchArea(Area.AreaName.TestMap);
     }
 

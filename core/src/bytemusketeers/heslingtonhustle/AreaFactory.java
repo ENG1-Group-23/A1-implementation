@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
  *          tile-map file being externally corrupt. Users of the {@link AreaFactory} should deal with such cases
  *          gracefully, as continuing with an uninitialised area will invoke undefined GPU behaviour from LibGDX during
  *          the {@link Drawable#render(SpriteBatch)} cycle.
+ * @author ENG1 Team 23 (Cohort 3)
  */
 final class AreaFactory {
     /**

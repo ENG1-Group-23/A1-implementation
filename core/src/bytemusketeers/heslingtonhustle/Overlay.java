@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 /**
  * An {@link Overlay} denotes a distinctly {@link Drawable} scene, typically rendered on top of a
  * {@link com.badlogic.gdx.Screen}
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 abstract class Overlay implements Drawable {
     /**

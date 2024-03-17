@@ -13,7 +13,9 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * A {@link GameMap} represents and manages the {@link Drawable} playing {@link Area} background, principally consisting
- * of the {@link TiledMap}
+ * of the {@link TiledMap}.
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class GameMap implements Drawable {
     /**

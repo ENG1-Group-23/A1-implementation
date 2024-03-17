@@ -10,9 +10,10 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * The {@link HeadsUpDisplay} displays persistent player and game information throughout the gameplay
+ * The {@link HeadsUpDisplay} displays persistent player and game information throughout the gameplay.
  *
  * @see PlayScreen
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class HeadsUpDisplay extends Overlay {
     /**

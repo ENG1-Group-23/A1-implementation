@@ -15,7 +15,9 @@ import java.util.Map;
 /**
  * The {@link PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen}
  * interface. It manages the various game cameras, the {@link Character}, and the {@link Area} vector which the player
- * can explore. All assets for the game are preloaded when {@link PlayScreen} is constructed,
+ * can explore. All assets for the game are preloaded when {@link PlayScreen} is constructed.
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class PlayScreen implements Screen {
     /**

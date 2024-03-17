@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * An {@link Interactable} is an {@link Item} with which the {@link Character} may interact
+ * An {@link Interactable} is an {@link Item} with which the {@link Character} may interact.
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class Interactable extends Item {
     /**

@@ -6,7 +6,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- * The {@link Game} is the {@link com.badlogic.gdx.ApplicationListener} shared by all platforms
+ * The {@link Game} is the {@link com.badlogic.gdx.ApplicationListener} shared by all platforms.
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class HeslingtonHustle extends Game {
     /**
@@ -23,7 +25,7 @@ class HeslingtonHustle extends Game {
      * @see Drawable#render(SpriteBatch)
      * @see com.badlogic.gdx.graphics.g2d.Sprite
      */
-    public SpriteBatch batch;
+    private SpriteBatch batch;
 
     /**
      * The LibGDX {@link Screen} array used to store all active {@link Game}-wide {@link Screen} instantiations

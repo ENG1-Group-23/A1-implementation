@@ -34,11 +34,20 @@ import java.util.ArrayList;
  *     Based on this java-gaming.org post by kappa</a>
  *
  * @author damios
+ * @author ENG1 Team 23 (Cohort 3) - stylistic modifications
  */
 public class StartupHelper {
+    /**
+     * The JVM command-line argument to indicate that the JVM is restarted
+     *
+     * @see #startNewJvmIfRequired(boolean)
+     */
     private static final String JVM_RESTARTED_ARG = "jvmIsRestarted";
 
-    private StartupHelper() {
+    /**
+     * The {@link StartupHelper} must not be instantiated
+     */
+    private StartupHelper() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 

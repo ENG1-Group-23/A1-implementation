@@ -18,6 +18,8 @@ import java.util.List;
 /**
  * An {@link Area} is a single room or outdoor areas in which the player can exist, containing its own {@link TiledMap}
  * texture and set of {@link Interactable} objects.
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class Area implements Drawable {
     /**

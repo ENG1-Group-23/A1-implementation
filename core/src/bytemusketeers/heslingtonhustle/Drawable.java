@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.Disposable;
  *           implementors currently constructed from {@link com.badlogic.gdx.Game}, there is no material difference
  *           between this and the existing approach of manually invoking {@link Disposable#dispose()} on every allocated
  *           {@link Disposable} come {@link Game#dispose()}.
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 interface Drawable extends Disposable {
     /**

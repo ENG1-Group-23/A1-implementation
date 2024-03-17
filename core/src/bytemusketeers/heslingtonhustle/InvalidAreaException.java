@@ -6,6 +6,8 @@ package bytemusketeers.heslingtonhustle;
  * @see Area
  * @see AreaFactory
  * @see PlayScreen
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class InvalidAreaException extends Exception {
 

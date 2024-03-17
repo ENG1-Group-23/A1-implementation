@@ -8,6 +8,8 @@ import java.util.Map;
 /**
  * The {@link MetricManager} manages the storing and manipulation of the game and player metrics, each type of which is
  * identified by a unique {@link Metric} enumerable key.
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class MetricManager {
     /**

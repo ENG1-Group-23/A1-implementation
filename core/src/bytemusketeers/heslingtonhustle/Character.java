@@ -10,27 +10,83 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}. The
- * {@link Character} is a unique given its ability to exist in multiple {@link Area}s across gameplay; the
- * {@link PlayScreen} must inform {@link Character} of any {@link Area} changes; see
- * {@link #switchCharacterContext(Area.AreaName)}.
+ * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}.
+ *
+ * @apiNote The {@link Character} is a unique given its ability to exist in multiple {@link Area}s across gameplay; the
+ *          {@link PlayScreen} must inform {@link Character} of any {@link Area} changes; see
+ *          {@link #switchCharacterContext(Area.AreaName)}.
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class Character extends Sprite implements Drawable {
+    /**
+     * The width of a {@link Character}, in in-game metres
+     */
     private static final float WIDTH = 0.3f;
+
+    /**
+     * The height of a {@link Character}, in in-game metres
+     */
     private static final float HEIGHT = 0.3f;
+
+    /**
+     * The standard moving velocity, across both axes, of a mobile {@link Character}. Specified in in-game metres per
+     * second of continuous input.
+     *
+     * @see #moveUp()
+     * @see #moveDown()
+     * @see #moveLeft()
+     * @see #moveRight()
+     * @see #move()
+     */
     private static final float MOVEMENT_VELOCITY = 4.0f;
+
+    /**
+     * The velocity correction factor by which movement should be slowed if the {@link Character} is traversing both
+     * axes simultaneously; i.e. moving diagonally.
+     *
+     * @see #MOVEMENT_VELOCITY
+     * @see #move()
+     */
     private static final float MOVEMENT_VELOCITY_CORRECTION = (float) Math.sqrt(2);
+
+    /**
+     * The file path of the {@link Character}
+     *
+     * @see #playerTexture
+     */
     private static final String TEXTURE_PATH = "prototype-4.png";
-    private Body activeBody;
+
+    /**
+     * The visual representation of the {@link Character}
+     *
+     * @see #TEXTURE_PATH
+     * @see #render(SpriteBatch)
+     */
     private final Texture playerTexture;
+
+    /**
+     * The transient velocity of the {@link Character}
+     *
+     * @see #MOVEMENT_VELOCITY
+     * @see #move()
+     */
     private final Vector2 velocity = new Vector2();
+
     /**
      * The relationship between the {@link Area} and the {@link Body}, with standard area keys
-     * @see Area.AreaName
-     * @see Body
-     * @see Area
+     *
+     * @see #activeBody
+     * @see #switchCharacterContext(Area.AreaName)
      */
     private final Map<Area.AreaName, Body> bodies = new EnumMap<>(Area.AreaName.class);
+
+    /**
+     * The {@link Body} reference belonging to the current {@link Area} context
+     *
+     * @see #bodies
+     * @see #switchCharacterContext(Area.AreaName)
+     */
+    private Body activeBody;
 
     /**
      * Moves the {@link Character} upwards on the Y-axis
@@ -62,6 +118,11 @@ class Character extends Sprite implements Drawable {
 
     /**
      * Updates the position of the {@link Character} given its transient velocity
+     *
+     * @see #moveUp()
+     * @see #moveDown()
+     * @see #moveLeft()
+     * @see #moveRight()
      */
     public void move() {
         if (velocity.x != 0 && velocity.y != 0) {

@@ -9,6 +9,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 
 /**
  * An {@link Item} denotes a drawable non-{@link Character} object.
+ *
+ * @author ENG1 Team 23 (Cohort 3)
  */
 class Item extends Sprite implements Drawable {
     /**

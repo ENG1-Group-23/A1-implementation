@@ -63,6 +63,16 @@ class GameMap implements Drawable {
     }
 
     /**
+     * Scales the given value, specified in pixels, to in-game metres
+     *
+     * @param value The quantity to scale, in pixels
+     * @return The scaled quantity, in in-game metres
+     */
+    public float scale(float value) {
+        return value / TILE_AXIS_LENGTH;
+    }
+
+    /**
      * Bounds the given candidate vector along the determined {@link #tiledMap} boundaries
      *
      * @param candidate The vector to be bounded

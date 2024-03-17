@@ -177,11 +177,17 @@ class Area implements Drawable {
         if (borderObjects != null)
             for (RectangleMapObject borderObject : borderObjects) {
                 Rectangle bounds = borderObject.getRectangle();
+
+                // The TMX object coordinates are specified in pixels, so we have to scale the rectangle bounds to
+                // in-game metres
                 registerCollisionBody(
-                    new Vector2((bounds.getX() + bounds.getWidth() / 2),
-                        (bounds.getY() + bounds.getHeight() / 2)), BodyDef.BodyType.StaticBody,
-                    bounds.getWidth(),
-                    bounds.getHeight()
+                    new Vector2(
+                        map.scale(bounds.getX() + bounds.getWidth() / 2),
+                        map.scale(bounds.getY() + bounds.getHeight() / 2)
+                    ),
+                    BodyDef.BodyType.StaticBody,
+                    map.scale(bounds.getWidth()),
+                    map.scale(bounds.getHeight())
                 );
             }
     }

@@ -1,10 +1,19 @@
 package bytemusketeers.heslingtonhustle;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
  * A {@link Drawable} represents a {@link Disposable} that may be rendered to a {@link SpriteBatch}
+ *
+ * @implNote Ideally, all {@link Drawable} and/or {@link Disposable} objects would be managed through the standard
+ *           LibGDX {@link com.badlogic.gdx.assets.AssetManager}, providing a JVM-like garbage-collection framework to
+ *           manage on-board GPU entities at runtime, e.g. {@link com.badlogic.gdx.graphics.Texture} and
+ *           {@link com.badlogic.gdx.graphics.g2d.BitmapFont}. Alas, for the relatively small number of {@link Drawable}
+ *           implementors currently constructed from {@link com.badlogic.gdx.Game}, there is no material difference
+ *           between this and the existing approach of manually invoking {@link Disposable#dispose()} on every allocated
+ *           {@link Disposable} come {@link Game#dispose()}.
  */
 interface Drawable extends Disposable {
     /**

@@ -2,14 +2,10 @@ package bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -32,46 +28,11 @@ class Area implements Drawable {
     }
 
     /**
-     * TODO: what is this? Need to review. Should be private/protected and defined in the factory
-     */
-    public static final float MAP_SCALE = 0.04f;
-
-    /**
-     * The width of the map, in pixels
-     *
-     * @see #tiledMap
-     */
-    private final float mapWidth;
-
-    /**
-     * The height of the map, in pixels
-     *
-     * @see #tiledMap
-     */
-    private final float mapHeight;
-
-    /**
      * The list of {@link Interactable} objects existing in the {@link Area}
      *
      * @see Interactable
      */
     private final List<Interactable> interactables = new ArrayList<>();
-
-    /**
-     * The LibGDX rendering object responsible for the rendering of the {@link TiledMap}
-     *
-     * @see #tiledMap
-     * @see #render(SpriteBatch)
-     */
-    private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
-
-    /**
-     * The tiled background of the playable zone of the particular {@link Area}
-     *
-     * @see TmxMapLoader
-     * @see #orthogonalTiledMapRenderer
-     */
-    private final TiledMap tiledMap;
 
     /**
      * The LibGDX world responsible for holding {@link com.badlogic.gdx.physics.box2d.BodyDef.BodyType#StaticBody}
@@ -81,11 +42,21 @@ class Area implements Drawable {
     private final World world;
 
     /**
-     * The initial position of the player-controlled {@link Character} upon being spawned into the {@link Area}.
+     * The initial position of the player-controlled {@link Character} upon being spawned into the {@link Area}. This
+     * position {@link Vector2} is specified in in-game metres.
      *
      * @see Character#setPosition(Vector2)
+     * @see #getInitialCharacterPosition()
      */
     private final Vector2 initialCharacterPosition;
+
+    /**
+     * The {@link GameMap} forming the background of the {@link Area}, including its respective rendering mechanisms
+     *
+     * @see GameMap
+     * @see GameMap#render(SpriteBatch)
+     */
+    private final GameMap map;
 
     /**
      * Adds an {@link Interactable} to the set of interactable tiles in the current {@link Area}.
@@ -100,48 +71,44 @@ class Area implements Drawable {
      * Given the current position of the {@link Character}, interact with any nearby {@link Interactable} objects
      *
      * @param characterPosition The position of the player-controlled {@link Character}
-     * @return Were any interactions triggered?
      * @see Interactable#interact()
      */
-    public boolean triggerInteractables(Vector2 characterPosition) {
-        boolean interacted = false;
-
+    public void triggerInteractables(Vector2 characterPosition) {
         for (Interactable interactable : interactables)
-            if (interactable.isClose(characterPosition)) {
+            if (interactable.isClose(characterPosition))
                 interactable.interact();
-                interacted = true;
-            }
-
-        return interacted;
     }
 
     /**
-     * Instructs the {@link OrthogonalTiledMapRenderer} to update its viewing position with respect to the
+     * Bounds the given candidate vector along the given gutter boundaries and {@link com.badlogic.gdx.maps.Map} edges
+     *
+     * @param candidate The vector to be bounded
+     * @param horizontalGutter The gutter, specified as in-game metres, on the horizontal axis
+     * @param verticalGutter The gutter, specified as in-game metres, on the vertical axis
+     * @return The bounded vector
+     * @implNote For performance reasons, in particular its likely usage during a {@link Drawable#render(SpriteBatch)}
+     *           cycle, this method modifies the original candidate {@link Vector}. The bounded variant of the candidate
+     *           is returned for the convenience of the caller.
+     * @see GameMap#bound(Vector2, float, float)
+     */
+    public Vector2 bound(Vector2 candidate, final float horizontalGutter, final float verticalGutter) {
+        // Bound the candidate vector on the given gutters
+        if (candidate.x < horizontalGutter) candidate.x = horizontalGutter;
+        if (candidate.y < verticalGutter)   candidate.y = verticalGutter;
+
+        // Restrict the gutter-bounded vector along the map borders
+        return map.bound(candidate, horizontalGutter, verticalGutter);
+    }
+
+    /**
+     * Instructs the {@link GameMap} rendering object to update its viewing position with respect to the
      * {@link OrthographicCamera} game camera
      *
      * @param gameCam The {@link OrthographicCamera} game camera against which the {@link Area} viewport should be
      *                aligned
      */
     public void updateView(OrthographicCamera gameCam) {
-        orthogonalTiledMapRenderer.setView(gameCam);
-    }
-
-    /**
-     * Retrieves the width of the {@link Area} map, in metres
-     *
-     * @return The metre-width of the map
-     */
-    public float getMapWidth() {
-        return mapWidth;
-    }
-
-    /**
-     * Retrieves the height of the {@link Area} map, in metres
-     *
-     * @return The metre-height of the map
-     */
-    public float getMapHeight() {
-        return mapHeight;
+        map.updateView(gameCam);
     }
 
     /**
@@ -156,10 +123,10 @@ class Area implements Drawable {
     /**
      * Registers a new body with a standard collision box in the {@link World} corresponding to the {@link Area}
      *
-     * @param initialPosition The initial position of the body
+     * @param initialPosition The initial position of the body, specified as in-game metre components
      * @param type The type of the body, according to {@link com.badlogic.gdx.physics.box2d.BodyDef.BodyType}
-     * @param width The fixed width of the body
-     * @param height The fixed height of the body
+     * @param width The fixed width of the body, in in-game metres
+     * @param height The fixed height of the body, in in-game metres
      * @return The newly registered body
      */
     public Body registerCollisionBody(Vector2 initialPosition, BodyDef.BodyType type, float width, float height) {
@@ -192,7 +159,7 @@ class Area implements Drawable {
     }
 
     /**
-     * Retrieves the initial {@link Character} position, as required by the {@link Area}
+     * Retrieves the initial {@link Area}-local {@link Character} position, in in-game metres
      *
      * @return The requested position vector
      * @see Character
@@ -207,15 +174,16 @@ class Area implements Drawable {
      * @param borderObjects The array of {@link RectangleMapObject}s represented the border vector
      */
     private void generateBorders(com.badlogic.gdx.utils.Array<RectangleMapObject> borderObjects) {
-        for (RectangleMapObject borderObject : borderObjects) {
-            Rectangle bounds = borderObject.getRectangle();
-            registerCollisionBody(
-                new Vector2((bounds.getX() + bounds.getWidth() / 2), (bounds.getY() + bounds.getHeight() / 2))
-                    .scl(Area.MAP_SCALE), BodyDef.BodyType.StaticBody,
-                bounds.getWidth() * Area.MAP_SCALE,
-                bounds.getHeight() * Area.MAP_SCALE
-            );
-        }
+        if (borderObjects != null)
+            for (RectangleMapObject borderObject : borderObjects) {
+                Rectangle bounds = borderObject.getRectangle();
+                registerCollisionBody(
+                    new Vector2((bounds.getX() + bounds.getWidth() / 2),
+                        (bounds.getY() + bounds.getHeight() / 2)), BodyDef.BodyType.StaticBody,
+                    bounds.getWidth(),
+                    bounds.getHeight()
+                );
+            }
     }
 
     /**
@@ -226,8 +194,7 @@ class Area implements Drawable {
         for (Interactable interactable : interactables)
             interactable.dispose();
 
-        orthogonalTiledMapRenderer.dispose();
-        tiledMap.dispose();
+        map.dispose();
         world.dispose();
     }
 
@@ -239,8 +206,7 @@ class Area implements Drawable {
      */
     @Override
     public void render(SpriteBatch batch) {
-        orthogonalTiledMapRenderer.render();
-
+        map.render(batch);
         for (Interactable interactable : interactables)
             interactable.render(batch);
     }
@@ -248,26 +214,15 @@ class Area implements Drawable {
     /**
      * Constructs a new {@link Area} with a {@link TiledMap} with a TMX file at the given path
      *
-     * @param map The path of the {@link Area}'s background texture
-     * @param initialCharacterPosition The initial position of the {@link Character} on the {@link Area} map
+     * @param mapPath The path of the {@link Area}'s background texture
+     * @param initialCharacterPosition The initial position of the {@link Character} on the {@link Area} map, specified
+     *                                 by in-game metre components
      * @see Character
      */
-    public Area(String map, Vector2 initialCharacterPosition) {
-        this.initialCharacterPosition = initialCharacterPosition;
-
-        tiledMap = new TmxMapLoader().load(map);
+    public Area(String mapPath, Vector2 initialCharacterPosition) throws InvalidAreaException {
+        map = new GameMap(mapPath);
         world = new World(new Vector2(0, 0), true);
-        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, MAP_SCALE);
-
-        MapProperties properties = tiledMap.getProperties();
-        MapLayers layers = tiledMap.getLayers();
-
-        mapWidth = properties.get("tilewidth", Integer.class) * properties.get("width", Integer.class)
-            * MAP_SCALE;
-        mapHeight = properties.get("tileheight", Integer.class) * properties.get("height", Integer.class)
-            * MAP_SCALE;
-
-        for (MapLayer layer : layers)
-            generateBorders(layer.getObjects().getByType(RectangleMapObject.class));
+        generateBorders(map.getBorderObjects());
+        this.initialCharacterPosition = initialCharacterPosition;
     }
 }

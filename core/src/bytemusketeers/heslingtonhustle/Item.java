@@ -17,12 +17,12 @@ class Item extends Sprite implements Drawable {
     private final Texture texture;
 
     /**
-     * The width of the {@link Item}, in pixels
+     * The width of the {@link Item}, in in-game metres
      */
     private final float width;
 
     /**
-     * The height of the {@link Item}, in pixels
+     * The height of the {@link Item}, in in-game metres
      */
     private final float height;
 
@@ -57,18 +57,18 @@ class Item extends Sprite implements Drawable {
      *
      * @return The position of the body
      */
-    public Vector2 getPosition() {
+    protected Vector2 getPosition() {
         return body.getPosition();
     }
 
     /**
      * Instantiates a new {@link Item} with the given initial parameters
      *
-     * @param position The initial position of the {@link Item}
+     * @param position The initial position of the {@link Item}, specified as in-game metre components
      * @param texture The initial {@link Sprite} {@link Texture}
      * @param area The {@link Area} into which the {@link Item} should be drawn
-     * @param width The initial width
-     * @param height The initial height
+     * @param width The initial width, in in-game metres
+     * @param height The initial height, in in-game metres
      */
     public Item(Vector2 position, Texture texture, Area area, float width, float height) {
         this.texture = texture;

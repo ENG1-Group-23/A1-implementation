@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -32,7 +31,7 @@ class PlayScreen implements Screen {
     /**
      * The render {@link Viewport} associated with the parental {@link com.badlogic.gdx.Game}
      */
-    private final Viewport gamePort;
+    private final Viewport viewport;
 
     /**
      * The player-controlled {@link com.badlogic.gdx.graphics.g2d.Sprite} that is tracked by the game camera
@@ -100,9 +99,12 @@ class PlayScreen implements Screen {
     private boolean paused = false;
 
     /**
-     * Initialise some sample areas into the {@link PlayScreen}
+     * Initialise the play {@link Area}s
+     *
+     * @see Area
+     * @see AreaFactory
      */
-    private void initialiseAreas() {
+    private void initialiseAreas() throws InvalidAreaException {
         AreaFactory factory = new AreaFactory(metricManager);
 
         areas.put(Area.AreaName.TestMap, factory.createTestMap());
@@ -113,76 +115,61 @@ class PlayScreen implements Screen {
 
     /**
      * Handles user system events, such as key-presses.
-     * TODO: upon {@link Character} movement, the collision {@link com.badlogic.gdx.physics.box2d.Body} does not move
-     *       at the same rate as its corresponding visual {@link com.badlogic.gdx.graphics.g2d.Sprite}. This can be
-     *       seen graphically with the LibGDX {@link com.badlogic.gdx.physics.box2d.Box2DDebugRenderer}.
      *
      * @implNote In the future, this implementation should be replaced by an implementation of
      *           {@link com.badlogic.gdx.InputProcessor} or an extension of {@link com.badlogic.gdx.InputAdapter}. In
      *           that case, {@link Input.Keys} could be switched over by overrides of
      *           {@link com.badlogic.gdx.InputProcessor#keyDown(int)},
      *           {@link com.badlogic.gdx.InputProcessor#keyUp(int)},
-     *           {@link com.badlogic.gdx.InputProcessor#keyTyped(char)}, etc.
+     *           {@link com.badlogic.gdx.InputProcessor#keyTyped(char)}, etc. This may be chained with a
+     *           {@link com.badlogic.gdx.InputMultiplexer} to account for differing, per-{@link Screen} input schemas.
+     *
+     * @implNote In such an implementation as above, the key-bindings could be separated out into a distinct enum or
+     *           class, in which eventuality, the constructor would match a {@link Input.Keys} with corresponding
+     *           {@link Runnable} from the context of the {@link PlayScreen}. This would avoid the "magic keys" as seen
+     *           here, and also allow for runtime re-bindings of key combinations with their respective {@link Runnable}
+     *           action.
      */
     private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
-            Gdx.app.exit();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))      Gdx.app.exit();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) paused = !paused;
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-            paused = !paused;
+        if (!paused) {
+            if (Gdx.input.isKeyPressed(Input.Keys.W)) character.moveUp();
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) character.moveDown();
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) character.moveLeft();
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) character.moveRight();
 
-        if (paused)
-            return;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E))
+                activeArea.triggerInteractables(character.getPosition());
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W))
-            character.moveUp();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.S))
-            character.moveDown();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.A))
-            character.moveLeft();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D))
-            character.moveRight();
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E))
-            if (!activeArea.triggerInteractables(character.getPosition()))
-                // TODO: If no interactions were triggered, switch to Piazza. Just a temporary test.
-                switchArea(Area.AreaName.PiazzaBuilding);
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M))
-            switchArea(Area.AreaName.CompSciBuilding);
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N))
-            switchArea(Area.AreaName.BedroomBuilding);
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.B))
-            switchArea(Area.AreaName.TestMap);
+            // TODO: just a few temporary tests for switching areas
+            if (Gdx.input.isKeyJustPressed(Input.Keys.P)) switchArea(Area.AreaName.PiazzaBuilding);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.C)) switchArea(Area.AreaName.CompSciBuilding);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.B)) switchArea(Area.AreaName.BedroomBuilding);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.T)) switchArea(Area.AreaName.TestMap);
+        }
     }
 
     /**
      * Handles the game logic and updates the state of the game world
      */
     public void update() {
+        final float horizontalGutter = viewport.getWorldWidth() / 2;
+        final float verticalGutter = viewport.getWorldHeight() / 2;
+
         // Configure the collision-detection parameters in the game world
         activeArea.step();
 
         // Handle movement and update the character velocities and position accordingly
         character.move();
 
-        // Update the game camera position, such that the character is followed and centralised, unless close to a
-        // viewport boundary
-        Vector2 characterPosition = character.getPosition();
-
-        if (character.isWithinHorizontalBound(activeArea))
-            gameCam.position.x = characterPosition.x;
-
-        if (character.isWithinVerticalBound(activeArea))
-            gameCam.position.y = characterPosition.y;
-
-        activeArea.updateView(gameCam);
+        // Update the game camera position, such that the character is followed, unless close to a map boundary
+        gameCam.position.set(activeArea.bound(character.getPosition(), horizontalGutter, verticalGutter), 0);
         gameCam.update();
+
+        // Update the viewport boundaries with the game camera information
+        activeArea.updateView(gameCam);
     }
 
     /**
@@ -193,12 +180,13 @@ class PlayScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
-        gamePort.update(width, height);
-        System.out.println("PlayScreen resized");
+        viewport.update(width, height);
     }
 
     /**
      * Handles the {@link PlayScreen} becoming the active {@link Screen}; currently a placeholder
+     *
+     * @see #hide()
      */
     @Override
     public void show() {
@@ -206,7 +194,9 @@ class PlayScreen implements Screen {
     }
 
     /**
-     * Dual of the {@link #show()}, this handles the {@link PlayScreen} being hidden
+     * Handles the {@link PlayScreen} being hidden
+     *
+     * @see #show()
      */
     @Override
     public void hide() {
@@ -214,21 +204,23 @@ class PlayScreen implements Screen {
     }
 
     /**
-     * Handles the {@link PlayScreen}, and hence general gameplay execution, being paused; currently a placeholder
+     * Handles the {@link PlayScreen}, and hence general gameplay execution, being paused
+     *
+     * @see #resume()
+     * @see #pauseMenu
      */
     @Override
     public void pause() {
-        System.out.println("PlayScreen paused");
         paused = true;
     }
 
     /**
-     * Dual of the {@link #pause()}, this handles the {@link PlayScreen}, and hence general gameplay execution, being
-     * resumed; currently a placeholder
+     * Handles the {@link PlayScreen}, and hence general gameplay execution, being resumed
+     *
+     * @see #pause()
      */
     @Override
     public void resume() {
-        System.out.println("PlayScreen resumed");
         paused = false;
     }
 
@@ -238,22 +230,18 @@ class PlayScreen implements Screen {
      * @param areaName The {@link Area.AreaName} of the new {@link Area}
      * @see Area
      */
-    private void switchArea(@SuppressWarnings("SameParameterValue") Area.AreaName areaName) {
+    private void switchArea(Area.AreaName areaName) {
         // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaName);
         character.switchCharacterContext(areaName);
         character.setPosition(activeArea.getInitialCharacterPosition());
 
-        // Update the game camera, bounding as usual
-        Vector3 newCameraPosition = new Vector3(activeArea.getInitialCharacterPosition(), 0);
+        // Update the game camera
+        Vector2 newCameraPosition = activeArea.getInitialCharacterPosition();
 
-        if (!character.isWithinHorizontalBound(activeArea))
-            newCameraPosition.x = HeslingtonHustle.WIDTH_METRES_BOUND;
-
-        if (!character.isWithinVerticalBound(activeArea))
-            newCameraPosition.y = HeslingtonHustle.HEIGHT_METRES_BOUND;
-
-        gameCam.position.set(newCameraPosition);
+        gameCam.position.x = newCameraPosition.x;
+        gameCam.position.y = newCameraPosition.y;
+        gameCam.update();
     }
 
     /**
@@ -273,10 +261,12 @@ class PlayScreen implements Screen {
      * visible objects including the {@link Area}---and hence all {@link Interactable} elements on the
      * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, the {@link Character}, and the {@link HeadsUpDisplay}.
      *
-     * @param delta The time in seconds since the last render; not currently used
+     * @param delta The time in seconds since the last render
      * @see Area
      * @see Character
      * @see HeadsUpDisplay
+     * @implNote In the future, the time-delta parameter should be used for consistent cross-platform rendering and
+     *           input-handling; see {@link #handleInput()}.
      */
     @Override
     public void render(float delta) {
@@ -285,10 +275,8 @@ class PlayScreen implements Screen {
 
         batch.setProjectionMatrix(gameCam.combined);
         batch.begin();
-
         activeArea.render(batch);
         character.render(batch);
-
         batch.end();
         hud.render(batch);
 
@@ -299,16 +287,19 @@ class PlayScreen implements Screen {
     /**
      * Instantiates a new {@link PlayScreen} to be used for the playing area of the game. This constructor loads all
      * assets for all stages of the playing area, to be manipulated and rendered when required.
+     *
+     * @throws InvalidAreaException At least one {@link Area} required by the {@link PlayScreen} could not be properly
+     *                              instantiated by the {@link AreaFactory}
      */
-    public PlayScreen(SpriteBatch batch) {
+    public PlayScreen(SpriteBatch batch) throws InvalidAreaException {
         this.batch = batch;
         gameCam = new OrthographicCamera();
-        gamePort = new StretchViewport(Gdx.graphics.getWidth() / HeslingtonHustle.PPM,
-            Gdx.graphics.getHeight() / HeslingtonHustle.PPM, gameCam);
+        viewport = new StretchViewport(HeslingtonHustle.scaleToMetres(Gdx.graphics.getWidth()),
+            HeslingtonHustle.scaleToMetres(Gdx.graphics.getHeight()), gameCam);
         hud = new HeadsUpDisplay(batch);
         pauseMenu = new PauseMenu(batch);
 
-        gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+        gameCam.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
         initialiseAreas();
         activeArea = areas.get(Area.AreaName.TestMap);

@@ -19,6 +19,7 @@ class Character extends Sprite implements Drawable {
     private static final float WIDTH = 0.3f;
     private static final float HEIGHT = 0.3f;
     private static final float MOVEMENT_VELOCITY = 4.0f;
+    private static final float MOVEMENT_VELOCITY_CORRECTION = (float) Math.sqrt(2);
     private static final String TEXTURE_PATH = "prototype-4.png";
     private Body activeBody;
     private final Texture playerTexture;
@@ -61,40 +62,16 @@ class Character extends Sprite implements Drawable {
 
     /**
      * Updates the position of the {@link Character} given its transient velocity
-     * TODO: consistent movement speeds on a resized window
      */
     public void move() {
         if (velocity.x != 0 && velocity.y != 0) {
-            velocity.x /= 1.5f;
-            velocity.y /= 1.5f;
+            // Correct faster movement when simultaneously traversing both axes
+            velocity.x -= Math.signum(velocity.x) * MOVEMENT_VELOCITY_CORRECTION;
+            velocity.y -= Math.signum(velocity.y) * MOVEMENT_VELOCITY_CORRECTION;
         }
 
         activeBody.setLinearVelocity(velocity);
         velocity.setZero();
-    }
-
-    /**
-     * Checks if the {@link Character} is out of the given {@link Area} boundaries, on the horizontal axis
-     *
-     * @param area The {@link Area} against which the boundary should be tested
-     * @return Is the {@link Character} out-of-bounds on the horizontal of the {@link Area}?
-     */
-    public boolean isWithinHorizontalBound(Area area) {
-        Vector2 position = getPosition();
-        return (position.x >= HeslingtonHustle.WIDTH_METRES_BOUND && position.x <= area.getMapWidth() -
-            HeslingtonHustle.WIDTH_METRES_BOUND);
-    }
-
-    /**
-     * Checks if the {@link Character} is out of the given {@link Area} boundaries, on the vertical axis
-     *
-     * @param area The {@link Area} against which the boundary should be tested
-     * @return Is the {@link Character} out-of-bounds on the vertical of the {@link Area}?
-     */
-    public boolean isWithinVerticalBound(Area area) {
-        Vector2 position = getPosition();
-        return (position.y >= HeslingtonHustle.HEIGHT_METRES_BOUND && position.y <= area.getMapHeight() -
-            HeslingtonHustle.HEIGHT_METRES_BOUND);
     }
 
     /**

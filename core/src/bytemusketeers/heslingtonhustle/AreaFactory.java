@@ -1,8 +1,7 @@
 package bytemusketeers.heslingtonhustle;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -11,6 +10,12 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @see Area
  * @see Interactable
+ * @implNote Any future programmer wishing to add {@link Area} initialisers should note that all coordinate vectors are
+ *           specified by components described in in-game metres, not pixels.
+ * @apiNote Every initialiser contained herein may throw an {@link InvalidAreaException} in event of the requested TMX
+ *          tile-map file being externally corrupt. Users of the {@link AreaFactory} should deal with such cases
+ *          gracefully, as continuing with an uninitialised area will invoke undefined GPU behaviour from LibGDX during
+ *          the {@link Drawable#render(SpriteBatch)} cycle.
  */
 final class AreaFactory {
     /**
@@ -28,24 +33,19 @@ final class AreaFactory {
      *
      * @return The generated test map
      */
-    public Area createTestMap() {
-        Area area = new Area("Maps/test-map.tmx", new Vector2((float) Gdx.graphics.getWidth() / 2,
-            (float) Gdx.graphics.getHeight() / 2).scl(1 / HeslingtonHustle.PPM));
+    public Area createTestMap() throws InvalidAreaException {
+        Area area = new Area("Maps/test-map.tmx", new Vector2(2, 2));
 
         area.addInteractable(new Interactable(
-            new Vector2(
-                MathUtils.random(0, Gdx.graphics.getWidth()),
-                MathUtils.random(0, Gdx.graphics.getHeight())).scl(1 / HeslingtonHustle.PPM),
+            new Vector2(0, 2),
             new Texture("prototype-1.png"),
-            area, 0.5f, 0.5f,
+            area, 1, 1,
             () -> metricManager.incrementMetric(MetricManager.Metric.Preparedness, 1)));
 
         area.addInteractable(new Interactable(
-            new Vector2(
-                MathUtils.random(0, Gdx.graphics.getWidth()),
-                MathUtils.random(0, Gdx.graphics.getHeight())).scl(1 / HeslingtonHustle.PPM),
+            new Vector2(8, 2),
             new Texture("prototype-2.png"),
-            area, 0.5f, 0.5f,
+            area, 1, 1,
             () -> metricManager.decrementMetric(MetricManager.Metric.Preparedness, 1)));
 
         return area;
@@ -57,8 +57,8 @@ final class AreaFactory {
      *
      * @return The generated Piazza map
      */
-    public Area createPiazzaMap() {
-        return new Area("Maps/piazza-map.tmx", new Vector2(304, 32).scl(Area.MAP_SCALE));
+    public Area createPiazzaMap() throws InvalidAreaException {
+        return new Area("Maps/piazza-map.tmx", new Vector2(19, 1.4f));
     }
 
     /**
@@ -67,8 +67,8 @@ final class AreaFactory {
      *
      * @return The generated Computer Science building
      */
-    public Area createCSMap() {
-        return new Area("Maps/comp-sci-map.tmx", new Vector2(398, 16).scl(Area.MAP_SCALE));
+    public Area createCSMap() throws InvalidAreaException {
+        return new Area("Maps/comp-sci-map.tmx", new Vector2(25, 1));
     }
 
     /**
@@ -77,8 +77,8 @@ final class AreaFactory {
      *
      * @return The generated bedroom building
      */
-    public Area createBedroomMap() {
-        return new Area("Maps/bedroom-map.tmx", new Vector2(160, 16).scl(Area.MAP_SCALE));
+    public Area createBedroomMap() throws InvalidAreaException {
+        return new Area("Maps/bedroom-map.tmx", new Vector2(10, 1));
     }
 
     /**

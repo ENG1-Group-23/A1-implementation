@@ -1,6 +1,7 @@
 package bytemusketeers.heslingtonhustle;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -9,22 +10,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 class HeslingtonHustle extends Game {
     /**
-     * 'PPM' denotes the number of pixels-per-(in-game)-metre.
-     * TODO: what is this? Need to review.
+     * 'PPM' denotes the number of pixels-per-(in-game)-metre. This is useful for converting between
+     * {@link com.badlogic.gdx.Graphics} units and in-game metres.
+     *
+     * @see #scaleToMetres(int)
      */
-    public static final float PPM = 100;
-
-    /**
-     * TODO: WIDTH_METRES_BOUND?
-     * TODO: what is this? Need to review.
-     */
-    public static final float WIDTH_METRES_BOUND = 4;
-
-    /**
-     * TODO: HEIGHT_METRES_BOUND?
-     * TODO: what is this? Need to review.
-     */
-    public static final float HEIGHT_METRES_BOUND = 2.4f;
+    private static final float PPM = 100;
 
     /**
      * The LibGDX {@link SpriteBatch} used during render-time
@@ -42,14 +33,39 @@ class HeslingtonHustle extends Game {
     private Screen[] screens;
 
     /**
+     * Scales a pixel component to in-game metres
+     *
+     * @param value The quantity to scale, in pixels
+     * @return The corresponding quantity of in-game metres
+     * @implNote Future implementors may wish to parameterise the {@link #PPM} in terms of the screen DPI-equivalent;
+     *           see {@link Graphics#getPpiX()} and friends.
+     */
+    public static float scaleToMetres(int value) {
+        return value / PPM;
+    }
+
+    /**
      * Handles the creation of the {@link com.badlogic.gdx.Application}
+     *
+     * @apiNote If the {@link PlayScreen} and its constituent {@link Area} objects cannot be created, this method
+     *          halts the JVM-level process with a non-zero exit code. This is not graceful, and is primarily used for
+     *          testing purposes. In practice, this would only occur if the TMX tile-map assets have been externally
+     *          corrupted.
+     *
+     * @see InvalidAreaException
      */
     @Override
     public void create() {
         batch = new SpriteBatch();
-        screens = new Screen[] { new PlayScreen(batch) };
 
-        setScreen(screens[0]);
+        try {
+            screens = new Screen[]{new PlayScreen(batch)};
+            setScreen(screens[0]);
+        } catch (InvalidAreaException iae) {
+            //noinspection CallToPrintStackTrace
+            iae.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**

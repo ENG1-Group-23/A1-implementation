@@ -3,7 +3,6 @@ package bytemusketeers.heslingtonhustle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -13,10 +12,11 @@ class Interactable extends Item {
     /**
      * The square of the maximum interaction distance; that is, the maximum distance, measured by the Euclidean metric,
      * that a {@link Character} may be from an {@link Interactable} to fire an {@link #interact()}.
+     * TODO: this should depend on the size of the {@link Item}
      *
      * @see #isClose(Vector2)
      */
-    private static final float INTERACTION_DISTANCE_SQ = 0.3f;
+    private static final float INTERACTION_DISTANCE_SQ = 1f;
 
     /**
      * The action to execute after {@link #interact()} has been finished. The execution should be deferred to LibGDX to
@@ -30,6 +30,8 @@ class Interactable extends Item {
 
     /**
      * Indicate that the {@link Character} has interacted with the {@link Item}
+     *
+     * @see #action
      */
     public void interact() {
         if (action != null)
@@ -48,23 +50,13 @@ class Interactable extends Item {
     }
 
     /**
-     * If applicable, renders the {@link Interactable} as an {@link Item}, otherwise do nothing
-     *
-     * @param batch The {@link SpriteBatch} to which the {@link Item} should be polled
-     */
-    @Override
-    public void render(SpriteBatch batch) {
-        super.render(batch);
-    }
-
-    /**
      * Instantiates a new {@link Interactable} {@link Item} with the given initial parameters
      *
-     * @param position The initial position of the {@link Interactable}
+     * @param position The initial position of the {@link Interactable}, specified as in-game metre components
      * @param texture The initial {@link Sprite} {@link Texture}
      * @param area The {@link Area} into which the {@link Interactable} should be drawn
-     * @param width The initial width
-     * @param height The initial height
+     * @param width The initial width, in in-game metres
+     * @param height The initial height, in in-game metres
      * @param action The {@link Runnable} method to execute upon interaction
      */
     public Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {

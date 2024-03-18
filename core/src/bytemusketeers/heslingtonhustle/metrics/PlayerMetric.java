@@ -46,6 +46,7 @@ class PlayerMetric implements MetricEntry {
      * @param multiplier An integer multiplier of the {@link #STANDARD_INCREMENT}
      */
     void decrementMetric(int multiplier) {
-        value -= STANDARD_INCREMENT * multiplier;
+        if (value > 0)
+            value -= STANDARD_INCREMENT * multiplier;
     }
 }

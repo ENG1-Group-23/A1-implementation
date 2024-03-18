@@ -262,8 +262,9 @@ public class PlayScreen implements Screen {
      * @see Area
      */
     public void switchArea(Area.Name areaName) {
-        // When returning to this area, come back to the place we left
-        activeArea.setInitialCharacterPosition(character.getPosition());
+        if (areaName != Area.Name.OutdoorMap)
+            // If going inside, save the outdoor position for when exiting the building
+            activeArea.setInitialCharacterPosition(character.getPosition());
 
         // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaName);
@@ -277,12 +278,15 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Advances the day, or finishes the game as appropriate
+     * Advances the day, or finishes the game as appropriate. The {@link MetricController.Metric#Sleep} is always
+     * incremented, since the game is over after the final sleep, on the morning of the exam!
      *
      * @see MetricController#advanceDOWMetric()
      * @see GameState
      */
     public void advanceDay() {
+        metricController.incrementPlayerMetric(MetricController.Metric.Sleep, 1);
+
         if (metricController.isFinalDay())
             state = GameState.GAME_OVER;
         else

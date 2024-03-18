@@ -65,7 +65,7 @@ class Interactable extends Item {
     private Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
         super(position, texture, area, width, height);
         this.action = action;
-        interactionThreshold = (width + height) / 3;
+        interactionThreshold = (width + height) / 2;
     }
 
     /**

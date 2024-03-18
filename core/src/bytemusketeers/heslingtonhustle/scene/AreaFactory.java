@@ -44,6 +44,7 @@ final public class AreaFactory {
         Area area = new Area("Maps/outdoor-map.tmx", new Vector2(2, 2));
 
         // The Piazza building entrance
+        // TODO: change sprite, make building-specific
         area.addInteractable(new Interactable(
             new Vector2(4, 7),
             new Texture("Building-1.png"),
@@ -52,7 +53,7 @@ final public class AreaFactory {
         ));
 
         // The university accommodation/bedroom building entrance
-        // TODO: change sprite
+        // TODO: change sprite, make building-specific
         area.addInteractable(new Interactable(
             new Vector2(23, 11),
             new Texture("Building-1.png"),
@@ -61,7 +62,7 @@ final public class AreaFactory {
         ));
 
         // The computer science building entrance
-        // TODO: change sprite
+        // TODO: change sprite, make building-specific
         area.addInteractable(new Interactable(
             new Vector2(12, 17),
             new Texture("Building-1.png"),
@@ -74,15 +75,40 @@ final public class AreaFactory {
 
     /**
      * Creates an {@link Area} of the Piazza building
-     * TODO: currently incomplete
      *
      * @return The generated Piazza map
      */
     public Area createPiazzaMap() throws InvalidAreaException {
         Area area = new Area("Maps/piazza-map.tmx", new Vector2(19, 3));
 
+        // Study opportunity (south wing)
+        area.addInteractable(new Interactable(
+            new Vector2(25.5f, 7.5f),
+            new Texture("Paper.png"),
+            area, 4,
+            () -> metricController.incrementPlayerMetric(MetricController.Metric.Study, 1)
+        ));
+
+        // Meal opportunity #1 (east wing)
+        area.addInteractable(new Interactable(
+            new Vector2(17.5f, 15.5f),
+            new Texture("Food-Plate.png"),
+            area, 4,
+            () -> metricController.incrementPlayerMetric(MetricController.Metric.Eat, 1)
+        ));
+
+        // Recreational opportunity (west wing)
+        area.addInteractable(new Interactable(
+            new Vector2(5, 15.5f),
+            new Texture("Alcohol-1.png"),
+            area, 4, () -> {
+                metricController.incrementPlayerMetric(MetricController.Metric.Play, 1);
+                metricController.decrementPlayerMetric(MetricController.Metric.Study, 1);
+            }
+        ));
+
         // Return to the outside
-        // TODO: change sprite
+        // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
             new Vector2(19, 1),
             new Texture("Building-1.png"),
@@ -95,15 +121,38 @@ final public class AreaFactory {
 
     /**
      * Creates an {@link Area} of the Ian Wand Computer Science building
-     * TODO: currently incomplete
      *
      * @return The generated Computer Science building
      */
     public Area createCSMap() throws InvalidAreaException {
         Area area = new Area("Maps/comp-sci-map.tmx", new Vector2(25, 3));
 
+        // Study opportunity (east wing)
+        area.addInteractable(new Interactable(
+            new Vector2(45, 11),
+            new Texture("Paper.png"),
+            area, 4,
+            () -> metricController.incrementPlayerMetric(MetricController.Metric.Study, 1)
+        ));
+
+        // Study opportunity (east wing)
+        area.addInteractable(new Interactable(
+            new Vector2(42, 15.5f),
+            new Texture("Paper.png"),
+            area, 4,
+            () -> metricController.incrementPlayerMetric(MetricController.Metric.Study, 1)
+        ));
+
+        // Meal opportunity (west wing)
+        area.addInteractable(new Interactable(
+            new Vector2(7, 15.5f),
+            new Texture("Food-Plate.png"),
+            area, 4,
+            () -> metricController.incrementPlayerMetric(MetricController.Metric.Eat, 1)
+        ));
+
         // Return to the outside
-        // TODO: change sprite
+        // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
             new Vector2(25, 1),
             new Texture("Building-1.png"),
@@ -130,8 +179,18 @@ final public class AreaFactory {
             playScreen::advanceDay
         ));
 
+        // Recreational opportunity
+        area.addInteractable(new Interactable(
+            new Vector2(2, 3),
+            new Texture("Alcohol-1.png"),
+            area, 4, () -> {
+            metricController.incrementPlayerMetric(MetricController.Metric.Play, 1);
+            metricController.decrementPlayerMetric(MetricController.Metric.Study, 1);
+        }
+        ));
+
         // Return to the outside
-        // TODO: change sprite
+        // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
             new Vector2(6, 1),
             new Texture("Building-1.png"),

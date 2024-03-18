@@ -183,7 +183,8 @@ public class Area implements Drawable {
      * @see #registerCollisionBody(Vector2, BodyDef.BodyType, float, float)
      * @see Character
      */
-    Body registerCharacter(float width, float height) {
+    Body registerCharacter(@SuppressWarnings("SameParameterValue") float width,
+                           @SuppressWarnings("SameParameterValue") float height) {
         return registerCollisionBody(initialCharacterPosition, BodyDef.BodyType.DynamicBody, width, height);
     }
 

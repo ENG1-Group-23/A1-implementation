@@ -29,8 +29,7 @@ final class AreaFactory {
 
     /**
      * Creates an {@link Area} for testing purposes with a couple of {@link Interactable} objects at randomly generated
-     * locations, incrementing and decrementing the
-     * {@link MetricManager.Metric#Preparedness} metric.
+     * locations, incrementing and decrementing the {@link MetricManager.Metric#Study} metric.
      *
      * @return The generated test map
      */
@@ -41,13 +40,13 @@ final class AreaFactory {
             new Vector2(0, 2),
             new Texture("prototype-1.png"),
             area, 1, 1,
-            () -> metricManager.incrementMetric(MetricManager.Metric.Preparedness, 1)));
+            () -> metricManager.incrementMetric(MetricManager.Metric.Study, 1)));
 
         area.addInteractable(new Interactable(
             new Vector2(8, 2),
             new Texture("prototype-2.png"),
             area, 1, 1,
-            () -> metricManager.decrementMetric(MetricManager.Metric.Preparedness, 1)));
+            () -> metricManager.decrementMetric(MetricManager.Metric.Study, 1)));
 
         return area;
     }

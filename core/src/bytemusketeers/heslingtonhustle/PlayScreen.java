@@ -294,13 +294,14 @@ class PlayScreen implements Screen {
         // UI elements
         hud = new HeadsUpDisplay(batch,
             new MetricManager.Metric[] {
-                MetricManager.Metric.Preparedness,
-                MetricManager.Metric.Happiness,
-                MetricManager.Metric.Tiredness
-            },
-            new MetricManager.Metric[] {
                 MetricManager.Metric.Area,
                 MetricManager.Metric.Day
+            },
+            new MetricManager.Metric[] {
+                MetricManager.Metric.Sleep,
+                MetricManager.Metric.Study,
+                MetricManager.Metric.Eat,
+                MetricManager.Metric.Play
             }
         );
 

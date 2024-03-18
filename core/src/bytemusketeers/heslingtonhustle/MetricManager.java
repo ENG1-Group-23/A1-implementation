@@ -33,7 +33,36 @@ class MetricManager {
      * @see #decrementMetric(Metric, int)
      */
     enum Metric {
-        Happiness, Tiredness, Preparedness, Day, Area
+        Sleep("Number of Sleeps"),
+        Study("Number of Study Sessions"),
+        Eat("Number of Meals"),
+        Play("Number of Recreational Sessions"),
+        Area("Current Area"),
+        Day("Current Day");
+
+        /**
+         * The display name of the {@link Metric}
+         */
+        private final String displayName;
+
+        /**
+         * Retrieves the display name of the {@link Metric}
+         *
+         * @return The requested display name
+         */
+        @Override
+        public String toString() {
+            return displayName;
+        }
+
+        /**
+         * Constructs a new {@link Metric} enumerable entry with a suitable ordinal value and given display name
+         *
+         * @param displayName The {@link Metric} display name
+         */
+        Metric(String displayName) {
+            this.displayName = displayName;
+        }
     }
 
     /**
@@ -96,9 +125,10 @@ class MetricManager {
         String text;
 
         switch (metric) {
-            case Preparedness:
-            case Happiness:
-            case Tiredness:
+            case Sleep:
+            case Study:
+            case Eat:
+            case Play:
                 text = value.toString();
                 break;
 

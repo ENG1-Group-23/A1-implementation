@@ -21,7 +21,7 @@ class GameMap implements Drawable {
     /**
      * The fixed width and height of all tiles, in pixels
      */
-    private static final int TILE_AXIS_LENGTH = 16;
+    public static final int TILE_AXIS_LENGTH = 16;
 
     /**
      * The {@link TiledMap} representing the loaded tilemap TMX file
@@ -62,6 +62,23 @@ class GameMap implements Drawable {
 
         return null;
         // throw new InvalidAreaException("Level does not contain any borders");
+    }
+    /**
+     * Retrieve any layer objects from the {@link TiledMap} of the current {@link GameMap}
+     *
+     * @param nameOfTheLayer the name of the layer where objects are
+     * @return The {@link RectangleMapObject} objects embedded in the requested layer
+     */
+    public com.badlogic.gdx.utils.Array<RectangleMapObject> getLayerObjects(String nameOfTheLayer) throws InvalidAreaException {
+        MapLayers layers = tiledMap.getLayers();
+
+        try {
+            return layers.get(nameOfTheLayer).getObjects().getByType(RectangleMapObject.class);
+        }
+        catch (Exception e) {
+            throw new InvalidAreaException("Level does not contain any borders");
+        }
+
     }
 
     /**

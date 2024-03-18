@@ -3,6 +3,8 @@ package bytemusketeers.heslingtonhustle.scene;
 import bytemusketeers.heslingtonhustle.metrics.MetricController;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -59,7 +61,29 @@ final public class AreaFactory {
      * @return The generated Piazza map
      */
     public Area createPiazzaMap() throws InvalidAreaException {
-        return new Area("Maps/piazza-map.tmx", new Vector2(19, 1.4f));
+        Area area = new Area("Maps/piazza-map.tmx", new Vector2(19, 1.4f));
+
+        for (RectangleMapObject spawn_point: area.getLayerObjects("food-spawn-locations")) {
+            if (MathUtils.random(0,1) == 1)
+            {
+                float x = spawn_point.getRectangle().getX() + spawn_point.getRectangle().getWidth() / 2;
+                float y = spawn_point.getRectangle().getY() + spawn_point.getRectangle().getHeight() / 2;
+                Interactable[] interactable = new Interactable[1]; // no need for a default constructor by doing this
+                interactable[0] = new Interactable(
+                    new Vector2(x, y).scl(1f/GameMap.TILE_AXIS_LENGTH),
+                    new Texture("prototype-1.png"),
+                    area, 0.25f, 0.25f,
+                    () -> {
+                        metricController.incrementPlayerMetric(MetricController.Metric.Eat, 1);
+                        //area.removeInteractable(interactable[0]); //removes food on use
+                    }
+                );
+
+                area.addInteractable(interactable[0]);
+            }
+        }
+        return area;
+
     }
 
     /**

@@ -36,6 +36,15 @@ class Item implements Drawable {
     private final Body body;
 
     /**
+     * Gets the {@link Body} of the item
+     *
+     * @return the {@link Body of the item}
+     */
+    public Body getBody() {
+        return body;
+    }
+
+    /**
      * Releases all resources used by the {@link Item}
      */
     @Override

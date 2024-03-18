@@ -88,12 +88,35 @@ public class Area implements Drawable {
     private final GameMap map;
 
     /**
+     * Returns the objects on the specified layer in the {@link GameMap}
+     *
+     * @param nameOfTheLayer Name of the layer to get objects from
+     * @return All {@link RectangleMapObject}s in the layer
+     * @throws InvalidAreaException if the layer doesn't exist
+     */
+
+    public com.badlogic.gdx.utils.Array<RectangleMapObject> getLayerObjects(String nameOfTheLayer) throws InvalidAreaException {
+        return map.getLayerObjects(nameOfTheLayer);
+    }
+
+    /**
      * Adds an {@link Interactable} to the set of interactable tiles in the current {@link Area}.
      *
      * @param interactable The {@link Interactable} to add
      */
     void addInteractable(Interactable interactable) {
         interactables.add(interactable);
+    }
+
+    /**
+     * Removes an {@link Interactable}.
+     *
+     * @param interactable The {@link Interactable} to remove
+     */
+    public void removeInteractable(Interactable interactable) {
+        interactables.remove(interactable);
+        world.destroyBody(interactable.getBody());
+        interactable.dispose();
     }
 
     /**
@@ -220,6 +243,7 @@ public class Area implements Drawable {
                 );
             }
     }
+
 
     /**
      * Releases all resources used by the {@link Area}

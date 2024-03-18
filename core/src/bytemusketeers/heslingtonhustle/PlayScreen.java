@@ -14,6 +14,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -99,6 +100,8 @@ class PlayScreen implements Screen {
      * @see #update()
      */
     private boolean paused = false;
+
+    private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
     /**
      * Initialise the play {@link Area}s
@@ -279,6 +282,8 @@ class PlayScreen implements Screen {
         character.render(batch);
         batch.end();
         hud.render(batch);
+
+        //debugRenderer.render(activeArea.getWorld(), gameCam.combined); //uncomment to show debug collision lines
 
         if (paused)
             pauseMenu.render(batch);

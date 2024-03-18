@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.scene;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An {@link Area} is a single room or outdoor areas in which the player can exist, containing its own {@link TiledMap}
+ * An {@link Area} is a single room or outdoor scene in which the player can exist, containing its own {@link TiledMap}
  * texture and set of {@link Interactable} objects.
  *
  * @author ENG1 Team 23 (Cohort 3)
@@ -75,7 +75,6 @@ public class Area implements Drawable {
      * The initial position of the player-controlled {@link Character} upon being spawned into the {@link Area}. This
      * position {@link Vector2} is specified in in-game metres.
      *
-     * @see Character#setPosition(Vector2)
      * @see #getInitialCharacterPosition()
      */
     private final Vector2 initialCharacterPosition;
@@ -103,7 +102,7 @@ public class Area implements Drawable {
      * @param characterPosition The position of the player-controlled {@link Character}
      * @see Interactable#interact()
      */
-    void triggerInteractables(Vector2 characterPosition) {
+    public void triggerInteractables(Vector2 characterPosition) {
         for (Interactable interactable : interactables)
             if (interactable.isClose(characterPosition))
                 interactable.interact();
@@ -121,7 +120,7 @@ public class Area implements Drawable {
      *           variant of the candidate is returned for the convenience of the caller.
      * @see GameMap#bound(Vector2, float, float)
      */
-    Vector2 bound(Vector2 candidate, final float horizontalGutter, final float verticalGutter) {
+    public Vector2 bound(Vector2 candidate, final float horizontalGutter, final float verticalGutter) {
         // Bound the candidate vector on the given gutters
         if (candidate.x < horizontalGutter) candidate.x = horizontalGutter;
         if (candidate.y < verticalGutter)   candidate.y = verticalGutter;
@@ -137,7 +136,7 @@ public class Area implements Drawable {
      * @param gameCam The {@link OrthographicCamera} game camera against which the {@link Area} viewport should be
      *                aligned
      */
-    void updateView(OrthographicCamera gameCam) {
+    public void updateView(OrthographicCamera gameCam) {
         map.updateView(gameCam);
     }
 
@@ -146,7 +145,7 @@ public class Area implements Drawable {
      *
      * @see World#step(float, int, int)
      */
-    void step() {
+    public void step() {
         world.step(1/60f, 6, 2);
     }
 
@@ -194,7 +193,7 @@ public class Area implements Drawable {
      * @return The requested position vector
      * @see Character
      */
-    Vector2 getInitialCharacterPosition() {
+    public Vector2 getInitialCharacterPosition() {
         return initialCharacterPosition;
     }
 

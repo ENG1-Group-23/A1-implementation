@@ -1,6 +1,6 @@
 package bytemusketeers.heslingtonhustle.metrics;
 
-import bytemusketeers.heslingtonhustle.Area;
+import bytemusketeers.heslingtonhustle.scene.Area;
 
 /**
  * An {@link AreaMetric} represents an {@link Area} as a {@link MetricEntry} to be managed by the

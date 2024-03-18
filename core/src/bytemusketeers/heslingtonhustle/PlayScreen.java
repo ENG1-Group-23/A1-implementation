@@ -3,6 +3,10 @@ package bytemusketeers.heslingtonhustle;
 import bytemusketeers.heslingtonhustle.metrics.MetricController;
 import bytemusketeers.heslingtonhustle.metrics.MetricListener;
 import bytemusketeers.heslingtonhustle.metrics.MetricUpdater;
+import bytemusketeers.heslingtonhustle.scene.Area;
+import bytemusketeers.heslingtonhustle.scene.AreaFactory;
+import bytemusketeers.heslingtonhustle.scene.Character;
+import bytemusketeers.heslingtonhustle.scene.InvalidAreaException;
 import bytemusketeers.heslingtonhustle.ui.Overlay;
 import bytemusketeers.heslingtonhustle.ui.OverlayFactory;
 import com.badlogic.gdx.Gdx;
@@ -18,7 +22,7 @@ import java.util.Map;
 
 /**
  * The {@link PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen}
- * interface. It manages the various game cameras, the {@link Character}, and the {@link Area} vector which the player
+ * interface. It manages the various game cameras, the {@link bytemusketeers.heslingtonhustle.scene.Character}, and the {@link Area} vector which the player
  * can explore. All assets for the game are preloaded when {@link PlayScreen} is constructed.
  *
  * @author ENG1 Team 23 (Cohort 3)
@@ -45,7 +49,7 @@ class PlayScreen implements Screen {
      * @see Character
      * @see OrthographicCamera
      */
-    private final Character character;
+    private final bytemusketeers.heslingtonhustle.scene.Character character;
 
     /**
      * The persistent heads-up display {@link Overlay} presenting real-time metric information to the player
@@ -141,7 +145,7 @@ class PlayScreen implements Screen {
             if (Gdx.input.isKeyJustPressed(Input.Keys.E))
                 activeArea.triggerInteractables(character.getPosition());
 
-            // TODO: just a few temporary tests for switching areas
+            // TODO: just a few temporary tests for switching scene
             if (Gdx.input.isKeyJustPressed(Input.Keys.P)) switchArea(Area.Name.PiazzaBuilding);
             if (Gdx.input.isKeyJustPressed(Input.Keys.C)) switchArea(Area.Name.CompSciBuilding);
             if (Gdx.input.isKeyJustPressed(Input.Keys.B)) switchArea(Area.Name.BedroomBuilding);
@@ -254,8 +258,9 @@ class PlayScreen implements Screen {
 
     /**
      * Handles the graphical rendering obligations of the {@link Screen}. In particular, this involves rendering all
-     * visible objects including the {@link Area}---and hence all {@link Interactable} elements on the
-     * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, the {@link Character}, and various {@link Overlay} users.
+     * visible objects including the {@link Area} and all {@link bytemusketeers.heslingtonhustle.scene.Drawable}
+     * elements therein {@link com.badlogic.gdx.maps.tiled.TiledMap}---, the {@link Character}, and various
+     * {@link Overlay} users.
      *
      * @param delta The time in seconds since the last render
      * @see Area
@@ -319,7 +324,7 @@ class PlayScreen implements Screen {
 
         // Initialise final-stage gameplay elements
         initialiseAreas();
-        character = new Character(areas);
+        character = new bytemusketeers.heslingtonhustle.scene.Character(areas);
         switchArea(Area.Name.TestMap);
 
         // Send an initial pulse of each established metric to the updater

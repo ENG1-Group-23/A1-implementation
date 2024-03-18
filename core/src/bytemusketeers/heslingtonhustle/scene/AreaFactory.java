@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.scene;
 
 import bytemusketeers.heslingtonhustle.metrics.MetricController;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,10 +19,10 @@ import com.badlogic.gdx.math.Vector2;
  *          the {@link Drawable#render(SpriteBatch)} cycle.
  * @author ENG1 Team 23 (Cohort 3)
  */
-final class AreaFactory {
+final public class AreaFactory {
     /**
-     * The {@link MetricController} belonging to the parental {@link PlayScreen}, generally used when registering
-     * {@link Runnable} actions on {@link Interactable}s in the created {@link Area}
+     * The {@link MetricController} belonging to the parental {@link com.badlogic.gdx.Screen}, generally used when
+     * registering {@link Runnable} actions on {@link Interactable}s in the created {@link Area}
      *
      * @see Interactable#interact()
      */
@@ -34,7 +34,7 @@ final class AreaFactory {
      *
      * @return The generated test map
      */
-    Area createTestMap() throws InvalidAreaException {
+    public Area createTestMap() throws InvalidAreaException {
         Area area = new Area("Maps/test-map.tmx", new Vector2(2, 2));
 
         area.addInteractable(new Interactable(
@@ -58,7 +58,7 @@ final class AreaFactory {
      *
      * @return The generated Piazza map
      */
-    Area createPiazzaMap() throws InvalidAreaException {
+    public Area createPiazzaMap() throws InvalidAreaException {
         return new Area("Maps/piazza-map.tmx", new Vector2(19, 1.4f));
     }
 
@@ -68,7 +68,7 @@ final class AreaFactory {
      *
      * @return The generated Computer Science building
      */
-    Area createCSMap() throws InvalidAreaException {
+    public Area createCSMap() throws InvalidAreaException {
         return new Area("Maps/comp-sci-map.tmx", new Vector2(25, 1));
     }
 
@@ -78,16 +78,16 @@ final class AreaFactory {
      *
      * @return The generated bedroom building
      */
-    Area createBedroomMap() throws InvalidAreaException {
+    public Area createBedroomMap() throws InvalidAreaException {
         return new Area("Maps/bedroom-map.tmx", new Vector2(10, 1));
     }
 
     /**
      * Instantiates a new {@link AreaFactory} with the given contextual {@link MetricController}
      *
-     * @param metricController The {@link MetricController} belonging to the parental {@link PlayScreen}
+     * @param metricController The {@link MetricController} belonging to the parental {@link com.badlogic.gdx.Screen}
      */
-    AreaFactory(MetricController metricController) {
+    public AreaFactory(MetricController metricController) {
         this.metricController = metricController;
     }
 }

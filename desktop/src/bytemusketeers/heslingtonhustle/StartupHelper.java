@@ -36,7 +36,7 @@ import java.util.ArrayList;
  * @author damios
  * @author ENG1 Team 23 (Cohort 3) - stylistic modifications
  */
-public class StartupHelper {
+class StartupHelper {
     /**
      * The JVM command-line argument to indicate that the JVM is restarted
      *
@@ -75,7 +75,7 @@ public class StartupHelper {
      * @return whether a new JVM was started and thus no code should be executed
      *         in this one
      */
-    public static boolean startNewJvmIfRequired(boolean redirectOutput) {
+    private static boolean startNewJvmIfRequired(boolean redirectOutput) {
         String osName = System.getProperty("os.name").toLowerCase();
 
         if (!osName.contains("mac")) {
@@ -179,7 +179,7 @@ public class StartupHelper {
      * @return whether a new JVM was started and thus no code should be executed
      *         in this one
      */
-    public static boolean startNewJvmIfRequired() {
+    static boolean startNewJvmIfRequired() {
         return startNewJvmIfRequired(true);
     }
 }

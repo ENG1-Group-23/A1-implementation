@@ -1,5 +1,8 @@
 package bytemusketeers.heslingtonhustle;
 
+import bytemusketeers.heslingtonhustle.scene.Area;
+import bytemusketeers.heslingtonhustle.scene.Drawable;
+import bytemusketeers.heslingtonhustle.scene.InvalidAreaException;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;

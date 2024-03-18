@@ -1,6 +1,6 @@
 package bytemusketeers.heslingtonhustle.ui;
 
-import bytemusketeers.heslingtonhustle.Drawable;
+import bytemusketeers.heslingtonhustle.scene.Drawable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;

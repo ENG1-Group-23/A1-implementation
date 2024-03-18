@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.scene;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -13,11 +13,11 @@ import java.util.Map;
  * The {@link Character} class represents the avatar of the player in the game, extending the {@link Sprite}.
  *
  * @apiNote The {@link Character} is a unique given its ability to exist in multiple {@link Area}s across gameplay; the
- *          {@link PlayScreen} must inform {@link Character} of any {@link Area} changes; see
- *          {@link #switchCharacterContext(Area.Name)}.
+ *          {@link com.badlogic.gdx.Screen} implementation must inform {@link Character} of any {@link Area} changes;
+ *          see {@link #switchCharacterContext(Area.Name)}.
  * @author ENG1 Team 23 (Cohort 3)
  */
-class Character extends Sprite implements Drawable {
+public class Character extends Sprite implements Drawable {
     /**
      * The width of a {@link Character}, in in-game metres
      */
@@ -91,28 +91,28 @@ class Character extends Sprite implements Drawable {
     /**
      * Moves the {@link Character} upwards on the Y-axis
      */
-    void moveUp() {
+    public void moveUp() {
         velocity.y = MOVEMENT_VELOCITY;
     }
 
     /**
      * Moves the {@link Character} downwards on the Y-axis
      */
-    void moveDown() {
+    public void moveDown() {
         velocity.y = -MOVEMENT_VELOCITY;
     }
 
     /**
      * Moves the {@link Character} leftwards on the X-axis
      */
-    void moveLeft() {
+    public void moveLeft() {
         velocity.x = -MOVEMENT_VELOCITY;
     }
 
     /**
      * Moves the {@link Character} rightwards on the X-axis
      */
-    void moveRight() {
+    public void moveRight() {
         velocity.x = MOVEMENT_VELOCITY;
     }
 
@@ -124,7 +124,7 @@ class Character extends Sprite implements Drawable {
      * @see #moveLeft()
      * @see #moveRight()
      */
-    void move() {
+    public void move() {
         if (velocity.x != 0 && velocity.y != 0) {
             // Correct faster movement when simultaneously traversing both axes
             velocity.x -= Math.signum(velocity.x) * MOVEMENT_VELOCITY_CORRECTION;
@@ -140,7 +140,7 @@ class Character extends Sprite implements Drawable {
      *
      * @return The position
      */
-    Vector2 getPosition() {
+    public Vector2 getPosition() {
         return activeBody.getPosition();
     }
 
@@ -149,7 +149,7 @@ class Character extends Sprite implements Drawable {
      *
      * @param position The new position
      */
-    void setPosition(Vector2 position) {
+    public void setPosition(Vector2 position) {
         activeBody.setTransform(position, 0);
     }
 
@@ -158,7 +158,7 @@ class Character extends Sprite implements Drawable {
      *
      * @param areaName The {@link Area.Name} of the new {@link Area}
      */
-    void switchCharacterContext(Area.Name areaName) {
+    public void switchCharacterContext(Area.Name areaName) {
         activeBody = bodies.get(areaName);
     }
 
@@ -186,7 +186,7 @@ class Character extends Sprite implements Drawable {
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
      */
-    Character(Map<Area.Name, Area> areas) {
+    public Character(Map<Area.Name, Area> areas) {
         for (Map.Entry<Area.Name, Area> area : areas.entrySet())
             bodies.put(area.getKey(), area.getValue().registerCharacter(WIDTH, HEIGHT));
 

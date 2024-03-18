@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.scene;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

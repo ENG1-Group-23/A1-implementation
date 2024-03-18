@@ -1,6 +1,6 @@
 package bytemusketeers.heslingtonhustle.metrics;
 
-import bytemusketeers.heslingtonhustle.Area;
+import bytemusketeers.heslingtonhustle.scene.Area;
 
 import java.util.EnumMap;
 import java.util.Map;

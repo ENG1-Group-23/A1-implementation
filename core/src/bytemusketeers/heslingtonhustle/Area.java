@@ -20,13 +20,13 @@ import java.util.List;
  *
  * @author ENG1 Team 23 (Cohort 3)
  */
-class Area implements Drawable {
+public class Area implements Drawable {
     /**
      * Distinguishes between the standard {@link Area} instantiations
      *
      * @see AreaFactory
      */
-    enum Name {
+    public enum Name {
         TestMap("Test Map"),
         PiazzaBuilding("Piazza Building"),
         CompSciBuilding("Computer Science Building"),
@@ -93,7 +93,7 @@ class Area implements Drawable {
      *
      * @param interactable The {@link Interactable} to add
      */
-    public void addInteractable(Interactable interactable) {
+    void addInteractable(Interactable interactable) {
         interactables.add(interactable);
     }
 
@@ -103,7 +103,7 @@ class Area implements Drawable {
      * @param characterPosition The position of the player-controlled {@link Character}
      * @see Interactable#interact()
      */
-    public void triggerInteractables(Vector2 characterPosition) {
+    void triggerInteractables(Vector2 characterPosition) {
         for (Interactable interactable : interactables)
             if (interactable.isClose(characterPosition))
                 interactable.interact();
@@ -121,7 +121,7 @@ class Area implements Drawable {
      *           variant of the candidate is returned for the convenience of the caller.
      * @see GameMap#bound(Vector2, float, float)
      */
-    public Vector2 bound(Vector2 candidate, final float horizontalGutter, final float verticalGutter) {
+    Vector2 bound(Vector2 candidate, final float horizontalGutter, final float verticalGutter) {
         // Bound the candidate vector on the given gutters
         if (candidate.x < horizontalGutter) candidate.x = horizontalGutter;
         if (candidate.y < verticalGutter)   candidate.y = verticalGutter;
@@ -137,7 +137,7 @@ class Area implements Drawable {
      * @param gameCam The {@link OrthographicCamera} game camera against which the {@link Area} viewport should be
      *                aligned
      */
-    public void updateView(OrthographicCamera gameCam) {
+    void updateView(OrthographicCamera gameCam) {
         map.updateView(gameCam);
     }
 
@@ -146,7 +146,7 @@ class Area implements Drawable {
      *
      * @see World#step(float, int, int)
      */
-    public void step() {
+    void step() {
         world.step(1/60f, 6, 2);
     }
 
@@ -159,7 +159,7 @@ class Area implements Drawable {
      * @param height The fixed height of the body, in in-game metres
      * @return The newly registered body
      */
-    public Body registerCollisionBody(Vector2 initialPosition, BodyDef.BodyType type, float width, float height) {
+    Body registerCollisionBody(Vector2 initialPosition, BodyDef.BodyType type, float width, float height) {
         BodyDef bodyDefinition = new BodyDef();
 
         bodyDefinition.position.set(initialPosition);
@@ -184,7 +184,7 @@ class Area implements Drawable {
      * @see #registerCollisionBody(Vector2, BodyDef.BodyType, float, float)
      * @see Character
      */
-    public Body registerCharacter(float width, float height) {
+    Body registerCharacter(float width, float height) {
         return registerCollisionBody(initialCharacterPosition, BodyDef.BodyType.DynamicBody, width, height);
     }
 
@@ -194,7 +194,7 @@ class Area implements Drawable {
      * @return The requested position vector
      * @see Character
      */
-    public Vector2 getInitialCharacterPosition() {
+    Vector2 getInitialCharacterPosition() {
         return initialCharacterPosition;
     }
 
@@ -255,7 +255,7 @@ class Area implements Drawable {
      *                                 by in-game metre components
      * @see Character
      */
-    public Area(String mapPath, Vector2 initialCharacterPosition) throws InvalidAreaException {
+    Area(String mapPath, Vector2 initialCharacterPosition) throws InvalidAreaException {
         map = new GameMap(mapPath);
         world = new World(new Vector2(0, 0), true);
         generateBorders(map.getBorderObjects());

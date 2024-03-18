@@ -1,4 +1,6 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.metrics;
+
+import bytemusketeers.heslingtonhustle.Area;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -12,11 +14,11 @@ import java.util.Map;
  * @see MetricEntry
  * @see MetricUpdater
  */
-class MetricController {
+public class MetricController {
     /**
      * Distinguish between the standard metrics represented in the {@link MetricEntry} objects
      */
-    enum Metric {
+    public enum Metric {
         Sleep("Number of Sleeps"),
         Study("Number of Study Sessions"),
         Eat("Number of Meals"),

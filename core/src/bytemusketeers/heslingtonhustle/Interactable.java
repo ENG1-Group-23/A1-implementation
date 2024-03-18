@@ -35,7 +35,7 @@ class Interactable extends Item {
      *
      * @see #action
      */
-    public void interact() {
+    void interact() {
         if (action != null)
             Gdx.app.postRunnable(action);
     }
@@ -47,7 +47,7 @@ class Interactable extends Item {
      * @param position The position to test
      * @return Is the given {@link Vector2} within the defined Euclidean distance of the {@link Interactable}?
      */
-    public boolean isClose(Vector2 position) {
+    boolean isClose(Vector2 position) {
         return getPosition().dst2(position) <= INTERACTION_DISTANCE_SQ;
     }
 
@@ -61,7 +61,7 @@ class Interactable extends Item {
      * @param height The initial height, in in-game metres
      * @param action The {@link Runnable} method to execute upon interaction
      */
-    public Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
+    Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
         super(position, texture, area, width, height);
         this.action = action;
     }

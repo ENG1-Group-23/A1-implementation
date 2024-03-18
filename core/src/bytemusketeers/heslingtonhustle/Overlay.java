@@ -62,7 +62,7 @@ abstract class Overlay implements Drawable {
      *
      * @param batch The {@link SpriteBatch} to which the {@link Overlay} should be connected
      */
-    public Overlay(SpriteBatch batch) {
+    Overlay(SpriteBatch batch) {
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), batch);
     }
 }

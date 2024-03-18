@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
  *
  * @author ENG1 Team 23 (Cohort 3)
  */
-class Item extends Sprite implements Drawable {
+class Item implements Drawable {
     /**
      * The LibGDX {@link Drawable} graphical representation of the {@link Sprite}
      */
@@ -59,7 +59,7 @@ class Item extends Sprite implements Drawable {
      *
      * @return The position of the body
      */
-    protected Vector2 getPosition() {
+    Vector2 getPosition() {
         return body.getPosition();
     }
 
@@ -72,7 +72,7 @@ class Item extends Sprite implements Drawable {
      * @param width The initial width, in in-game metres
      * @param height The initial height, in in-game metres
      */
-    public Item(Vector2 position, Texture texture, Area area, float width, float height) {
+    Item(Vector2 position, Texture texture, Area area, float width, float height) {
         this.texture = texture;
         this.width = width;
         this.height = height;

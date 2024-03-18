@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.metrics;
 
 /**
  * The {@link MetricUpdater} provides a common controller to link a single {@link MetricController} and
@@ -9,7 +9,7 @@ package bytemusketeers.heslingtonhustle;
  *           suffice.
  * @author ENG1 Team 23 (Cohort 3)
  */
-class MetricUpdater {
+public class MetricUpdater {
     /**
      * The recipient of the {@link MetricController} updates
      */

@@ -18,7 +18,7 @@ class PauseMenu extends Overlay {
      *
      * @param batch The {@link SpriteBatch} to which the {@link PauseMenu} should be connected
      */
-    public PauseMenu(SpriteBatch batch) {
+    PauseMenu(SpriteBatch batch) {
         super(batch);
 
         final Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);

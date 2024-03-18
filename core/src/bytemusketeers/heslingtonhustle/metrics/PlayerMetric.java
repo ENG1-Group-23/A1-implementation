@@ -1,8 +1,8 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.metrics;
 
 /**
- * A {@link PlayerMetric} represents a {@link MetricEntry} pertaining to the player-controlled {@link Character} to be
- * managed by the {@link MetricController}
+ * A {@link PlayerMetric} represents a {@link MetricEntry} pertaining to the player-controlled character to be managed
+ * by the {@link MetricController}.
  *
  * @author ENG1 Team 23 (Cohort 3)
  */
@@ -36,7 +36,7 @@ class PlayerMetric implements MetricEntry {
      *
      * @param multiplier An integer multiplier of the {@link #STANDARD_INCREMENT}
      */
-    public void incrementMetric(int multiplier) {
+    void incrementMetric(int multiplier) {
         value += STANDARD_INCREMENT * multiplier;
     }
 
@@ -45,7 +45,7 @@ class PlayerMetric implements MetricEntry {
      *
      * @param multiplier An integer multiplier of the {@link #STANDARD_INCREMENT}
      */
-    public void decrementMetric(int multiplier) {
+    void decrementMetric(int multiplier) {
         value -= STANDARD_INCREMENT * multiplier;
     }
 }

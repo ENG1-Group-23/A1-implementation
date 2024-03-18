@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.metrics;
 
 /**
  * A {@link MetricListener} is interested in receives updates from a {@link MetricController} through the corresponding
@@ -8,7 +8,7 @@ package bytemusketeers.heslingtonhustle;
  * @see MetricUpdater
  * @author ENG1 Team 23 (Cohort 3)
  */
-interface MetricListener {
+public interface MetricListener {
     /**
      * Informs the implementor that the text associated with the given {@link MetricController.Metric} should be updated
      *

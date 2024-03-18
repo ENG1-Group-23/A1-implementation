@@ -9,7 +9,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
  *
  * @author ENG1 Team 23 (Cohort 3)
  */
-public class DesktopLauncher {
+class DesktopLauncher {
     /**
      * The initial window height, in pixels
      */

@@ -42,7 +42,7 @@ class HeslingtonHustle extends Game {
      * @implNote Future implementors may wish to parameterise the {@link #PPM} in terms of the screen DPI-equivalent;
      *           see {@link Graphics#getPpiX()} and friends.
      */
-    public static float scaleToMetres(int value) {
+    static float scaleToMetres(int value) {
         return value / PPM;
     }
 

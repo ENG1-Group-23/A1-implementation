@@ -14,7 +14,7 @@ class InvalidAreaException extends Exception {
      *
      * @param msg A more detailed description of the nature/cause of the {@link InvalidAreaException}
      */
-    public InvalidAreaException(String msg) {
+    InvalidAreaException(String msg) {
         super(msg);
     }
 }

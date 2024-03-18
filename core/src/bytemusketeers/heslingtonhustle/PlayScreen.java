@@ -1,5 +1,8 @@
 package bytemusketeers.heslingtonhustle;
 
+import bytemusketeers.heslingtonhustle.metrics.MetricController;
+import bytemusketeers.heslingtonhustle.metrics.MetricListener;
+import bytemusketeers.heslingtonhustle.metrics.MetricUpdater;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -75,7 +78,7 @@ class PlayScreen implements Screen {
 
     /**
      * The {@link MetricController} stores and provides means of manipulating and updating
-     * {@link MetricController.Metric}--{@link MetricEntry} pairs
+     * {@link MetricController.Metric} values
      *
      * @see MetricListener
      * @see MetricUpdater
@@ -147,7 +150,7 @@ class PlayScreen implements Screen {
     /**
      * Handles the game logic and updates the state of the game world
      */
-    public void update() {
+    private void update() {
         final float horizontalGutter = viewport.getWorldWidth() / 2;
         final float verticalGutter = viewport.getWorldHeight() / 2;
 
@@ -283,7 +286,7 @@ class PlayScreen implements Screen {
      * @throws InvalidAreaException At least one {@link Area} required by the {@link PlayScreen} could not be properly
      *                              instantiated by the {@link AreaFactory}
      */
-    public PlayScreen(SpriteBatch batch) throws InvalidAreaException {
+    PlayScreen(SpriteBatch batch) throws InvalidAreaException {
         // LibGDX core components and minor UI elements
         this.batch = batch;
         gameCam = new OrthographicCamera();

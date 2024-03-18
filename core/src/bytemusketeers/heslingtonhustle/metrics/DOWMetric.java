@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.metrics;
 
 /**
  * A {@link DOWMetric} represents a singular day of the week to be managed by the {@link MetricController}
@@ -16,7 +16,7 @@ class DOWMetric implements MetricEntry {
     /**
      * The {@link DayOfWeek} embedded in the {@link DOWMetric}
      */
-    private DayOfWeek value;
+    private DayOfWeek value = DayOfWeek.Monday;
 
     /**
      * Retrieves a human-readable {@link #value} associated with the {@link DOWMetric}
@@ -32,15 +32,8 @@ class DOWMetric implements MetricEntry {
      * Increments the {@link #value} in the expected fashion, assuming the order specified in {@link DayOfWeek}. If the
      * final day is reached, the first day is silently selected.
      */
-    public void nextDay() {
+    void nextDay() {
         final DayOfWeek[] values = DayOfWeek.values();
         value = values[(value.ordinal() + 1) % values.length];
-    }
-
-    /**
-     * Instantiates a new {@link DayOfWeek} with the initial day {@link DayOfWeek#Monday}
-     */
-    public DOWMetric() {
-        value = DayOfWeek.Monday;
     }
 }

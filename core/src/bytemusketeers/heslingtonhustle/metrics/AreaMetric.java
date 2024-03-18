@@ -1,4 +1,6 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.metrics;
+
+import bytemusketeers.heslingtonhustle.Area;
 
 /**
  * An {@link AreaMetric} represents an {@link Area} as a {@link MetricEntry} to be managed by the
@@ -29,7 +31,7 @@ class AreaMetric implements MetricEntry {
      *
      * @param areaName The updated {@link Area.Name}
      */
-    public void setArea(Area.Name areaName) {
+    void setArea(Area.Name areaName) {
         area = areaName;
     }
 
@@ -38,7 +40,7 @@ class AreaMetric implements MetricEntry {
      *
      * @param initialArea The initial {@link Area.Name}
      */
-    public AreaMetric(Area.Name initialArea) {
+    AreaMetric(Area.Name initialArea) {
         area = initialArea;
     }
 }

@@ -1,5 +1,7 @@
 package bytemusketeers.heslingtonhustle;
 
+import bytemusketeers.heslingtonhustle.metrics.MetricController;
+import bytemusketeers.heslingtonhustle.metrics.MetricListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -63,7 +65,7 @@ class HeadsUpDisplay extends Overlay implements MetricListener {
      * @param leftMetrics The {@link MetricController.Metric} elements to be displayed on the left-hand side
      * @param rightMetrics The {@link MetricController.Metric} elements to be displayed on the right-hand side
      */
-    public HeadsUpDisplay(SpriteBatch batch, MetricController.Metric[] leftMetrics,
+    HeadsUpDisplay(SpriteBatch batch, MetricController.Metric[] leftMetrics,
                           MetricController.Metric[] rightMetrics) {
         super(batch);
 

@@ -1,5 +1,6 @@
 package bytemusketeers.heslingtonhustle;
 
+import bytemusketeers.heslingtonhustle.metrics.MetricController;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -33,7 +34,7 @@ final class AreaFactory {
      *
      * @return The generated test map
      */
-    public Area createTestMap() throws InvalidAreaException {
+    Area createTestMap() throws InvalidAreaException {
         Area area = new Area("Maps/test-map.tmx", new Vector2(2, 2));
 
         area.addInteractable(new Interactable(
@@ -57,7 +58,7 @@ final class AreaFactory {
      *
      * @return The generated Piazza map
      */
-    public Area createPiazzaMap() throws InvalidAreaException {
+    Area createPiazzaMap() throws InvalidAreaException {
         return new Area("Maps/piazza-map.tmx", new Vector2(19, 1.4f));
     }
 
@@ -67,7 +68,7 @@ final class AreaFactory {
      *
      * @return The generated Computer Science building
      */
-    public Area createCSMap() throws InvalidAreaException {
+    Area createCSMap() throws InvalidAreaException {
         return new Area("Maps/comp-sci-map.tmx", new Vector2(25, 1));
     }
 
@@ -77,7 +78,7 @@ final class AreaFactory {
      *
      * @return The generated bedroom building
      */
-    public Area createBedroomMap() throws InvalidAreaException {
+    Area createBedroomMap() throws InvalidAreaException {
         return new Area("Maps/bedroom-map.tmx", new Vector2(10, 1));
     }
 
@@ -86,7 +87,7 @@ final class AreaFactory {
      *
      * @param metricController The {@link MetricController} belonging to the parental {@link PlayScreen}
      */
-    public AreaFactory(MetricController metricController) {
+    AreaFactory(MetricController metricController) {
         this.metricController = metricController;
     }
 }

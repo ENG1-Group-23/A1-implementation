@@ -53,7 +53,7 @@ class GameMap implements Drawable {
      * @return The {@link RectangleMapObject} objects embedded in the requested layer
      */
     @SuppressWarnings("RedundantThrows") // TODO: in production, an exception should be thrown as below
-    public com.badlogic.gdx.utils.Array<RectangleMapObject> getBorderObjects() throws InvalidAreaException {
+    com.badlogic.gdx.utils.Array<RectangleMapObject> getBorderObjects() throws InvalidAreaException {
         final MapLayers layers = tiledMap.getLayers();
 
         for (MapLayer layer : layers)
@@ -70,7 +70,7 @@ class GameMap implements Drawable {
      * @param value The quantity to scale, in pixels
      * @return The scaled quantity, in in-game metres
      */
-    public float scale(float value) {
+    float scale(float value) {
         return value / TILE_AXIS_LENGTH;
     }
 
@@ -87,7 +87,7 @@ class GameMap implements Drawable {
      *           convenience.
      * @see Area#bound(Vector2, float, float)
      */
-    public Vector2 bound(Vector2 candidate, final float horizontalGutter, final float verticalGutter) {
+    Vector2 bound(Vector2 candidate, final float horizontalGutter, final float verticalGutter) {
         final float rightBound = width - horizontalGutter;
         final float topBound = height - verticalGutter;
 
@@ -104,7 +104,7 @@ class GameMap implements Drawable {
      * @param gameCam The {@link OrthographicCamera} game camera against which the {@link Area} viewport should be
      *                aligned
      */
-    public void updateView(OrthographicCamera gameCam) {
+    void updateView(OrthographicCamera gameCam) {
         renderer.setView(gameCam);
     }
 
@@ -135,7 +135,7 @@ class GameMap implements Drawable {
      * @throws InvalidAreaException The map was invalid could not be loaded into the area
      * @apiNote The provided map path should correspond to a TMX Tiled file for use with {@link TmxMapLoader}
      */
-    public GameMap(String mapPath) throws InvalidAreaException {
+    GameMap(String mapPath) throws InvalidAreaException {
         tiledMap = new TmxMapLoader().load(mapPath);
         renderer = new OrthogonalTiledMapRenderer(tiledMap, 1f / TILE_AXIS_LENGTH);
 

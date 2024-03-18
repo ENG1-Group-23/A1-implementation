@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.metrics;
 
 /**
  * A {@link MetricEntry} implementation denotes a metric of a particular type, e.g. numerical or textual

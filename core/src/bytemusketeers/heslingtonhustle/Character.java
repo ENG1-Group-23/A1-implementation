@@ -91,28 +91,28 @@ class Character extends Sprite implements Drawable {
     /**
      * Moves the {@link Character} upwards on the Y-axis
      */
-    public void moveUp() {
+    void moveUp() {
         velocity.y = MOVEMENT_VELOCITY;
     }
 
     /**
      * Moves the {@link Character} downwards on the Y-axis
      */
-    public void moveDown() {
+    void moveDown() {
         velocity.y = -MOVEMENT_VELOCITY;
     }
 
     /**
      * Moves the {@link Character} leftwards on the X-axis
      */
-    public void moveLeft() {
+    void moveLeft() {
         velocity.x = -MOVEMENT_VELOCITY;
     }
 
     /**
      * Moves the {@link Character} rightwards on the X-axis
      */
-    public void moveRight() {
+    void moveRight() {
         velocity.x = MOVEMENT_VELOCITY;
     }
 
@@ -124,7 +124,7 @@ class Character extends Sprite implements Drawable {
      * @see #moveLeft()
      * @see #moveRight()
      */
-    public void move() {
+    void move() {
         if (velocity.x != 0 && velocity.y != 0) {
             // Correct faster movement when simultaneously traversing both axes
             velocity.x -= Math.signum(velocity.x) * MOVEMENT_VELOCITY_CORRECTION;
@@ -140,7 +140,7 @@ class Character extends Sprite implements Drawable {
      *
      * @return The position
      */
-    public Vector2 getPosition() {
+    Vector2 getPosition() {
         return activeBody.getPosition();
     }
 
@@ -149,7 +149,7 @@ class Character extends Sprite implements Drawable {
      *
      * @param position The new position
      */
-    public void setPosition(Vector2 position) {
+    void setPosition(Vector2 position) {
         activeBody.setTransform(position, 0);
     }
 
@@ -158,7 +158,7 @@ class Character extends Sprite implements Drawable {
      *
      * @param areaName The {@link Area.Name} of the new {@link Area}
      */
-    public void switchCharacterContext(Area.Name areaName) {
+    void switchCharacterContext(Area.Name areaName) {
         activeBody = bodies.get(areaName);
     }
 
@@ -186,7 +186,7 @@ class Character extends Sprite implements Drawable {
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
      */
-    public Character(Map<Area.Name, Area> areas) {
+    Character(Map<Area.Name, Area> areas) {
         for (Map.Entry<Area.Name, Area> area : areas.entrySet())
             bodies.put(area.getKey(), area.getValue().registerCharacter(WIDTH, HEIGHT));
 

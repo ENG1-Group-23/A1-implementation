@@ -3,6 +3,8 @@ package bytemusketeers.heslingtonhustle;
 import bytemusketeers.heslingtonhustle.metrics.MetricController;
 import bytemusketeers.heslingtonhustle.metrics.MetricListener;
 import bytemusketeers.heslingtonhustle.metrics.MetricUpdater;
+import bytemusketeers.heslingtonhustle.ui.Overlay;
+import bytemusketeers.heslingtonhustle.ui.OverlayFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -46,18 +48,18 @@ class PlayScreen implements Screen {
     private final Character character;
 
     /**
-     * The persistent {@link HeadsUpDisplay} {@link Overlay} presenting real-time metric information to the player
+     * The persistent heads-up display {@link Overlay} presenting real-time metric information to the player
      *
      * @see MetricController
      * @see MetricController.Metric
      */
-    private final HeadsUpDisplay hud;
+    private final Overlay hud;
 
     /**
-     * The transient-rendered {@link PauseMenu} {@link Overlay}, intended to be displayed to the user upon request,
+     * The transient-rendered pause menu {@link Overlay}, intended to be displayed to the user upon request,
      * or a system event such as loss of {@link PlayScreen} focus
      */
-    private final PauseMenu pauseMenu;
+    private final Overlay pauseMenu;
 
     /**
      * The relationship between {@link Area} and the {@link Area.Name}
@@ -253,12 +255,11 @@ class PlayScreen implements Screen {
     /**
      * Handles the graphical rendering obligations of the {@link Screen}. In particular, this involves rendering all
      * visible objects including the {@link Area}---and hence all {@link Interactable} elements on the
-     * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, the {@link Character}, and the {@link HeadsUpDisplay}.
+     * {@link com.badlogic.gdx.maps.tiled.TiledMap}---, the {@link Character}, and various {@link Overlay} users.
      *
      * @param delta The time in seconds since the last render
      * @see Area
      * @see Character
-     * @see HeadsUpDisplay
      * @implNote In the future, the time-delta parameter should be used for consistent cross-platform rendering and
      *           input-handling; see {@link #handleInput()}.
      */
@@ -287,16 +288,19 @@ class PlayScreen implements Screen {
      *                              instantiated by the {@link AreaFactory}
      */
     PlayScreen(SpriteBatch batch) throws InvalidAreaException {
-        // LibGDX core components and minor UI elements
+        // LibGDX core components
         this.batch = batch;
         gameCam = new OrthographicCamera();
         viewport = new StretchViewport(HeslingtonHustle.scaleToMetres(Gdx.graphics.getWidth()),
             HeslingtonHustle.scaleToMetres(Gdx.graphics.getHeight()), gameCam);
         gameCam.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        pauseMenu = new PauseMenu(batch);
+
+        // UI elements
+        OverlayFactory overlayFactory = new OverlayFactory(batch);
+        pauseMenu = overlayFactory.createPauseMenu();
 
         // Create the HUD and prepare it to receive metrics of the given keys
-        hud = new HeadsUpDisplay(batch,
+        hud = overlayFactory.createHUD(
             new MetricController.Metric[]{
                 MetricController.Metric.Area,
                 MetricController.Metric.Day
@@ -310,7 +314,7 @@ class PlayScreen implements Screen {
         );
 
         // Create the controller assigned with the standard updater, thus linking the controller and the HUD
-        final MetricUpdater metricUpdater = new MetricUpdater(hud);
+        final MetricUpdater metricUpdater = new MetricUpdater((MetricListener) hud);
         metricController = new MetricController(metricUpdater);
 
         // Initialise final-stage gameplay elements

@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 /**
- * The {@link PauseMenu} provides a pleasant {@link Overlay} to display upon a pause being requested, or the
- * {@link PlayScreen} losing focus.
+ * The {@link PauseMenu} provides a pleasant {@link Overlay} to display upon a pause being requested, or a game
+ * {@link com.badlogic.gdx.Screen} losing focus.
  *
  * @author ENG1 Team 23 (Cohort 3)
  */

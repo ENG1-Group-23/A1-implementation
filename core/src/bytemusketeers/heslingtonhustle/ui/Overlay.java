@@ -1,5 +1,6 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.ui;
 
+import bytemusketeers.heslingtonhustle.Drawable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -12,12 +13,12 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  *
  * @author ENG1 Team 23 (Cohort 3)
  */
-abstract class Overlay implements Drawable {
+public abstract class Overlay implements Drawable {
     /**
      * The standard level of padding, specified in pixels, to be used for form {@link Actor} elements being used in
      * extensions of the {@link Overlay}
      */
-    protected static final int GENERAL_FORM_PADDING = 10;
+    static final int GENERAL_FORM_PADDING = 10;
 
     /**
      * The LibGDX {@link Stage} used for rendering {@link Actor} elements onto the visible {@link Overlay}
@@ -33,7 +34,7 @@ abstract class Overlay implements Drawable {
      * @param actor The element to add to the {@link Stage}
      * @see Actor
      */
-    protected void addActor(Actor actor) {
+    void addActor(Actor actor) {
         stage.addActor(actor);
     }
 

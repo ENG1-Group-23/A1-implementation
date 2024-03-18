@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Disposable;
  *
  * @author ENG1 Team 23 (Cohort 3)
  */
-interface Drawable extends Disposable {
+public interface Drawable extends Disposable {
     /**
      * Renders the {@link Drawable} to the given {@link SpriteBatch}. This method must be called during a batch-drawing
      * sequence operation, i.e. between {@link SpriteBatch#begin()} and {@link SpriteBatch#end()}.

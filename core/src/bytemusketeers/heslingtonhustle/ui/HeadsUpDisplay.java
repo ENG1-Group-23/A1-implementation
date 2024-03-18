@@ -1,4 +1,4 @@
-package bytemusketeers.heslingtonhustle;
+package bytemusketeers.heslingtonhustle.ui;
 
 import bytemusketeers.heslingtonhustle.metrics.MetricController;
 import bytemusketeers.heslingtonhustle.metrics.MetricListener;
@@ -14,13 +14,12 @@ import java.util.Map;
 /**
  * The {@link HeadsUpDisplay} displays persistent player and game information throughout the gameplay.
  *
- * @see PlayScreen
  * @author ENG1 Team 23 (Cohort 3)
  */
 class HeadsUpDisplay extends Overlay implements MetricListener {
     /**
-     * A persistent mapping between {@link MetricController.Metric} elements and the {@link Overlay}-specific {@link Label}
-     * form elements
+     * A persistent mapping between {@link MetricController.Metric} elements and the {@link Overlay}-specific
+     * {@link Label} form elements
      *
      * @see MetricController
      */

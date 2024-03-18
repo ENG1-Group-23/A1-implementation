@@ -18,7 +18,7 @@ class Interactable extends Item {
      *
      * @see #isClose(Vector2)
      */
-    private static final float INTERACTION_DISTANCE_SQ = 1f;
+    private float interaction_distance_sq = 1f;
 
     /**
      * The action to execute after {@link #interact()} has been finished. The execution should be deferred to LibGDX to
@@ -42,13 +42,13 @@ class Interactable extends Item {
 
     /**
      * Determines if the described {@link Vector2} represents an object that is sufficiently close to the
-     * {@link Interactable}; see {@link #INTERACTION_DISTANCE_SQ}.
+     * {@link Interactable}; see {@link #interaction_distance_sq}.
      *
      * @param position The position to test
      * @return Is the given {@link Vector2} within the defined Euclidean distance of the {@link Interactable}?
      */
     boolean isClose(Vector2 position) {
-        return getPosition().dst2(position) <= INTERACTION_DISTANCE_SQ;
+        return getPosition().dst2(position) <= interaction_distance_sq;
     }
 
     /**
@@ -64,6 +64,7 @@ class Interactable extends Item {
     Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
         super(position, texture, area, width, height);
         this.action = action;
+        this.interaction_distance_sq = (float) ((Math.pow(width/2, 2) + Math.pow(height/2, 2)) + (Math.pow(Character.HEIGHT/2, 2) + Math.pow(Character.WIDTH/2,2))+0.1f);
     }
 
 }

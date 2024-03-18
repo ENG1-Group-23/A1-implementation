@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -24,9 +23,39 @@ import java.util.List;
 class Area implements Drawable {
     /**
      * Distinguish between instantiations of particular {@link Area} objects
+     *
+     * @see Area
+     * @see AreaFactory
      */
     enum AreaName {
-        TestMap, PiazzaBuilding, CompSciBuilding, BedroomBuilding
+        TestMap("Test Map"),
+        PiazzaBuilding("Piazza Building"),
+        CompSciBuilding("Computer Science Building"),
+        BedroomBuilding("University Accommodation");
+
+        /**
+         * The display name of the {@link AreaName}
+         */
+        private final String displayName;
+
+        /**
+         * Retrieves the display name of the {@link AreaName}
+         *
+         * @return The requested display name
+         */
+        @Override
+        public String toString() {
+            return displayName;
+        }
+
+        /**
+         * Constructs a new {@link AreaName} enumerable entry with a suitable ordinal value and given display name
+         *
+         * @param displayName The {@link AreaName} display name
+         */
+        AreaName(String displayName) {
+            this.displayName = displayName;
+        }
     }
 
     /**
@@ -89,8 +118,8 @@ class Area implements Drawable {
      * @param verticalGutter The gutter, specified as in-game metres, on the vertical axis
      * @return The bounded vector
      * @implNote For performance reasons, in particular its likely usage during a {@link Drawable#render(SpriteBatch)}
-     *           cycle, this method modifies the original candidate {@link Vector}. The bounded variant of the candidate
-     *           is returned for the convenience of the caller.
+     *           cycle, this method modifies the original candidate {@link com.badlogic.gdx.math.Vector}. The bounded
+     *           variant of the candidate is returned for the convenience of the caller.
      * @see GameMap#bound(Vector2, float, float)
      */
     public Vector2 bound(Vector2 candidate, final float horizontalGutter, final float verticalGutter) {

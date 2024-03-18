@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -78,18 +77,10 @@ class PlayScreen implements Screen {
      * The controller for collating, managing, and reporting {@link MetricManager.Metric} information, principally
      * passing real-time information to {@link Overlay} components.
      *
-     * @see HeadsUpDisplay#updateMetricElement(MetricManager.Metric, String)
+     * @implNote To make the {@link MetricManager} useful in an event-driven context, see
+     *           {@link MetricManager#assignUpdater(Runnable)}, and in particular {@link MetricUpdater}.
      */
-    private final MetricManager metricManager = new MetricManager(new Runnable() {
-        /**
-         * Update the HUD with the last-updated metric from {@link MetricManager}
-         */
-        @Override
-        public void run() {
-            MetricManager.Metric updated = metricManager.getLastChangedMetric();
-            hud.updateMetricElement(updated, metricManager.getMetricValue(updated).toString());
-        }
-    });
+    private final MetricManager metricManager = new MetricManager();
 
     /**
      * Indicates the game-state; currently a binary selector of 'paused' or 'not paused'; intended to inform the
@@ -227,7 +218,7 @@ class PlayScreen implements Screen {
     }
 
     /**
-     * Switch to the {@link Area} identified by the given index
+     * Switch to the {@link Area} identified by the given {@link Area.AreaName} key
      *
      * @param areaName The {@link Area.AreaName} of the new {@link Area}
      * @see Area
@@ -235,14 +226,12 @@ class PlayScreen implements Screen {
     private void switchArea(Area.AreaName areaName) {
         // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaName);
+        metricManager.setMetric(MetricManager.Metric.Area, areaName.ordinal());
         character.switchCharacterContext(areaName);
         character.setPosition(activeArea.getInitialCharacterPosition());
 
-        // Update the game camera
-        Vector2 newCameraPosition = activeArea.getInitialCharacterPosition();
-
-        gameCam.position.x = newCameraPosition.x;
-        gameCam.position.y = newCameraPosition.y;
+        // Update the game camera; bounding on map edges will be performed during the render cycle
+        gameCam.position.set(activeArea.getInitialCharacterPosition(), 0);
         gameCam.update();
     }
 
@@ -290,19 +279,35 @@ class PlayScreen implements Screen {
      * Instantiates a new {@link PlayScreen} to be used for the playing area of the game. This constructor loads all
      * assets for all stages of the playing area, to be manipulated and rendered when required.
      *
+     * @param batch The LibGDX {@link SpriteBatch} to use for batch object rendering
      * @throws InvalidAreaException At least one {@link Area} required by the {@link PlayScreen} could not be properly
      *                              instantiated by the {@link AreaFactory}
      */
     public PlayScreen(SpriteBatch batch) throws InvalidAreaException {
+        // LibGDX core components setup
         this.batch = batch;
         gameCam = new OrthographicCamera();
         viewport = new StretchViewport(HeslingtonHustle.scaleToMetres(Gdx.graphics.getWidth()),
             HeslingtonHustle.scaleToMetres(Gdx.graphics.getHeight()), gameCam);
-        hud = new HeadsUpDisplay(batch);
-        pauseMenu = new PauseMenu(batch);
-
         gameCam.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
+        // UI elements
+        hud = new HeadsUpDisplay(batch,
+            new MetricManager.Metric[] {
+                MetricManager.Metric.Preparedness,
+                MetricManager.Metric.Happiness,
+                MetricManager.Metric.Tiredness
+            },
+            new MetricManager.Metric[] {
+                MetricManager.Metric.Area,
+                MetricManager.Metric.Day
+            }
+        );
+
+        metricManager.assignUpdater(new MetricUpdater(metricManager, hud));
+        pauseMenu = new PauseMenu(batch);
+
+        // Gameplay elements
         initialiseAreas();
         activeArea = areas.get(Area.AreaName.TestMap);
         character = new Character(areas, Area.AreaName.TestMap);

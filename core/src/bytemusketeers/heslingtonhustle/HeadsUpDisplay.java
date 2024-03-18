@@ -15,7 +15,7 @@ import java.util.Map;
  * @see PlayScreen
  * @author ENG1 Team 23 (Cohort 3)
  */
-class HeadsUpDisplay extends Overlay {
+class HeadsUpDisplay extends Overlay implements MetricListener {
     /**
      * A persistent mapping between {@link MetricManager.Metric} elements and the {@link Overlay}-specific {@link Label}
      * form elements
@@ -25,44 +25,69 @@ class HeadsUpDisplay extends Overlay {
     private final Map<MetricManager.Metric, Label> metricLabels = new EnumMap<>(MetricManager.Metric.class);
 
     /**
+     * The {@link Label.LabelStyle} to use for all text; this is standard and shipped with LibGDX
+     */
+    private static final Label.LabelStyle LABEL_STYLE = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+
+    /**
      * Update the {@link MetricManager.Metric} label with the given value
      *
      * @param metric The key of the {@link MetricManager.Metric} to update
      * @param text The new text
      */
-    public void updateMetricElement(MetricManager.Metric metric, String text) {
-        metricLabels.get(metric).setText(text);
+    @Override
+    public void updateMetricText(MetricManager.Metric metric, String text) {
+        Label valueLabel = metricLabels.get(metric);
+
+        if (valueLabel != null)
+            valueLabel.setText(text);
+    }
+
+    /**
+     * Prepares and adds a name-value {@link Label} pair to the given {@link Table}, and ends the row
+     *
+     * @param metric The {@link MetricManager.Metric} associated with the {@link Label}
+     */
+    private void addLabel(MetricManager.Metric metric, Table table) {
+        final Label valueLabel = new Label(null, LABEL_STYLE);
+        metricLabels.put(metric, valueLabel);
+        table.add(new Label(metric.toString() + ":", LABEL_STYLE)).padRight(GENERAL_FORM_PADDING).right();
+        table.add(valueLabel).left();
+        table.row();
     }
 
     /**
      * Creates a new {@link HeadsUpDisplay} relating to the given {@link SpriteBatch}
      *
      * @param batch The {@link SpriteBatch} to which the {@link HeadsUpDisplay} should be connected
+     * @param leftMetrics The {@link MetricManager.Metric} elements to be displayed on the left-hand side
+     * @param rightMetrics The {@link MetricManager.Metric} elements to be displayed on the right-hand side
      */
-    public HeadsUpDisplay(SpriteBatch batch) {
+    public HeadsUpDisplay(SpriteBatch batch, MetricManager.Metric[] leftMetrics, MetricManager.Metric[] rightMetrics) {
         super(batch);
 
-        final Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+        // Configure the outer HUD-level table
+        final Table outerTable = new Table();
+        outerTable.setFillParent(true);
+        outerTable.pad(GENERAL_FORM_PADDING);
 
-        // Create the HUD table: each row consists of a metric label and its value label
-        Table table = new Table();
-        table.setFillParent(true);
-        table.top().left().pad(GENERAL_FORM_PADDING);
+        // Add the specified LHS metric indicators
+        final Table leftTable = new Table();
+        for (MetricManager.Metric metric : leftMetrics)
+            addLabel(metric, leftTable);
+        outerTable.add(leftTable).expand().left().top();
 
-        for (MetricManager.Metric metric : MetricManager.Metric.values()) {
-            Label value = new Label(MetricManager.DEFAULT_VALUE.toString(), labelStyle);
-            metricLabels.put(metric, value);
+        // Add the specified RHS metric indicators
+        final Table rightTable = new Table();
+        for (MetricManager.Metric metric : rightMetrics)
+            addLabel(metric, rightTable);
+        outerTable.add(rightTable).expand().right().top();
 
-            table.add(new Label(metric.toString(), labelStyle)).right();
-            table.add(value).padLeft(GENERAL_FORM_PADDING).left();
-            table.row();
-        }
-
-        // The table needs to be the sole actor visible on the stage
-        super.addActor(table);
+        super.addActor(outerTable);
 
         // TODO: temporary tooltip advice
-        Label advice = new Label("E: interact; T: test map; P: Piazza; C: CS building; B: bedroom", labelStyle);
+        final Label advice = new Label("E: interact; T: test map; P: Piazza; C: CS building; B: bedroom",
+            LABEL_STYLE);
         advice.setPosition(GENERAL_FORM_PADDING, GENERAL_FORM_PADDING);
         super.addActor(advice);
     }

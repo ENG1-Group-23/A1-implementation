@@ -15,34 +15,36 @@ class MetricManager {
     /**
      * The standard amount by which a metric value may be increased or decreased. An integer multiplier may be used.
      *
-     * @see #incrementMetric(Metric, float)
-     * @see #decrementMetric(Metric, float)
+     * @see #incrementMetric(Metric, int)
+     * @see #decrementMetric(Metric, int)
      */
     private static final int INCREMENT_DELTA = 1;
 
     /**
      * The default value of each {@link Float} associated with a {@link Metric}
      */
-    public static final Float DEFAULT_VALUE = 0f;
+    private static final int DEFAULT_VALUE = 0;
 
     /**
      * The discriminating key for each metric
      *
      * @see #getMetricValue(Metric)
-     * @see #incrementMetric(Metric, float)
-     * @see #decrementMetric(Metric, float)
+     * @see #incrementMetric(Metric, int)
+     * @see #decrementMetric(Metric, int)
      */
     enum Metric {
-        Happiness, Tiredness, Preparedness
+        Happiness, Tiredness, Preparedness, Day, Area
     }
 
     /**
-     * The map associating {@link Metric}s with their {@link Float} value. In the interests of avoiding a
-     * {@link NullPointerException} on the {@link Float} {@link Map}, no non-private method should access this map
-     * directly; some suitable variant of {@link #incrementMetric(Metric, float)} should be used exclusively by external
-     * clients.
+     * The map associating {@link Metric}s with their {@link Float} value.
+     *
+     * @apiNote In the interests of avoiding a {@link NullPointerException} on the {@link Integer} {@link Map}, no
+     *          non-private method should access this map directly; some suitable variant of
+     *          {@link #incrementMetric(Metric, int)} should be used exclusively by external clients.
+     *          {@link #setMetric(Metric, int)} is acceptable when manipulating non-integral values.
      */
-    private final Map<Metric, Float> metrics = new EnumMap<>(Metric.class);
+    private final Map<Metric, Integer> metrics = new EnumMap<>(Metric.class);
 
     /**
      * The action to execute upon any value of a {@link Metric} being changed. The execution should be deferred to
@@ -50,9 +52,9 @@ class MetricManager {
      *
      * @see Runnable#run()
      * @see com.badlogic.gdx.Application#postRunnable(Runnable)
-     * @see #modifyMetric(Metric, float)
+     * @see #setMetric(Metric, int)
      */
-    private final Runnable updateAction;
+    private Runnable updateAction;
 
     /**
      * The last-updated {@link Metric}
@@ -62,25 +64,72 @@ class MetricManager {
     private Metric lastChangedMetric;
 
     /**
+     * Day-of-the-week names
+     *
+     * @see Metric#Day
+     * @see #getMetricStringValue(Metric)
+     */
+    private final static String[] DAY_NAMES = {
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+    };
+
+    /**
      * Retrieves the value associated with the given {@link Metric}
      *
      * @param metric The {@link Metric} whose value is required
      * @return The value associated with the {@link Metric}
      */
-    public Float getMetricValue(Metric metric) {
+    public Integer getMetricValue(Metric metric) {
         return metrics.get(metric);
     }
 
     /**
-     * Modifies a metric and completes any housekeeping
+     * Retrieves the corresponding value of the given {@link Metric} as a formatted human-readable {@link String}
+     *
+     * @param metric The {@link Metric} whose {@link String} value is required
+     * @return The {@link String} associated with the {@link Metric}
+     * @implNote This is a crude solution. To deal with larger sets of {@link Metric} key-value pairs, we would need a
+     *           dynamically typed 'Metric' entry-like class, akin to {@link Map.Entry}.
+     */
+    public String getMetricStringValue(Metric metric) {
+        final Integer value = getMetricValue(metric);
+        String text;
+
+        switch (metric) {
+            case Preparedness:
+            case Happiness:
+            case Tiredness:
+                text = value.toString();
+                break;
+
+            case Day:
+                text = DAY_NAMES[value % DAY_NAMES.length];
+                break;
+
+            case Area:
+                final Area.AreaName[] areaNames = Area.AreaName.values();
+                text = areaNames[value % areaNames.length].toString();
+                break;
+
+            default:
+                text = "Unknown value";
+        }
+
+        return text;
+    }
+
+    /**
+     * Modifies a metric and completes any applicable housekeeping
      *
      * @param metric The {@link Metric} to modify
      * @param value The new value
      */
-    private void modifyMetric(Metric metric, float value) {
+    public void setMetric(Metric metric, int value) {
         metrics.put(metric, value);
         lastChangedMetric = metric;
-        Gdx.app.postRunnable(updateAction);
+
+        if (updateAction != null)
+            Gdx.app.postRunnable(updateAction);
     }
 
     /**
@@ -90,8 +139,8 @@ class MetricManager {
      * @param multiplier The amount by which to scale the magnitude of the increment
      * @see #INCREMENT_DELTA
      */
-    public void incrementMetric(Metric metric, float multiplier) {
-        modifyMetric(metric, getMetricValue(metric) + INCREMENT_DELTA * multiplier);
+    public void incrementMetric(Metric metric, int multiplier) {
+        setMetric(metric, getMetricValue(metric) + INCREMENT_DELTA * multiplier);
     }
 
     /**
@@ -100,8 +149,8 @@ class MetricManager {
      * @param metric The {@link Metric} to increment
      * @param multiplier The amount by which to scale the magnitude of the decrement
      */
-    public void decrementMetric(Metric metric, float multiplier) {
-        modifyMetric(metric, getMetricValue(metric) - INCREMENT_DELTA * multiplier);
+    public void decrementMetric(Metric metric, int multiplier) {
+        setMetric(metric, getMetricValue(metric) - INCREMENT_DELTA * multiplier);
     }
 
     /**
@@ -114,14 +163,23 @@ class MetricManager {
     }
 
     /**
-     * Instantiates a new {@link MetricManager} with the specified {@link Runnable} update task
+     * Sets the {@link Runnable} object on which {@link Runnable#run()} should be executed by
+     * {@link com.badlogic.gdx.Application#postRunnable(Runnable)} upon a {@link Metric} value being updated.
      *
-     * @param updateAction The {@link Runnable} object, where {@link Runnable#run()} is executed upon any value of
-     *                     {@link #metrics} being updated.
+     * @param updateAction The {@link Runnable} object
+     * @see #getLastChangedMetric()
+     * @see #getMetricValue(Metric)
      */
-    public MetricManager(Runnable updateAction) {
+    public void assignUpdater(Runnable updateAction) {
         this.updateAction = updateAction;
+    }
 
+    /**
+     * Instantiates a new {@link MetricManager}, providing sensible a sensible default value to each {@link Metric}
+     *
+     * @see #DEFAULT_VALUE
+     */
+    public MetricManager() {
         for (Metric metric : Metric.values())
             metrics.put(metric, DEFAULT_VALUE);
     }

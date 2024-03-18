@@ -52,7 +52,6 @@ class GameMap implements Drawable {
      *
      * @return The {@link RectangleMapObject} objects embedded in the requested layer
      */
-    @SuppressWarnings("RedundantThrows") // TODO: in production, an exception should be thrown as below
     com.badlogic.gdx.utils.Array<RectangleMapObject> getBorderObjects() throws InvalidAreaException {
         final MapLayers layers = tiledMap.getLayers();
 
@@ -60,8 +59,7 @@ class GameMap implements Drawable {
             if (layer.getName().equals("borders"))
                 return layer.getObjects().getByType(RectangleMapObject.class);
 
-        return null;
-        // throw new InvalidAreaException("Level does not contain any borders");
+        throw new InvalidAreaException("Level does not contain any borders");
     }
 
     /**

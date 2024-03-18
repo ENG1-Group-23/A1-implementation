@@ -123,6 +123,16 @@ public class MetricController {
     }
 
     /**
+     * Does the {@link DOWMetric} entry suggested that the end is nigh?
+     *
+     * @return Is the game on the final day?
+     */
+    public boolean isFinalDay() {
+        DOWMetric entry = (DOWMetric) getDynamicMetricEntry(DOWMetric.class, Metric.Day);
+        return (entry == null || entry.isFinalDay());
+    }
+
+    /**
      * Updates the area metric with the given {@link Area.Name}: the {@link MetricEntry} associated with
      * {@link Metric#Area}
      *

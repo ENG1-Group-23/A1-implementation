@@ -21,12 +21,12 @@ public class Character extends Sprite implements Drawable {
     /**
      * The width of a {@link Character}, in in-game metres
      */
-    private static final float WIDTH = 1f;
+    private static final float WIDTH = 0.5f;
 
     /**
      * The height of a {@link Character}, in in-game metres
      */
-    private static final float HEIGHT = 1f;
+    private static final float HEIGHT = 0.5f;
 
     /**
      * The standard moving velocity, across both axes, of a mobile {@link Character}. Specified in in-game metres per

@@ -4,6 +4,7 @@ import bytemusketeers.heslingtonhustle.scene.Area;
 import bytemusketeers.heslingtonhustle.scene.Drawable;
 import bytemusketeers.heslingtonhustle.scene.InvalidAreaException;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,14 +14,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  * @author ENG1 Team 23 (Cohort 3)
  */
-class HeslingtonHustle extends Game {
+public class HeslingtonHustle extends Game {
+    /**
+     * An empirically determined factor by which the average screen device pixels/cm should be multiplied to compute
+     * the {@link #ppm}.
+     *
+     * @implNote The {@link #ppm} computation cannot be done on construction of {@link HeslingtonHustle} since
+     *           the LibGDX {@link Graphics} interface is not instantiated until {@link #create()} is called.
+     * @see #create()
+     * @see #ppm
+     */
+    private static final float SCALING_FACTOR = 2f;
+
     /**
      * 'PPM' denotes the number of pixels-per-(in-game)-metre. This is useful for converting between
      * {@link com.badlogic.gdx.Graphics} units and in-game metres.
      *
-     * @see #scaleToMetres(int)
+     * @see #scaleToMetres(float)
      */
-    private static final float PPM = 100;
+    private static float ppm;
 
     /**
      * The LibGDX {@link SpriteBatch} used during render-time
@@ -35,18 +47,18 @@ class HeslingtonHustle extends Game {
      *
      * @see #setScreen(Screen)
      */
-    private Screen[] screens;
+    private Screen playScreen;
 
     /**
      * Scales a pixel component to in-game metres
      *
      * @param value The quantity to scale, in pixels
      * @return The corresponding quantity of in-game metres
-     * @implNote Future implementors may wish to parameterise the {@link #PPM} in terms of the screen DPI-equivalent;
+     * @implNote Future implementors may wish to parameterise the {@link #ppm} in terms of the screen DPI-equivalent;
      *           see {@link Graphics#getPpiX()} and friends.
      */
-    static float scaleToMetres(int value) {
-        return value / PPM;
+    public static float scaleToMetres(float value) {
+        return value / ppm;
     }
 
     /**
@@ -61,11 +73,16 @@ class HeslingtonHustle extends Game {
      */
     @Override
     public void create() {
+        // Naively compute an ideal PPM by taking the average of the physical device screen pixels/cm on both axes and
+        // multiplying by the constant scaling factor
+        ppm = (Gdx.graphics.getPpcX() + Gdx.graphics.getPpcY()) / 2 * SCALING_FACTOR;
+
+        // Set up the game-local sprite batch and all areas
         batch = new SpriteBatch();
 
         try {
-            screens = new Screen[]{new PlayScreen(batch)};
-            setScreen(screens[0]);
+            playScreen = new PlayScreen(batch);
+            setScreen(playScreen);
         } catch (InvalidAreaException iae) {
             //noinspection CallToPrintStackTrace
             iae.printStackTrace();
@@ -78,9 +95,7 @@ class HeslingtonHustle extends Game {
      */
     @Override
     public void dispose() {
-        for (Screen screen : screens)
-            screen.dispose();
-
+        playScreen.dispose();
         batch.dispose();
         super.dispose();
     }

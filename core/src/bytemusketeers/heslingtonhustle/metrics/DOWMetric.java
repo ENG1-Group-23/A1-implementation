@@ -36,4 +36,13 @@ class DOWMetric implements MetricEntry {
         final DayOfWeek[] values = DayOfWeek.values();
         value = values[(value.ordinal() + 1) % values.length];
     }
+
+    /**
+     * Are we on the final day of the week?
+     *
+     * @return Are we on the final day of the week?
+     */
+    boolean isFinalDay() {
+        return value.ordinal() == DayOfWeek.values().length - 1;
+    }
 }

@@ -15,7 +15,17 @@ final public class OverlayFactory {
     private final SpriteBatch batch;
 
     /**
-     * Create a blank {@link PauseMenu} with the {@link #batch}
+     * Creates a blank {@link GameOverMenu} with the {@link #batch}
+     *
+     * @return A new {@link GameOverMenu}
+     * @see GameOverMenu
+     */
+    public Overlay createGameOverMenu() {
+        return new GameOverMenu(batch);
+    }
+
+    /**
+     * Creates a blank {@link PauseMenu} with the {@link #batch}
      *
      * @return A new {@link PauseMenu}
      * @see PauseMenu
@@ -30,6 +40,7 @@ final public class OverlayFactory {
      * @param leftMetrics Metrics to display on the LHS of the HUD
      * @param rightMetrics Metrics to display on the RHS of the HUD
      * @return A new {@link HeadsUpDisplay}, prepared to display the given {@link MetricController.Metric} items
+     * @see HeadsUpDisplay
      */
     public Overlay createHUD(MetricController.Metric[] leftMetrics, MetricController.Metric[] rightMetrics) {
         return new HeadsUpDisplay(batch, leftMetrics, rightMetrics);

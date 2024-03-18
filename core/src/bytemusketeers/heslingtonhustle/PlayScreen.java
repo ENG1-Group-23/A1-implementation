@@ -37,6 +37,11 @@ public class PlayScreen implements Screen {
     }
 
     /**
+     * The initial {@link Area} into which the {@link Character} should spawn upon starting the game
+     */
+    private static final Area.Name DEFAULT_AREA = Area.Name.OutdoorMap;
+
+    /**
      * Stores the transient {@link GameState} being experienced by the player in the {@link PlayScreen}
      */
     private GameState state = GameState.GAME_PLAYING;
@@ -122,7 +127,7 @@ public class PlayScreen implements Screen {
     private void initialiseAreas() throws InvalidAreaException {
         AreaFactory factory = new AreaFactory(metricController, this);
 
-        areas.put(Area.Name.TestMap, factory.createTestMap());
+        areas.put(Area.Name.OutdoorMap, factory.createOutdoorMap());
         areas.put(Area.Name.PiazzaBuilding, factory.createPiazzaMap());
         areas.put(Area.Name.CompSciBuilding, factory.createCSMap());
         areas.put(Area.Name.BedroomBuilding, factory.createBedroomMap());
@@ -165,7 +170,7 @@ public class PlayScreen implements Screen {
             if (Gdx.input.isKeyJustPressed(Input.Keys.P)) switchArea(Area.Name.PiazzaBuilding);
             if (Gdx.input.isKeyJustPressed(Input.Keys.C)) switchArea(Area.Name.CompSciBuilding);
             if (Gdx.input.isKeyJustPressed(Input.Keys.B)) switchArea(Area.Name.BedroomBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.T)) switchArea(Area.Name.TestMap);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.T)) switchArea(Area.Name.OutdoorMap);
         }
     }
 
@@ -207,9 +212,7 @@ public class PlayScreen implements Screen {
      * @see #hide()
      */
     @Override
-    public void show() {
-        System.out.println("PlayScreen shown");
-    }
+    public void show() { }
 
     /**
      * Handles the {@link PlayScreen} being hidden
@@ -217,9 +220,7 @@ public class PlayScreen implements Screen {
      * @see #show()
      */
     @Override
-    public void hide() {
-        System.out.println("PlayScreen hidden");
-    }
+    public void hide() { }
 
     /**
      * Handles the {@link PlayScreen}, and hence general gameplay execution, being paused
@@ -260,7 +261,10 @@ public class PlayScreen implements Screen {
      * @param areaName The {@link Area.Name} of the new {@link Area}
      * @see Area
      */
-    private void switchArea(Area.Name areaName) {
+    public void switchArea(Area.Name areaName) {
+        // When returning to this area, come back to the place we left
+        activeArea.setInitialCharacterPosition(character.getPosition());
+
         // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaName);
         metricController.changeAreaMetric(areaName);
@@ -368,8 +372,9 @@ public class PlayScreen implements Screen {
 
         // Initialise final-stage gameplay elements
         initialiseAreas();
-        character = new Character(areas);
-        switchArea(Area.Name.TestMap);
+        character = new Character(areas, DEFAULT_AREA);
+        activeArea = areas.get(DEFAULT_AREA);
+        switchArea(DEFAULT_AREA);
 
         // Send an initial pulse of each established metric to the updater
         for (MetricController.Metric metric : MetricController.Metric.values())

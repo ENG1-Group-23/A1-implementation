@@ -36,26 +36,37 @@ final public class AreaFactory {
     private final PlayScreen playScreen;
 
     /**
-     * Creates an {@link Area} for testing purposes with a couple of {@link Interactable} objects at randomly generated
-     * locations, incrementing and decrementing the {@link MetricController.Metric#Play} metric.
+     * Crates an {@link Area} of the Campus East outdoors area
      *
      * @return The generated test map
      */
-    public Area createTestMap() throws InvalidAreaException {
-        Area area = new Area("Maps/test-map.tmx", new Vector2(2, 2));
+    public Area createOutdoorMap() throws InvalidAreaException {
+        Area area = new Area("Maps/outdoor-map.tmx", new Vector2(2, 2));
 
+        // The Piazza building entrance
         area.addInteractable(new Interactable(
-            new Vector2(0, 2),
-            new Texture("prototype-1.png"),
-            area, 1, 1,
-            () -> metricController.incrementPlayerMetric(MetricController.Metric.Play, 1)
+            new Vector2(4, 7),
+            new Texture("Building-1.png"),
+            area, 2,
+            () -> playScreen.switchArea(Area.Name.PiazzaBuilding)
         ));
 
+        // The university accommodation/bedroom building entrance
+        // TODO: change sprite
         area.addInteractable(new Interactable(
-            new Vector2(8, 2),
-            new Texture("prototype-2.png"),
-            area, 1, 1,
-            () -> metricController.decrementPlayerMetric(MetricController.Metric.Play, 1)
+            new Vector2(23, 11),
+            new Texture("Building-1.png"),
+            area, 2,
+            () -> playScreen.switchArea(Area.Name.BedroomBuilding)
+        ));
+
+        // The computer science building entrance
+        // TODO: change sprite
+        area.addInteractable(new Interactable(
+            new Vector2(12, 17),
+            new Texture("Building-1.png"),
+            area, 2,
+            () -> playScreen.switchArea(Area.Name.CompSciBuilding)
         ));
 
         return area;
@@ -68,7 +79,18 @@ final public class AreaFactory {
      * @return The generated Piazza map
      */
     public Area createPiazzaMap() throws InvalidAreaException {
-        return new Area("Maps/piazza-map.tmx", new Vector2(19, 1.4f));
+        Area area = new Area("Maps/piazza-map.tmx", new Vector2(19, 3));
+
+        // Return to the outside
+        // TODO: change sprite
+        area.addInteractable(new Interactable(
+            new Vector2(19, 1),
+            new Texture("Building-1.png"),
+            area, 2,
+            () -> playScreen.switchArea(Area.Name.OutdoorMap)
+        ));
+
+        return area;
     }
 
     /**
@@ -78,7 +100,18 @@ final public class AreaFactory {
      * @return The generated Computer Science building
      */
     public Area createCSMap() throws InvalidAreaException {
-        return new Area("Maps/comp-sci-map.tmx", new Vector2(25, 1));
+        Area area = new Area("Maps/comp-sci-map.tmx", new Vector2(25, 3));
+
+        // Return to the outside
+        // TODO: change sprite
+        area.addInteractable(new Interactable(
+            new Vector2(25, 1),
+            new Texture("Building-1.png"),
+            area, 2,
+            () -> playScreen.switchArea(Area.Name.OutdoorMap)
+        ));
+
+        return area;
     }
 
     /**
@@ -87,14 +120,23 @@ final public class AreaFactory {
      * @return The generated bedroom building
      */
     public Area createBedroomMap() throws InvalidAreaException {
-        Area area = new Area("Maps/bedroom-map.tmx", new Vector2(6, 1));
+        Area area = new Area("Maps/bedroom-map.tmx", new Vector2(6, 3));
 
         // A bed for advancing the day
         area.addInteractable(new Interactable(
-            new Vector2(6, 6),
+            new Vector2(6, 7),
             new Texture("Bed-1.png"),
             area, 4.5f,
             playScreen::advanceDay
+        ));
+
+        // Return to the outside
+        // TODO: change sprite
+        area.addInteractable(new Interactable(
+            new Vector2(6, 1),
+            new Texture("Building-1.png"),
+            area, 2,
+            () -> playScreen.switchArea(Area.Name.OutdoorMap)
         ));
 
         return area;

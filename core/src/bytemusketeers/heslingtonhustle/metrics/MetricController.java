@@ -170,7 +170,7 @@ public class MetricController {
         metrics.put(Metric.Study, new PlayerMetric());
         metrics.put(Metric.Eat, new PlayerMetric());
         metrics.put(Metric.Play, new PlayerMetric());
-        metrics.put(Metric.Area, new AreaMetric(Area.Name.TestMap));
+        metrics.put(Metric.Area, new AreaMetric(Area.Name.OutdoorMap));
         metrics.put(Metric.Day, new DOWMetric());
     }
 }

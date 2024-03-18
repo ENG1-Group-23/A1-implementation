@@ -27,10 +27,10 @@ public class Area implements Drawable {
      * @see AreaFactory
      */
     public enum Name {
-        TestMap("Test Map"),
+        OutdoorMap("Campus East Outdoor Area"),
         PiazzaBuilding("Piazza Building"),
         CompSciBuilding("Computer Science Building"),
-        BedroomBuilding("University Accommodation");
+        BedroomBuilding("Five-Star University Accommodation");
 
         /**
          * A human-readable name for the {@link Name} ordinal
@@ -77,7 +77,7 @@ public class Area implements Drawable {
      *
      * @see #getInitialCharacterPosition()
      */
-    private final Vector2 initialCharacterPosition;
+    private Vector2 initialCharacterPosition;
 
     /**
      * The {@link GameMap} forming the background of the {@link Area}, including its respective rendering mechanisms
@@ -195,6 +195,16 @@ public class Area implements Drawable {
      */
     public Vector2 getInitialCharacterPosition() {
         return initialCharacterPosition;
+    }
+
+    /**
+     * Resets the initial {@link Area}-local {@link Character} position, in in-game metres
+     *
+     * @param position The new position
+     * @see Character
+     */
+    public void setInitialCharacterPosition(Vector2 position) {
+        initialCharacterPosition = position;
     }
 
     /**

@@ -1,7 +1,5 @@
 package bytemusketeers.heslingtonhustle;
 
-import com.badlogic.gdx.Gdx;
-
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -52,19 +50,11 @@ class MetricController {
     }
 
     /**
-     * The callback to execute on the LibGDX logical thread following any {@link MetricEntry} value updates
+     * The callback to execute following any {@link MetricEntry} value updates
      *
-     * @see com.badlogic.gdx.Application#postRunnable(Runnable)
      * @see MetricUpdater
      */
-    private Runnable updateAction;
-
-    /**
-     * The {@link Metric} key of the last-changed {@link MetricEntry}
-     *
-     * @see #getLastChangedMetric()
-     */
-    private Metric lastChanged;
+    private final MetricUpdater updateAction;
 
     /**
      * The associative key-value map between {@link Metric} identifiers and {@link MetricEntry} storage classes
@@ -98,8 +88,7 @@ class MetricController {
         PlayerMetric entry = (PlayerMetric) getDynamicMetricEntry(PlayerMetric.class, metric);
         if (entry != null) {
             entry.incrementMetric(multiplier);
-            lastChanged = metric;
-            Gdx.app.postRunnable(updateAction);
+            updateAction.sendUpdate(metric, getMetricStringValue(metric));
         }
     }
 
@@ -114,8 +103,7 @@ class MetricController {
         PlayerMetric entry = (PlayerMetric) getDynamicMetricEntry(PlayerMetric.class, metric);
         if (entry != null) {
             entry.decrementMetric(multiplier);
-            lastChanged = metric;
-            Gdx.app.postRunnable(updateAction);
+            updateAction.sendUpdate(metric, getMetricStringValue(metric));
         }
     }
 
@@ -128,8 +116,7 @@ class MetricController {
         DOWMetric entry = (DOWMetric) getDynamicMetricEntry(DOWMetric.class, Metric.Day);
         if (entry != null) {
             entry.nextDay();
-            lastChanged = Metric.Day;
-            Gdx.app.postRunnable(updateAction);
+            updateAction.sendUpdate(Metric.Day, getMetricStringValue(Metric.Day));
         }
     }
 
@@ -144,18 +131,8 @@ class MetricController {
         AreaMetric entry = (AreaMetric) getDynamicMetricEntry(AreaMetric.class, Metric.Area);
         if (entry != null) {
             entry.setArea(areaName);
-            lastChanged = Metric.Area;
-            Gdx.app.postRunnable(updateAction);
+            updateAction.sendUpdate(Metric.Area, getMetricStringValue(Metric.Area));
         }
-    }
-
-    /**
-     * Retrieves the key of the last-changed {@link MetricEntry}
-     *
-     * @return The {@link Metric} associated with the most recently changed {@link MetricEntry} value
-     */
-    public Metric getLastChangedMetric() {
-        return lastChanged;
     }
 
     /**
@@ -170,22 +147,13 @@ class MetricController {
     }
 
     /**
-     * Assigns the {@link Runnable} handler to be posted to the LibGDX logical thread upon {@link MetricEntry}
-     * value alterations
-     *
-     * @param updateAction The {@link Runnable} implementation to post
-     * @see com.badlogic.gdx.Application#postRunnable(Runnable)
-     */
-    public void assignUpdater(Runnable updateAction) {
-        this.updateAction = updateAction;
-    }
-
-    /**
      * Instantiates a new {@link MetricController} and populates the {@link #metrics} with sensible defaults
      *
      * @see MetricEntry
      */
-    public MetricController() {
+    public MetricController(MetricUpdater updateAction) {
+        this.updateAction = updateAction;
+
         metrics.put(Metric.Sleep, new PlayerMetric());
         metrics.put(Metric.Study, new PlayerMetric());
         metrics.put(Metric.Eat, new PlayerMetric());

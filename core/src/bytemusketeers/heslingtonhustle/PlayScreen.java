@@ -79,10 +79,8 @@ class PlayScreen implements Screen {
      *
      * @see MetricListener
      * @see MetricUpdater
-     * @see MetricEntry
-     * @see MetricController.Metric
      */
-    private final MetricController metricController = new MetricController();
+    private final MetricController metricController;
 
     /**
      * Indicates the game-state; currently a binary selector of 'paused' or 'not paused'; intended to inform the
@@ -286,14 +284,15 @@ class PlayScreen implements Screen {
      *                              instantiated by the {@link AreaFactory}
      */
     public PlayScreen(SpriteBatch batch) throws InvalidAreaException {
-        // LibGDX core components setup
+        // LibGDX core components and minor UI elements
         this.batch = batch;
         gameCam = new OrthographicCamera();
         viewport = new StretchViewport(HeslingtonHustle.scaleToMetres(Gdx.graphics.getWidth()),
             HeslingtonHustle.scaleToMetres(Gdx.graphics.getHeight()), gameCam);
         gameCam.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        pauseMenu = new PauseMenu(batch);
 
-        // UI elements
+        // Create the HUD and prepare it to receive metrics of the given keys
         hud = new HeadsUpDisplay(batch,
             new MetricController.Metric[]{
                 MetricController.Metric.Area,
@@ -307,14 +306,17 @@ class PlayScreen implements Screen {
             }
         );
 
-        final MetricUpdater metricUpdater = new MetricUpdater(metricController, hud);
-        metricController.assignUpdater(metricUpdater);
+        // Create the controller assigned with the standard updater, thus linking the controller and the HUD
+        final MetricUpdater metricUpdater = new MetricUpdater(hud);
+        metricController = new MetricController(metricUpdater);
 
-        pauseMenu = new PauseMenu(batch);
-
-        // Gameplay elements
+        // Initialise final-stage gameplay elements
         initialiseAreas();
-        activeArea = areas.get(Area.Name.TestMap);
-        character = new Character(areas, Area.Name.TestMap);
+        character = new Character(areas);
+        switchArea(Area.Name.TestMap);
+
+        // Send an initial pulse of each established metric to the updater
+        for (MetricController.Metric metric : MetricController.Metric.values())
+            metricUpdater.sendUpdate(metric, metricController.getMetricStringValue(metric));
     }
 }

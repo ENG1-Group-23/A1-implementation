@@ -185,13 +185,11 @@ class Character extends Sprite implements Drawable {
      * Initialises a new {@link Character} body as a player-movable {@link Sprite}
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
-     * @param defaultAreaName The initial {@link Area} {@link Area.Name}
      */
-    public Character(Map<Area.Name, Area> areas, Area.Name defaultAreaName) {
+    public Character(Map<Area.Name, Area> areas) {
         for (Map.Entry<Area.Name, Area> area : areas.entrySet())
             bodies.put(area.getKey(), area.getValue().registerCharacter(WIDTH, HEIGHT));
 
-        switchCharacterContext(defaultAreaName);
         playerTexture = new Texture(TEXTURE_PATH);
     }
 }

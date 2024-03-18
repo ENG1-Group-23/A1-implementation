@@ -9,54 +9,28 @@ package bytemusketeers.heslingtonhustle;
  *           suffice.
  * @author ENG1 Team 23 (Cohort 3)
  */
-class MetricUpdater implements Runnable {
-    /**
-     * The source of the {@link MetricController} updates
-     *
-     * @see #metricListener
-     */
-    private final MetricController metricController;
-
+class MetricUpdater {
     /**
      * The recipient of the {@link MetricController} updates
-     *
-     * @see #metricController
      */
     private final MetricListener metricListener;
 
     /**
-     * Sends an update of a single {@link MetricController.Metric} to the registered {@link MetricListener}. This method
-     * is implicitly responsible for determining the
+     * Sends an update of a single {@link MetricController.Metric} to the registered {@link MetricListener}
      *
-     * @see #metricController
      * @see #metricListener
      */
-    private void sendUpdate(MetricController.Metric metric) {
-        metricListener.updateMetricText(metric, metricController.getMetricStringValue(metric));
-    }
-
-    /**
-     * Update the HUD with the last-updated metric from {@link MetricController}
-     */
-    @Override
-    public void run() {
-        sendUpdate(metricController.getLastChangedMetric());
+    public void sendUpdate(MetricController.Metric metric, String value) {
+        metricListener.updateMetricText(metric, value);
     }
 
     /**
      * Instantiates a new {@link MetricUpdater} to provide updates to a {@link MetricListener} on the transient states
-     * of a {@link MetricController}. Upon construction, an initial pulse is of each {@link MetricController.Metric} to
-     * the given {@link MetricListener}.
+     * of a {@link MetricController}
      *
-     * @param metricController The data-source {@link MetricController}
      * @param metricListener The data-recipient {@link MetricListener}
      */
-    public MetricUpdater(MetricController metricController, MetricListener metricListener) {
-        this.metricController = metricController;
+    public MetricUpdater(MetricListener metricListener) {
         this.metricListener = metricListener;
-
-        // Send an initial pulse of the status of each metric at the time of the updater construction
-        for (MetricController.Metric metric : MetricController.Metric.values())
-            sendUpdate(metric);
     }
 }

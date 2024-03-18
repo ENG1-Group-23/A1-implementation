@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="29">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="32">
  <tileset firstgid="1" source="Tileset-2.tsx"/>
  <tileset firstgid="51" source="Tileset-2-New-2.tsx"/>
  <tileset firstgid="101" source="Tileset 3.tsx"/>
@@ -48,6 +48,7 @@
   <object id="18" x="631.667" y="-7.33333" width="16.3333" height="31.3333"/>
   <object id="19" x="586.667" y="-6.66667" width="12.6667" height="158"/>
   <object id="20" x="200.667" y="143" width="398.583" height="8.5"/>
+  <object id="31" x="363.333" y="321.333" width="101.333" height="42.6667"/>
  </objectgroup>
  <objectgroup id="4" name="Tables">
   <object id="21" x="656" y="161" width="111.75" height="13.5"/>

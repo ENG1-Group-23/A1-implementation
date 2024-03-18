@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
+import java.security.PrivateKey;
+
 /**
  * An {@link Interactable} is an {@link Item} with which the {@link Character} may interact.
  *
@@ -65,4 +67,5 @@ class Interactable extends Item {
         super(position, texture, area, width, height);
         this.action = action;
     }
+
 }

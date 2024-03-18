@@ -10,6 +10,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A {@link GameMap} represents and manages the {@link Drawable} playing {@link Area} background, principally consisting
@@ -52,16 +56,17 @@ class GameMap implements Drawable {
      *
      * @return The {@link RectangleMapObject} objects embedded in the requested layer
      */
-    @SuppressWarnings("RedundantThrows") // TODO: in production, an exception should be thrown as below
-    com.badlogic.gdx.utils.Array<RectangleMapObject> getBorderObjects() throws InvalidAreaException {
+    com.badlogic.gdx.utils.Array<RectangleMapObject> getBorderObjects()  {
         final MapLayers layers = tiledMap.getLayers();
+        com.badlogic.gdx.utils.Array<RectangleMapObject> objects = new Array<>();
 
         for (MapLayer layer : layers)
-            if (layer.getName().equals("borders"))
-                return layer.getObjects().getByType(RectangleMapObject.class);
+            //This triggers if the property is there at all, not just if it's true
+            //If you want to make a layer non-collidable, remove the custom property entirely from the tmx file.
+            if (layer.getProperties().containsKey("collidable"))
+                 objects.addAll(layer.getObjects().getByType(RectangleMapObject.class));
 
-        return null;
-        // throw new InvalidAreaException("Level does not contain any borders");
+        return objects;
     }
     /**
      * Retrieve any layer objects from the {@link TiledMap} of the current {@link GameMap}
@@ -76,7 +81,7 @@ class GameMap implements Drawable {
             return layers.get(nameOfTheLayer).getObjects().getByType(RectangleMapObject.class);
         }
         catch (Exception e) {
-            throw new InvalidAreaException("Level does not contain any borders");
+            throw new InvalidAreaException("Map does not contain layer " + nameOfTheLayer);
         }
 
     }

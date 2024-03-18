@@ -296,8 +296,8 @@ class PlayScreen implements Screen {
         // LibGDX core components
         this.batch = batch;
         gameCam = new OrthographicCamera();
-        viewport = new StretchViewport(HeslingtonHustle.scaleToMetres(Gdx.graphics.getWidth()),
-            HeslingtonHustle.scaleToMetres(Gdx.graphics.getHeight()), gameCam);
+        viewport = new StretchViewport(HeslingtonHustle.scaleToMetres(Gdx.graphics.getWidth()) * 1.5f,
+            HeslingtonHustle.scaleToMetres(Gdx.graphics.getHeight()) * 1.5f, gameCam);
         gameCam.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
         // UI elements

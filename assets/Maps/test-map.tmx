@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="6">
  <tileset firstgid="1" source="Tileset-1.tsx"/>
  <tileset firstgid="21" source="Tileset-2-New-2.tsx"/>
+ <tileset firstgid="71" source="Tileset 4.tsx"/>
  <layer id="2" name="Tile Layer 2" width="30" height="20">
   <data encoding="base64" compression="zlib">
-   eJwTZWBgEEXDkkAsjUUcFwaplyJRDy5zRu2lj732QCxOJHaA2kuKHmz2ygCxLAnYCWqvIwl6KAkXaofzqL0DY68YA3Hpmdr2wvxDCNPKXlz5xAkqJ0fn+CO1fBtM9mJLQw50sFcSSzw60cledDOICWdS6gRs9QI59pJaj2CrF8ixlxwMAHfpNsw=
+   eJztlUsSgyAMQHOJ6lg/VyllVVmoJ7P/+zaOsGEITWaEuujibULCG76ZAeCamRtyRw4eF8QE4hRLfi+oeRDeCqkF3iX/KKjZo/eElEyU9XJqTMTbIK0Abb1nRu4U8UrZap//3t94C+Dd5629bj3fSOWl3om2Y10iL7Ue6f+2J2/oDqkM3ipwjjqT15+Ds8/cPkL1hQHWv9uPjYG4Q9JHXF94Iq/MvJEPvQJn9g==
   </data>
  </layer>
+ <objectgroup id="3" name="borders">
+  <object id="1" x="-2.5" y="-6.5" width="487" height="13.5"/>
+  <object id="2" x="472.5" y="-11" width="16.5" height="333.5"/>
+  <object id="3" x="-1" y="312.5" width="488" height="17.5"/>
+  <object id="5" x="-18" y="-9" width="25" height="324"/>
+ </objectgroup>
 </map>

@@ -79,7 +79,7 @@ final public class AreaFactory {
      * @return The generated bedroom building
      */
     public Area createBedroomMap() throws InvalidAreaException {
-        return new Area("Maps/bedroom-map.tmx", new Vector2(10, 1));
+        return new Area("Maps/bedroom-map.tmx", new Vector2(6, 1));
     }
 
     /**

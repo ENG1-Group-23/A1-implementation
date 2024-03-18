@@ -65,4 +65,5 @@ class Interactable extends Item {
         super(position, texture, area, width, height);
         this.action = action;
     }
+
 }

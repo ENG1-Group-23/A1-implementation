@@ -20,16 +20,16 @@ import com.badlogic.gdx.math.Vector2;
  */
 final class AreaFactory {
     /**
-     * The {@link MetricManager} belonging to the parental {@link PlayScreen}, generally used when registering
+     * The {@link MetricController} belonging to the parental {@link PlayScreen}, generally used when registering
      * {@link Runnable} actions on {@link Interactable}s in the created {@link Area}
      *
      * @see Interactable#interact()
      */
-    private final MetricManager metricManager;
+    private final MetricController metricController;
 
     /**
      * Creates an {@link Area} for testing purposes with a couple of {@link Interactable} objects at randomly generated
-     * locations, incrementing and decrementing the {@link MetricManager.Metric#Study} metric.
+     * locations, incrementing and decrementing the {@link MetricController.Metric#Play} metric.
      *
      * @return The generated test map
      */
@@ -40,13 +40,13 @@ final class AreaFactory {
             new Vector2(0, 2),
             new Texture("prototype-1.png"),
             area, 1, 1,
-            () -> metricManager.incrementMetric(MetricManager.Metric.Study, 1)));
+            () -> metricController.incrementPlayerMetric(MetricController.Metric.Play, 1)));
 
         area.addInteractable(new Interactable(
             new Vector2(8, 2),
             new Texture("prototype-2.png"),
             area, 1, 1,
-            () -> metricManager.decrementMetric(MetricManager.Metric.Study, 1)));
+            () -> metricController.decrementPlayerMetric(MetricController.Metric.Play, 1)));
 
         return area;
     }
@@ -82,11 +82,11 @@ final class AreaFactory {
     }
 
     /**
-     * Instantiates a new {@link AreaFactory} with the given contextual {@link MetricManager}
+     * Instantiates a new {@link AreaFactory} with the given contextual {@link MetricController}
      *
-     * @param metricManager The {@link MetricManager} belonging to the parental {@link PlayScreen}
+     * @param metricController The {@link MetricController} belonging to the parental {@link PlayScreen}
      */
-    public AreaFactory(MetricManager metricManager) {
-        this.metricManager = metricManager;
+    public AreaFactory(MetricController metricController) {
+        this.metricController = metricController;
     }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @apiNote The {@link Character} is a unique given its ability to exist in multiple {@link Area}s across gameplay; the
  *          {@link PlayScreen} must inform {@link Character} of any {@link Area} changes; see
- *          {@link #switchCharacterContext(Area.AreaName)}.
+ *          {@link #switchCharacterContext(Area.Name)}.
  * @author ENG1 Team 23 (Cohort 3)
  */
 class Character extends Sprite implements Drawable {
@@ -76,15 +76,15 @@ class Character extends Sprite implements Drawable {
      * The relationship between the {@link Area} and the {@link Body}, with standard area keys
      *
      * @see #activeBody
-     * @see #switchCharacterContext(Area.AreaName)
+     * @see #switchCharacterContext(Area.Name)
      */
-    private final Map<Area.AreaName, Body> bodies = new EnumMap<>(Area.AreaName.class);
+    private final Map<Area.Name, Body> bodies = new EnumMap<>(Area.Name.class);
 
     /**
      * The {@link Body} reference belonging to the current {@link Area} context
      *
      * @see #bodies
-     * @see #switchCharacterContext(Area.AreaName)
+     * @see #switchCharacterContext(Area.Name)
      */
     private Body activeBody;
 
@@ -156,9 +156,9 @@ class Character extends Sprite implements Drawable {
     /**
      * Switch the {@link Character} context to {@link Area} identified by the given index
      *
-     * @param areaName The {@link Area.AreaName} of the new {@link Area}
+     * @param areaName The {@link Area.Name} of the new {@link Area}
      */
-    public void switchCharacterContext(Area.AreaName areaName) {
+    public void switchCharacterContext(Area.Name areaName) {
         activeBody = bodies.get(areaName);
     }
 
@@ -185,10 +185,10 @@ class Character extends Sprite implements Drawable {
      * Initialises a new {@link Character} body as a player-movable {@link Sprite}
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
-     * @param defaultAreaName The initial {@link Area} {@link Area.AreaName}
+     * @param defaultAreaName The initial {@link Area} {@link Area.Name}
      */
-    public Character(Map<Area.AreaName, Area> areas, Area.AreaName defaultAreaName) {
-        for (Map.Entry<Area.AreaName, Area> area : areas.entrySet())
+    public Character(Map<Area.Name, Area> areas, Area.Name defaultAreaName) {
+        for (Map.Entry<Area.Name, Area> area : areas.entrySet())
             bodies.put(area.getKey(), area.getValue().registerCharacter(WIDTH, HEIGHT));
 
         switchCharacterContext(defaultAreaName);

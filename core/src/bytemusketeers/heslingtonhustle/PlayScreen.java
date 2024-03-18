@@ -45,8 +45,8 @@ class PlayScreen implements Screen {
     /**
      * The persistent {@link HeadsUpDisplay} {@link Overlay} presenting real-time metric information to the player
      *
-     * @see MetricManager
-     * @see MetricManager.Metric
+     * @see MetricController
+     * @see MetricController.Metric
      */
     private final HeadsUpDisplay hud;
 
@@ -57,12 +57,12 @@ class PlayScreen implements Screen {
     private final PauseMenu pauseMenu;
 
     /**
-     * The relationship between {@link Area} and the {@link Area.AreaName}
+     * The relationship between {@link Area} and the {@link Area.Name}
      *
      * @see Area
-     * @see Area.AreaName
+     * @see Area.Name
      */
-    private final Map<Area.AreaName, Area> areas = new EnumMap<>(Area.AreaName.class);
+    private final Map<Area.Name, Area> areas = new EnumMap<>(Area.Name.class);
 
     /**
      * The {@link Area} subject to world collision, interaction, and rendering
@@ -74,13 +74,15 @@ class PlayScreen implements Screen {
     private Area activeArea;
 
     /**
-     * The controller for collating, managing, and reporting {@link MetricManager.Metric} information, principally
-     * passing real-time information to {@link Overlay} components.
+     * The {@link MetricController} stores and provides means of manipulating and updating
+     * {@link MetricController.Metric}--{@link MetricEntry} pairs
      *
-     * @implNote To make the {@link MetricManager} useful in an event-driven context, see
-     *           {@link MetricManager#assignUpdater(Runnable)}, and in particular {@link MetricUpdater}.
+     * @see MetricListener
+     * @see MetricUpdater
+     * @see MetricEntry
+     * @see MetricController.Metric
      */
-    private final MetricManager metricManager = new MetricManager();
+    private final MetricController metricController = new MetricController();
 
     /**
      * Indicates the game-state; currently a binary selector of 'paused' or 'not paused'; intended to inform the
@@ -98,12 +100,12 @@ class PlayScreen implements Screen {
      * @see AreaFactory
      */
     private void initialiseAreas() throws InvalidAreaException {
-        AreaFactory factory = new AreaFactory(metricManager);
+        AreaFactory factory = new AreaFactory(metricController);
 
-        areas.put(Area.AreaName.TestMap, factory.createTestMap());
-        areas.put(Area.AreaName.PiazzaBuilding, factory.createPiazzaMap());
-        areas.put(Area.AreaName.CompSciBuilding, factory.createCSMap());
-        areas.put(Area.AreaName.BedroomBuilding, factory.createBedroomMap());
+        areas.put(Area.Name.TestMap, factory.createTestMap());
+        areas.put(Area.Name.PiazzaBuilding, factory.createPiazzaMap());
+        areas.put(Area.Name.CompSciBuilding, factory.createCSMap());
+        areas.put(Area.Name.BedroomBuilding, factory.createBedroomMap());
     }
 
     /**
@@ -137,10 +139,10 @@ class PlayScreen implements Screen {
                 activeArea.triggerInteractables(character.getPosition());
 
             // TODO: just a few temporary tests for switching areas
-            if (Gdx.input.isKeyJustPressed(Input.Keys.P)) switchArea(Area.AreaName.PiazzaBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.C)) switchArea(Area.AreaName.CompSciBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.B)) switchArea(Area.AreaName.BedroomBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.T)) switchArea(Area.AreaName.TestMap);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.P)) switchArea(Area.Name.PiazzaBuilding);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.C)) switchArea(Area.Name.CompSciBuilding);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.B)) switchArea(Area.Name.BedroomBuilding);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.T)) switchArea(Area.Name.TestMap);
         }
     }
 
@@ -218,15 +220,15 @@ class PlayScreen implements Screen {
     }
 
     /**
-     * Switch to the {@link Area} identified by the given {@link Area.AreaName} key
+     * Switch to the {@link Area} identified by the given {@link Area.Name} key
      *
-     * @param areaName The {@link Area.AreaName} of the new {@link Area}
+     * @param areaName The {@link Area.Name} of the new {@link Area}
      * @see Area
      */
-    private void switchArea(Area.AreaName areaName) {
+    private void switchArea(Area.Name areaName) {
         // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaName);
-        metricManager.setMetric(MetricManager.Metric.Area, areaName.ordinal());
+        metricController.changeAreaMetric(areaName);
         character.switchCharacterContext(areaName);
         character.setPosition(activeArea.getInitialCharacterPosition());
 
@@ -293,24 +295,26 @@ class PlayScreen implements Screen {
 
         // UI elements
         hud = new HeadsUpDisplay(batch,
-            new MetricManager.Metric[] {
-                MetricManager.Metric.Area,
-                MetricManager.Metric.Day
+            new MetricController.Metric[]{
+                MetricController.Metric.Area,
+                MetricController.Metric.Day
             },
-            new MetricManager.Metric[] {
-                MetricManager.Metric.Sleep,
-                MetricManager.Metric.Study,
-                MetricManager.Metric.Eat,
-                MetricManager.Metric.Play
+            new MetricController.Metric[]{
+                MetricController.Metric.Sleep,
+                MetricController.Metric.Study,
+                MetricController.Metric.Eat,
+                MetricController.Metric.Play
             }
         );
 
-        metricManager.assignUpdater(new MetricUpdater(metricManager, hud));
+        final MetricUpdater metricUpdater = new MetricUpdater(metricController, hud);
+        metricController.assignUpdater(metricUpdater);
+
         pauseMenu = new PauseMenu(batch);
 
         // Gameplay elements
         initialiseAreas();
-        activeArea = areas.get(Area.AreaName.TestMap);
-        character = new Character(areas, Area.AreaName.TestMap);
+        activeArea = areas.get(Area.Name.TestMap);
+        character = new Character(areas, Area.Name.TestMap);
     }
 }

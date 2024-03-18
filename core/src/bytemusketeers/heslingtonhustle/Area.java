@@ -22,26 +22,25 @@ import java.util.List;
  */
 class Area implements Drawable {
     /**
-     * Distinguish between instantiations of particular {@link Area} objects
+     * Distinguishes between the standard {@link Area} instantiations
      *
-     * @see Area
      * @see AreaFactory
      */
-    enum AreaName {
+    enum Name {
         TestMap("Test Map"),
         PiazzaBuilding("Piazza Building"),
         CompSciBuilding("Computer Science Building"),
         BedroomBuilding("University Accommodation");
 
         /**
-         * The display name of the {@link AreaName}
+         * A human-readable name for the {@link Name} ordinal
          */
         private final String displayName;
 
         /**
-         * Retrieves the display name of the {@link AreaName}
+         * Retrieves the human-readable {@link Name}
          *
-         * @return The requested display name
+         * @return The name for the requested {@link Area}
          */
         @Override
         public String toString() {
@@ -49,11 +48,11 @@ class Area implements Drawable {
         }
 
         /**
-         * Constructs a new {@link AreaName} enumerable entry with a suitable ordinal value and given display name
+         * Instantiates a new standard {@link Name} template to correspond with an {@link Area}
          *
-         * @param displayName The {@link AreaName} display name
+         * @param displayName The human-readable name of the new {@link Name}
          */
-        AreaName(String displayName) {
+        Name(String displayName) {
             this.displayName = displayName;
         }
     }

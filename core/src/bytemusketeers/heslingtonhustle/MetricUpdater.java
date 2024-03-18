@@ -1,62 +1,62 @@
 package bytemusketeers.heslingtonhustle;
 
 /**
- * The {@link MetricUpdater} provides a common controller to link a single {@link MetricManager} and
+ * The {@link MetricUpdater} provides a common controller to link a single {@link MetricController} and
  * {@link MetricListener}, by means of enabling the former to post updates to the latter
  *
- * @implNote Future implementors may wish to make {@link #listener} a {@link java.util.List} of {@link MetricListener}
- *           listeners, but for this simple initial implementation, a single listener will suffice.
- * @see MetricManager#assignUpdater(Runnable)
+ * @implNote Future implementors may wish to make {@link #metricListener} a {@link java.util.List} of
+ *           {@link MetricListener} listeners, but for this simple initial implementation, a single listener will
+ *           suffice.
  * @author ENG1 Team 23 (Cohort 3)
  */
 class MetricUpdater implements Runnable {
     /**
-     * The source of the {@link MetricManager} updates
+     * The source of the {@link MetricController} updates
      *
-     * @see #listener
+     * @see #metricListener
      */
-    private final MetricManager manager;
+    private final MetricController metricController;
 
     /**
-     * The recipient of the {@link MetricManager} updates
+     * The recipient of the {@link MetricController} updates
      *
-     * @see #manager
+     * @see #metricController
      */
-    private final MetricListener listener;
+    private final MetricListener metricListener;
 
     /**
-     * Sends an update of a single {@link MetricManager.Metric} to the registered {@link MetricListener}. This method
+     * Sends an update of a single {@link MetricController.Metric} to the registered {@link MetricListener}. This method
      * is implicitly responsible for determining the
      *
-     * @see #manager
-     * @see #listener
+     * @see #metricController
+     * @see #metricListener
      */
-    private void sendUpdate(MetricManager.Metric metric) {
-        listener.updateMetricText(metric, manager.getMetricStringValue(metric));
+    private void sendUpdate(MetricController.Metric metric) {
+        metricListener.updateMetricText(metric, metricController.getMetricStringValue(metric));
     }
 
     /**
-     * Update the HUD with the last-updated metric from {@link MetricManager}
+     * Update the HUD with the last-updated metric from {@link MetricController}
      */
     @Override
     public void run() {
-        sendUpdate(manager.getLastChangedMetric());
+        sendUpdate(metricController.getLastChangedMetric());
     }
 
     /**
      * Instantiates a new {@link MetricUpdater} to provide updates to a {@link MetricListener} on the transient states
-     * of a {@link MetricManager}. Upon construction, an initial pulse is of each {@link MetricManager.Metric} to the
-     * given {@link MetricListener}.
+     * of a {@link MetricController}. Upon construction, an initial pulse is of each {@link MetricController.Metric} to
+     * the given {@link MetricListener}.
      *
-     * @param manager The data-source {@link MetricManager}
-     * @param listener The data-recipient {@link MetricListener}
+     * @param metricController The data-source {@link MetricController}
+     * @param metricListener The data-recipient {@link MetricListener}
      */
-    public MetricUpdater(MetricManager manager, MetricListener listener) {
-        this.manager = manager;
-        this.listener = listener;
+    public MetricUpdater(MetricController metricController, MetricListener metricListener) {
+        this.metricController = metricController;
+        this.metricListener = metricListener;
 
         // Send an initial pulse of the status of each metric at the time of the updater construction
-        for (MetricManager.Metric metric : MetricManager.Metric.values())
+        for (MetricController.Metric metric : MetricController.Metric.values())
             sendUpdate(metric);
     }
 }

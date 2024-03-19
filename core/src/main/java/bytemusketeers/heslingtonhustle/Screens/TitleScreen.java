@@ -29,7 +29,7 @@ public class TitleScreen extends ScreenAdapter{
 
     @Override
     public void render(float delta) {
-        //shows text on the screen
+        //show text on the screen for instructions
         Gdx.gl.glClearColor(0, .25f, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();

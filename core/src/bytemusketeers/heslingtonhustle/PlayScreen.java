@@ -165,12 +165,6 @@ public class PlayScreen implements Screen {
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.E))
                 activeArea.triggerInteractables(character.getPosition());
-
-            // TODO: just a few temporary tests for switching scene
-            if (Gdx.input.isKeyJustPressed(Input.Keys.P)) switchArea(Area.Name.PiazzaBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.C)) switchArea(Area.Name.CompSciBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.B)) switchArea(Area.Name.BedroomBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.T)) switchArea(Area.Name.OutdoorMap);
         }
     }
 

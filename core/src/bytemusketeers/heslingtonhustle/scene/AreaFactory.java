@@ -44,28 +44,25 @@ final public class AreaFactory {
         Area area = new Area("Maps/outdoor-map.tmx", new Vector2(2, 2));
 
         // The Piazza building entrance
-        // TODO: change sprite, make building-specific
         area.addInteractable(new Interactable(
             new Vector2(4, 7),
-            new Texture("Building-1.png"),
+            new Texture("Piazza-Building.png"),
             area, 2,
             () -> playScreen.switchArea(Area.Name.PiazzaBuilding)
         ));
 
         // The university accommodation/bedroom building entrance
-        // TODO: change sprite, make building-specific
         area.addInteractable(new Interactable(
             new Vector2(23, 11),
-            new Texture("Building-1.png"),
+            new Texture("Bedroom-Building.png"),
             area, 2,
             () -> playScreen.switchArea(Area.Name.BedroomBuilding)
         ));
 
         // The computer science building entrance
-        // TODO: change sprite, make building-specific
         area.addInteractable(new Interactable(
             new Vector2(12, 17),
-            new Texture("Building-1.png"),
+            new Texture("Comp-Sci-Building.png"),
             area, 2,
             () -> playScreen.switchArea(Area.Name.CompSciBuilding)
         ));

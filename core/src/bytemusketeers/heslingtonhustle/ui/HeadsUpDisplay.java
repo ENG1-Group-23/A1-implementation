@@ -86,11 +86,5 @@ class HeadsUpDisplay extends Overlay implements MetricListener {
         outerTable.add(rightTable).expand().right().top();
 
         super.addActor(outerTable);
-
-        // TODO: temporary tooltip advice
-        final Label advice = new Label("E: interact; T: test map; P: Piazza; C: CS building; B: bedroom",
-            LABEL_STYLE);
-        advice.setPosition(GENERAL_FORM_PADDING, GENERAL_FORM_PADDING);
-        super.addActor(advice);
     }
 }

@@ -4,7 +4,6 @@ import bytemusketeers.heslingtonhustle.scene.Area;
 import bytemusketeers.heslingtonhustle.scene.Drawable;
 import bytemusketeers.heslingtonhustle.scene.InvalidAreaException;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,23 +15,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 public class HeslingtonHustle extends Game {
     /**
-     * An empirically determined factor by which the average screen device pixels/cm should be multiplied to compute
-     * the {@link #ppm}.
-     *
-     * @implNote The {@link #ppm} computation cannot be done on construction of {@link HeslingtonHustle} since
-     *           the LibGDX {@link Graphics} interface is not instantiated until {@link #create()} is called.
-     * @see #create()
-     * @see #ppm
-     */
-    private static final float SCALING_FACTOR = 2f;
-
-    /**
      * 'PPM' denotes the number of pixels-per-(in-game)-metre. This is useful for converting between
      * {@link com.badlogic.gdx.Graphics} units and in-game metres.
      *
      * @see #scaleToMetres(float)
      */
-    private static float ppm;
+    private static final float PPM = 100;
 
     /**
      * The LibGDX {@link SpriteBatch} used during render-time
@@ -54,11 +42,11 @@ public class HeslingtonHustle extends Game {
      *
      * @param value The quantity to scale, in pixels
      * @return The corresponding quantity of in-game metres
-     * @implNote Future implementors may wish to parameterise the {@link #ppm} in terms of the screen DPI-equivalent;
+     * @implNote Future implementors may wish to parameterise the {@link #PPM} in terms of the screen DPI-equivalent;
      *           see {@link Graphics#getPpiX()} and friends.
      */
     public static float scaleToMetres(float value) {
-        return value / ppm;
+        return value / PPM;
     }
 
     /**
@@ -73,10 +61,6 @@ public class HeslingtonHustle extends Game {
      */
     @Override
     public void create() {
-        // Naively compute an ideal PPM by taking the average of the physical device screen pixels/cm on both axes and
-        // multiplying by the constant scaling factor
-        ppm = (Gdx.graphics.getPpcX() + Gdx.graphics.getPpcY()) / 2 * SCALING_FACTOR;
-
         // Set up the game-local sprite batch and all areas
         batch = new SpriteBatch();
 

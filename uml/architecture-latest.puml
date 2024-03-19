@@ -1,29 +1,6 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-/'package java {
-    class Integer
-    class Exception
-    class Float
-    class String
-    class Runnable
-    interface Map
-    interface List
-}
-
-package libgdx {
-    class TiledMap
-    class SpriteBatch
-    class OrthogonalTiledMapRenderer
-    class Vector2
-    class OrthographicCamera
-    class Texture
-    class Body
-    class Sprite
-    class World
-    class Disposable
-}'/
-
 package scene {
     interface Drawable {
         +dispose(batch : SpriteBatch)
@@ -35,9 +12,6 @@ package scene {
     }
 
     class AreaFactory {
-        metricController : MetricController
-        playScreen : PlayScreen
-
         +createOutdoorMap() : Area
         +createPiazzaMap() : Area
         +createCSMap() : Area
@@ -46,43 +20,19 @@ package scene {
     }
 
     class GameMap {
-        tiledMap : TiledMap
-        renderer : OrthogonalTiledMapRenderer
-        width : Integer
-        height : Integer
-
-        getBorderObjects() : RectangleMapObject[0..*]
-        scale(value : Float) : Float
-        bound(candidate : Vector2, hGutter : Float, vGutter : Float) : Vector2
-        updateView(camera : OrthographicCamera)
         GameMap(mapPath : String)
     }
 
     class Item {
-        texture : Texture
-        width : Float
-        height : Float
-        body : Body
-
-        getPosition() : Vector2
         Item(position : Vector2, texture : Texture, area : Area, width : Float, height : Float)
     }
 
     class Interactable {
-        action : Runnable
-
-        interact()
-        isClose(candidate : Vector2) : boolean
         Interactable(position : Vector2, texture : Texture, area : Area, width : Float, height : Float, action : Runnable)
         Interactable(position : Vector2, texture : Texture, area : Area, scale : Float, action : Runnable)
     }
 
     class Character {
-        texture : Texture
-        velocity : Vector2
-        bodies : Map<AreaName, Body>
-        activeBody : Body
-
         +moveUp()
         +moveDown()
         +moveLeft()
@@ -95,31 +45,20 @@ package scene {
     }
 
     class Area {
-        interactables : List<Interactable>
-        world : World
-        initialCharacterPosition : Vector2
-        map : GameMap
-
-        addInteractable(interactable : Interactable)
         +triggerInteractables(characterPosition : Vector2)
         +bound(candidate : Vector2, hGutter : Float, vGutter : Float) : Vector2
         +updateView(camera : OrthographicCamera)
         +step()
-        registerCollisionBody(initialPosition : Vector2, type : BodyType, width : Float, height: Float) : Body
-        registerCharacter(width : Float, height : Float) : Body
         +getInitialCharacterPosition() : Vector2
         +setInitialCharacterPosition(position : Vector2)
-        generateBorders(borderObjects : RectangleMapObject[0..*])
         Area(mapPath : String, initialCharacterPosition : Vector2)
     }
 
-    'Disposable <|-- Drawable
     Drawable <|.. Area
     Sprite <|-- Character
     Drawable <|.. Character
     Drawable <|.. Item
     Item <|-- Interactable
-    'Exception <|-- InvalidAreaException
     Drawable <|.. GameMap
 }
 
@@ -133,9 +72,6 @@ package metrics {
     }
 
     class AreaMetric {
-        area : AreaName
-
-        setArea(area : AreaName)
         AreaMetric(initialArea : AreaName)
     }
 
@@ -152,43 +88,23 @@ package metrics {
     }
 
     class DOWMetric {
-        value : DayOfWeek
-
-        nextDay()
-        isFinalDay() : boolean
+        DOWMetric()
     }
 
     class PlayerMetric {
-        value : Integer
-
-        incrementMetric(multiplier : Integer)
-        decrementMetric(multiplier : Integer)
+        PlayerMetric()
     }
 
     class MetricUpdater {
-        listener : MetricListener
-
         +sendUpdate(metric : Metric, value : String)
         +MetricUpdater(listener : MetricListener)
     }
 
     enum Metric {
-        Sleep
-        Study
-        Eat
-        Play
-        Area
-        Day
-
-        getDisplayName() : String
         Metric(displayName : String)
     }
 
     class MetricController {
-        updateAction : MetricUpdater
-        metrics : Map<Metric, MetricEntry>
-
-        getDynamicMetricEntry(type : Class, metric : Metric) : MetricEntry
         +incrementPlayerMetric(metric : Metric, multiplier : Integer)
         +decrementPlayerMetric(metric : Metric, multiplier : Integer)
         +advanceDOWMetric()
@@ -205,30 +121,22 @@ package metrics {
 
 package ui {
     abstract class Overlay {
-        stage : Stage
-
-        addActor(actor : Actor)
         Overlay(batch : SpriteBatch)
     }
 
     class HeadsUpDisplay {
-        map : Map<Metric, Label>
-
-        addLabel(metric : Metric, table : Table)
         HeadsUpDisplay(batch : SpriteBatch, left : Metric[0..*], right : Metric[0..*])
     }
 
     class PauseMenu {
-        PauseMenu (batch : SpriteBatch)
+        PauseMenu(batch : SpriteBatch)
     }
 
     class GameOverMenu {
-        PauseMenu (batch : SpriteBatch)
+        GameOverMenu(batch : SpriteBatch)
     }
 
     class OverlayFactory {
-        batch : SpriteBatch
-
         +createGameOverMenu() : Overlay
         +createPauseMenu() : Overlay
         +createHUD(left : Metric[0..*], right : Metric[0..*]) : Overlay

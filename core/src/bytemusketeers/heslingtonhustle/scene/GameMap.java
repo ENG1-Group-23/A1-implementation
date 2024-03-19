@@ -63,12 +63,30 @@ class GameMap implements Drawable {
     }
 
     /**
+     * Retrieve any layer objects from the {@link TiledMap} of the current {@link GameMap}
+     *
+     * @param nameOfTheLayer the name of the layer where objects are
+     * @return The {@link RectangleMapObject} objects embedded in the requested layer
+     */
+    public com.badlogic.gdx.utils.Array<RectangleMapObject> getLayerObjects(String nameOfTheLayer) throws InvalidAreaException {
+        MapLayers layers = tiledMap.getLayers();
+
+        try {
+            return layers.get(nameOfTheLayer).getObjects().getByType(RectangleMapObject.class);
+        }
+        catch (Exception e) {
+            throw new InvalidAreaException("Map does not contain layer " + nameOfTheLayer);
+        }
+
+    }
+
+    /**
      * Scales the given value, specified in pixels, to in-game metres
      *
      * @param value The quantity to scale, in pixels
      * @return The scaled quantity, in in-game metres
      */
-    float scale(float value) {
+    static float scale(float value) {
         return value / TILE_AXIS_LENGTH;
     }
 

@@ -109,17 +109,6 @@ public class Area implements Drawable {
     }
 
     /**
-     * Removes an {@link Interactable}.
-     *
-     * @param interactable The {@link Interactable} to remove
-     */
-    public void removeInteractable(Interactable interactable) {
-        interactables.remove(interactable);
-        world.destroyBody(interactable.getBody());
-        interactable.dispose();
-    }
-
-    /**
      * Given the current position of the {@link Character}, interact with any nearby {@link Interactable} objects
      *
      * @param characterPosition The position of the player-controlled {@link Character}
@@ -245,12 +234,12 @@ public class Area implements Drawable {
                 // in-game metres
                 registerCollisionBody(
                     new Vector2(
-                        map.scale(bounds.getX() + bounds.getWidth() / 2),
-                        map.scale(bounds.getY() + bounds.getHeight() / 2)
+                        GameMap.scale(bounds.getX() + bounds.getWidth() / 2),
+                        GameMap.scale(bounds.getY() + bounds.getHeight() / 2)
                     ),
                     BodyDef.BodyType.StaticBody,
-                    map.scale(bounds.getWidth()),
-                    map.scale(bounds.getHeight())
+                    GameMap.scale(bounds.getWidth()),
+                    GameMap.scale(bounds.getHeight())
                 );
             }
     }

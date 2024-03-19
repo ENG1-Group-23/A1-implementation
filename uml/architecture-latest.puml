@@ -20,7 +20,8 @@ package scene {
     }
 
     class GameMap {
-        GameMap(mapPath : String)
+        +getLayerObjects(nameOfLayer : String)
+        +GameMap(mapPath : String)
     }
 
     class Item {
@@ -33,6 +34,8 @@ package scene {
     }
 
     class Character {
+        +WIDTH
+        +HEIGHT
         +moveUp()
         +moveDown()
         +moveLeft()

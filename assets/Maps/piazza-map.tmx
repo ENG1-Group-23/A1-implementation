@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="36">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="61">
  <tileset firstgid="1" source="Tileset-2.tsx"/>
  <tileset firstgid="51" source="Tileset-2-New-2.tsx"/>
  <tileset firstgid="101" source="Tileset 3.tsx"/>
@@ -50,5 +50,31 @@
   <object id="30" x="352" y="160" width="128" height="16"/>
   <object id="31" x="352" y="208" width="128" height="16"/>
   <object id="32" x="352" y="256" width="128" height="16"/>
+ </objectgroup>
+ <objectgroup id="7" name="food-spawn-locations">
+  <object id="36" x="359" y="164.5" width="5.75" height="4.75"/>
+  <object id="38" x="375.125" y="164.625" width="5.75" height="4.75"/>
+  <object id="39" x="390.375" y="164.625" width="5.75" height="4.75"/>
+  <object id="40" x="405.625" y="164.125" width="5.75" height="4.75"/>
+  <object id="41" x="421.125" y="164.625" width="5.75" height="4.75"/>
+  <object id="42" x="437.625" y="164.625" width="5.75" height="4.75"/>
+  <object id="43" x="452.625" y="164.375" width="5.75" height="4.75"/>
+  <object id="44" x="469.125" y="164.375" width="5.75" height="4.75"/>
+  <object id="45" x="373.938" y="212.875" width="5.75" height="4.75"/>
+  <object id="46" x="389.188" y="212.875" width="5.75" height="4.75"/>
+  <object id="47" x="404.438" y="212.375" width="5.75" height="4.75"/>
+  <object id="48" x="419.938" y="212.875" width="5.75" height="4.75"/>
+  <object id="49" x="436.438" y="212.875" width="5.75" height="4.75"/>
+  <object id="50" x="451.438" y="212.625" width="5.75" height="4.75"/>
+  <object id="51" x="467.938" y="212.625" width="5.75" height="4.75"/>
+  <object id="52" x="357.813" y="212.75" width="5.75" height="4.75"/>
+  <object id="53" x="375.688" y="260.375" width="5.75" height="4.75"/>
+  <object id="54" x="390.938" y="260.375" width="5.75" height="4.75"/>
+  <object id="55" x="406.188" y="259.875" width="5.75" height="4.75"/>
+  <object id="56" x="421.688" y="260.375" width="5.75" height="4.75"/>
+  <object id="57" x="438.188" y="260.375" width="5.75" height="4.75"/>
+  <object id="58" x="453.188" y="260.125" width="5.75" height="4.75"/>
+  <object id="59" x="469.688" y="260.125" width="5.75" height="4.75"/>
+  <object id="60" x="359.563" y="260.25" width="5.75" height="4.75"/>
  </objectgroup>
 </map>

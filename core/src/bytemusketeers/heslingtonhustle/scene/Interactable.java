@@ -62,10 +62,14 @@ class Interactable extends Item {
      * @param height The initial height, in in-game metres
      * @param action The {@link Runnable} method to execute upon interaction
      */
-    private Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
+    Interactable(Vector2 position, Texture texture, Area area, float width, float height, Runnable action) {
         super(position, texture, area, width, height);
         this.action = action;
-        interactionThreshold = (width + height) / 2;
+        this.interactionThreshold = (float) (
+                (Math.pow(width/2, 2) + Math.pow(height/2, 2))
+                + (Math.pow(Character.HEIGHT/2, 2) + Math.pow(Character.WIDTH/2,2))
+                + 0.2f
+        );
     }
 
     /**

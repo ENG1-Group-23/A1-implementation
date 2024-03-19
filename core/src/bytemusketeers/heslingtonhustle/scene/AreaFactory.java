@@ -4,6 +4,8 @@ import bytemusketeers.heslingtonhustle.PlayScreen;
 import bytemusketeers.heslingtonhustle.metrics.MetricController;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -103,6 +105,26 @@ final public class AreaFactory {
                 metricController.decrementPlayerMetric(MetricController.Metric.Study, 1);
             }
         ));
+
+        for (RectangleMapObject spawn_point: area.getLayerObjects("food-spawn-locations")) {
+            if (MathUtils.random(0,1) == 1)
+            {
+                float x = spawn_point.getRectangle().getX() + spawn_point.getRectangle().getWidth() / 2;
+                float y = spawn_point.getRectangle().getY() + spawn_point.getRectangle().getHeight() / 2;
+                Interactable[] interactable = new Interactable[1]; // no need for a default constructor by doing this
+                interactable[0] = new Interactable(
+                    new Vector2(
+                        GameMap.scale(x),
+                        GameMap.scale(y)
+                    ),
+                    new Texture("food-plate.png"),
+                    area, 0.25f, 0.25f,
+                    () -> metricController.incrementPlayerMetric(MetricController.Metric.Eat, 1)
+                );
+
+                area.addInteractable(interactable[0]);
+            }
+        }
 
         // Return to the outside
         // TODO: change sprite to exit door

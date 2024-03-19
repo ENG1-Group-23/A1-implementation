@@ -1,11 +1,16 @@
 package bytemusketeers.heslingtonhustle.scene;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
+import java.io.File;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -54,7 +59,11 @@ public class Character extends Sprite implements Drawable {
      *
      * @see #playerTexture
      */
-    private static final String TEXTURE_PATH = "prototype-4.png";
+    private static final String TEXTURE_PATH = "Player-Frames.png";
+    private static Texture animFrames;
+    private static TextureRegion[] frontFrames, backFrames, rightFrames, leftFrames;
+    private Animation<TextureRegion> frontAnim, backAnim, rightAnim, leftAnim;
+    private float timer;
 
     /**
      * The visual representation of the {@link Character}
@@ -177,7 +186,24 @@ public class Character extends Sprite implements Drawable {
      */
     @Override
     public void render(SpriteBatch batch) {
+        timer += Gdx.graphics.getDeltaTime();
         Vector2 position = getPosition();
+        /*
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            batch.draw(backAnim.getKeyFrame(timer, true), position.x - WIDTH / 2, position.y - HEIGHT / 2, WIDTH, HEIGHT);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            batch.draw(frontAnim.getKeyFrame(timer, true), position.x - WIDTH / 2, position.y - HEIGHT / 2, WIDTH, HEIGHT);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            batch.draw(leftAnim.getKeyFrame(timer, true), position.x - WIDTH / 2, position.y - HEIGHT / 2, WIDTH, HEIGHT);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            batch.draw(rightAnim.getKeyFrame(timer, true), position.x - WIDTH / 2, position.y - HEIGHT / 2, WIDTH, HEIGHT);
+        }
+        else {
+            batch.draw(playerTexture, position.x - WIDTH / 2, position.y - HEIGHT / 2, WIDTH, HEIGHT);
+        }*/
         batch.draw(playerTexture, position.x - WIDTH / 2, position.y - HEIGHT / 2, WIDTH, HEIGHT);
     }
 
@@ -191,6 +217,37 @@ public class Character extends Sprite implements Drawable {
             bodies.put(area.getKey(), area.getValue().registerCharacter(WIDTH, HEIGHT));
 
         switchCharacterContext(defaultArea);
+        /*
+        animFrames = new Texture("Player-Frames.png");
+        frontFrames = new TextureRegion[2];
+        backFrames = new TextureRegion[2];
+        rightFrames = new TextureRegion[2];
+        leftFrames = new TextureRegion[2];
+        TextureRegion[][] tempFrames = TextureRegion.split(animFrames, 16, 16);
+        int index = 0;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (j == 1 || j == 2) {
+                    switch (i) {
+                        case 0:
+                            frontFrames[index++] = tempFrames[j][i];
+                        case 1:
+                            backFrames[index++] = tempFrames[j][i];
+                        case 2:
+                            rightFrames[index++] = tempFrames[j][i];
+                        case 3:
+                            leftFrames[index++] = tempFrames[j][i];
+                    }
+                }
+            }
+        }
+
+        frontAnim = new Animation<TextureRegion>(1f/2f, frontFrames);
+        backAnim = new Animation<TextureRegion>(1f/2f, backFrames);
+        rightAnim = new Animation<TextureRegion>(1f/2f, rightFrames);
+        leftAnim = new Animation<TextureRegion>(1f/2f, leftFrames);
+        */
         playerTexture = new Texture(TEXTURE_PATH);
     }
 }

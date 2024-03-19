@@ -70,7 +70,7 @@ class Item {
 
 class Interactable {
     +interact()
-    +isClose(candidate : Vector2) : boolean
+    +isClose(candidate : Vector2) : Boolean
     +Interactable(position : Vector2, texture : Texture, area : Area, width : Float, height : Float, action : Runnable)
 }
 

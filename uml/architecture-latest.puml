@@ -108,7 +108,7 @@ package metrics {
         +incrementPlayerMetric(metric : Metric, multiplier : Integer)
         +decrementPlayerMetric(metric : Metric, multiplier : Integer)
         +advanceDOWMetric()
-        +isFinalDay() : boolean
+        +isFinalDay() : Boolean
         +changeAreaMetric(area : AreaName)
         +getMetricStringValue(metric : Metric) : String
         +MetricController(updateAction : MetricUpdater)

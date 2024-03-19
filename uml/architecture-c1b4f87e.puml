@@ -1,0 +1,62 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface Drawable {
+    +dispose(batch : SpriteBatch)
+    +render(batch : SpriteBatch)
+}
+
+class Area {
+    +addInteractable(interactable : Interactable)
+    +updateView(camera : OrthographicCamera)
+    +getMapWidth() : Float
+    +getMapHeight() : Float
+    +step()
+    +registerCollisionBody(initialPosition : Vector2, type : BodyType, width : Float, height : Float) : Body
+    +registerCharacter(width : Float, height : Float) : Body
+    +getInitialCharacterPosition() : Vector2
+    +Area(mapPath : String, initialCharacterPosition : Vector2)
+}
+
+class Character {
+    +moveUp()
+    +moveDown()
+    +moveLeft()
+    +moveRight()
+    +move()
+    +isWithinHorizontalBound(area : Area) : Boolean
+    +isWithinVerticalBound(area : Area) : Boolean
+    +getPosition() : Vector2
+    +switchCharacterContext(areaIdx : Integer)
+    +Character(areas : Area[0..*], defaultAreaIdx : Integer)
+}
+
+class Item {
+    +getPosition() : Vector2
+}
+
+class Interactable {
+    +interact()
+    +toggleHide()
+    +isHidden() : Boolean
+    +isClose(candidate : Vector2) : Boolean
+    +Interactable(position : Vector2, texture : Texture, area : Area, width : Float, height : Float, action : Runnable)
+}
+
+class PlayScreen {
+    +update()
+    +resize(width : Integer, height : Integer)
+    +show()
+    +hide()
+    +pause()
+    +resume()
+    +PlayScreen(batch : SpriteBatch)
+}
+
+
+Drawable <|.. Area
+Drawable <|.. Character
+Drawable <|.. Item
+Item <|-- Interactable
+
+@enduml

@@ -26,8 +26,8 @@ package libgdx {
 
 package scene {
     interface Drawable {
-        +dispose()
-        +render()
+        +dispose(batch : SpriteBatch)
+        +render(batch : SpriteBatch)
     }
 
     class InvalidAreaException {

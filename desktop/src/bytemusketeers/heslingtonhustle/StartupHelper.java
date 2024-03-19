@@ -75,6 +75,7 @@ class StartupHelper {
      * @return whether a new JVM was started and thus no code should be executed
      *         in this one
      */
+    @SuppressWarnings("SameParameterValue")
     private static boolean startNewJvmIfRequired(boolean redirectOutput) {
         String osName = System.getProperty("os.name").toLowerCase();
 

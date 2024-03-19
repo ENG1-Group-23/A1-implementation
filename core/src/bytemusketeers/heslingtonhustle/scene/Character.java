@@ -21,12 +21,12 @@ public class Character extends Sprite implements Drawable {
     /**
      * The width of a {@link Character}, in in-game metres
      */
-    public static final float WIDTH = 0.3f;
+    private static final float WIDTH = 0.5f;
 
     /**
      * The height of a {@link Character}, in in-game metres
      */
-    public static final float HEIGHT = 0.3f;
+    private static final float HEIGHT = 0.57f;
 
     /**
      * The standard moving velocity, across both axes, of a mobile {@link Character}. Specified in in-game metres per
@@ -54,7 +54,7 @@ public class Character extends Sprite implements Drawable {
      *
      * @see #playerTexture
      */
-    private static final String TEXTURE_PATH = "prototype-4.png";
+    private static final String TEXTURE_PATH = "character.png";
 
     /**
      * The visual representation of the {@link Character}
@@ -186,10 +186,11 @@ public class Character extends Sprite implements Drawable {
      *
      * @param areas All {@link Area}s in which the {@link Character} should exist
      */
-    public Character(Map<Area.Name, Area> areas) {
+    public Character(Map<Area.Name, Area> areas, Area.Name defaultArea) {
         for (Map.Entry<Area.Name, Area> area : areas.entrySet())
             bodies.put(area.getKey(), area.getValue().registerCharacter(WIDTH, HEIGHT));
 
+        switchCharacterContext(defaultArea);
         playerTexture = new Texture(TEXTURE_PATH);
     }
 }

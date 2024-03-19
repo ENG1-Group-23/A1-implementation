@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="62">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="36">
  <tileset firstgid="1" source="Tileset-2.tsx"/>
  <tileset firstgid="51" source="Tileset-2-New-2.tsx"/>
  <tileset firstgid="101" source="Tileset 3.tsx"/>
  <layer id="6" name="Tile Layer 2" width="32" height="20">
   <data encoding="csv">
 83,84,84,84,84,84,84,84,85,83,84,84,85,83,84,84,84,84,84,84,84,85,92,92,92,92,92,92,92,92,92,92,
-86,91,149,149,91,91,91,91,87,86,91,91,87,86,91,91,91,91,149,149,91,87,92,92,92,92,92,92,92,92,92,92,
+86,91,141,141,91,91,91,91,87,86,91,91,87,86,91,91,91,91,141,141,91,87,92,92,92,92,92,92,92,92,92,92,
 86,91,91,91,91,91,91,91,87,86,91,91,87,86,91,91,91,91,91,91,91,87,92,92,92,92,92,92,92,92,92,92,
 86,91,91,91,91,91,91,91,79,80,91,91,79,80,91,91,91,91,91,91,91,87,92,92,92,92,92,92,92,92,92,92,
 86,91,91,91,91,91,91,91,91,91,91,91,91,91,91,91,91,91,91,91,91,87,92,92,92,92,92,92,92,92,92,92,
@@ -28,9 +28,6 @@
 </data>
  </layer>
  <objectgroup id="2" name="borders">
-  <properties>
-   <property name="collidable" type="bool" value="true"/>
-  </properties>
   <object id="3" x="0" y="0" width="7.98441" height="128.15"/>
   <object id="4" x="-0.798441" y="120.565" width="138.13" height="7.18596"/>
   <object id="7" x="0" y="0.39922" width="352.112" height="7.18596"/>
@@ -46,48 +43,12 @@
   <object id="23" x="328.558" y="295.822" width="182.843" height="7.18596"/>
   <object id="24" x="503.816" y="127.351" width="7.98441" height="174.858"/>
   <object id="25" x="200.009" y="87.8285" width="15.5696" height="47.9064"/>
-  <object id="28" x="200.009" y="120.165" width="310.993" height="15.9688">
-   <properties>
-    <property name="collidable" type="bool" value="false"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="5" name="recreation-place">
-  <object id="33" x="288" y="16" width="32" height="16"/>
-  <object id="34" x="32" y="16" width="32" height="16"/>
+  <object id="28" x="200.009" y="120.165" width="310.993" height="15.9688"/>
+  <object id="35" x="271.378" y="319.464" width="79.0329" height="22.8529"/>
  </objectgroup>
  <objectgroup id="3" name="eating-place">
-  <properties>
-   <property name="collidable" type="bool" value="true"/>
-  </properties>
-  <object id="30" x="352" y="160" width="128" height="10.4109"/>
-  <object id="31" x="352" y="208" width="128" height="10.4109"/>
-  <object id="32" x="352" y="256" width="128" height="10.4109"/>
- </objectgroup>
- <objectgroup id="7" name="food-spawn-locations">
-  <object id="35" x="360.125" y="165.75" width="4.875" height="4.125"/>
-  <object id="38" x="372.813" y="165.563" width="4.875" height="4.125"/>
-  <object id="39" x="389.188" y="165.938" width="4.875" height="4.125"/>
-  <object id="41" x="405.063" y="166.063" width="4.875" height="4.125"/>
-  <object id="42" x="421.063" y="165.938" width="4.875" height="4.125"/>
-  <object id="43" x="436.938" y="166.063" width="4.875" height="4.125"/>
-  <object id="44" x="452.938" y="165.938" width="4.875" height="4.125"/>
-  <object id="45" x="467.063" y="166.063" width="4.875" height="4.125"/>
-  <object id="46" x="360.094" y="214" width="4.875" height="4.125"/>
-  <object id="47" x="372.781" y="213.813" width="4.875" height="4.125"/>
-  <object id="48" x="389.156" y="214.188" width="4.875" height="4.125"/>
-  <object id="49" x="405.031" y="214.313" width="4.875" height="4.125"/>
-  <object id="50" x="421.031" y="214.188" width="4.875" height="4.125"/>
-  <object id="51" x="436.906" y="214.313" width="4.875" height="4.125"/>
-  <object id="52" x="452.906" y="214.188" width="4.875" height="4.125"/>
-  <object id="53" x="467.031" y="214.313" width="4.875" height="4.125"/>
-  <object id="54" x="359.969" y="261.875" width="4.875" height="4.125"/>
-  <object id="55" x="372.656" y="261.688" width="4.875" height="4.125"/>
-  <object id="56" x="389.031" y="262.063" width="4.875" height="4.125"/>
-  <object id="57" x="404.906" y="262.188" width="4.875" height="4.125"/>
-  <object id="58" x="420.906" y="262.063" width="4.875" height="4.125"/>
-  <object id="59" x="436.781" y="262.188" width="4.875" height="4.125"/>
-  <object id="60" x="452.781" y="262.063" width="4.875" height="4.125"/>
-  <object id="61" x="466.906" y="262.188" width="4.875" height="4.125"/>
+  <object id="30" x="352" y="160" width="128" height="16"/>
+  <object id="31" x="352" y="208" width="128" height="16"/>
+  <object id="32" x="352" y="256" width="128" height="16"/>
  </objectgroup>
 </map>

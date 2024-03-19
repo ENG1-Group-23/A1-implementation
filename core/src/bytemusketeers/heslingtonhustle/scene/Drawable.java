@@ -24,5 +24,6 @@ public interface Drawable extends Disposable {
      *
      * @param batch Target of the rendering operation
      */
+    @SuppressWarnings("unused")
     void render(SpriteBatch batch);
 }

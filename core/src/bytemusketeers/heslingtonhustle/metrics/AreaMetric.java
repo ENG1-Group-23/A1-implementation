@@ -40,7 +40,7 @@ class AreaMetric implements MetricEntry {
      *
      * @param initialArea The initial {@link Area.Name}
      */
-    AreaMetric(Area.Name initialArea) {
+    AreaMetric(@SuppressWarnings("SameParameterValue") Area.Name initialArea) {
         area = initialArea;
     }
 }

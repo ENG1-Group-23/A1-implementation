@@ -1,0 +1,153 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package scene {
+    interface Drawable {
+        +dispose(batch : SpriteBatch)
+        +render(batch : SpriteBatch)
+    }
+
+    class InvalidAreaException {
+        +InvalidAreaException(message : String)
+    }
+
+    class AreaFactory {
+        +createOutdoorMap() : Area
+        +createPiazzaMap() : Area
+        +createCSMap() : Area
+        +createBedroomMap() : Area
+        +AreaFactory(metricController : MetricController, playScreen : PlayScreen)
+    }
+
+    class GameMap {
+        GameMap(mapPath : String)
+    }
+
+    class Item {
+        Item(position : Vector2, texture : Texture, area : Area, width : Float, height : Float)
+    }
+
+    class Interactable {
+        Interactable(position : Vector2, texture : Texture, area : Area, width : Float, height : Float, action : Runnable)
+        Interactable(position : Vector2, texture : Texture, area : Area, scale : Float, action : Runnable)
+    }
+
+    class Character {
+        +moveUp()
+        +moveDown()
+        +moveLeft()
+        +moveRight()
+        +move()
+        +getPosition() : Vector2
+        +setPosition(position : Vector2)
+        +switchCharacterContext(area : AreaName)
+        +Character(areas : Map<AreaName, Area>)
+    }
+
+    class Area {
+        +triggerInteractables(characterPosition : Vector2)
+        +bound(candidate : Vector2, hGutter : Float, vGutter : Float) : Vector2
+        +updateView(camera : OrthographicCamera)
+        +step()
+        +getInitialCharacterPosition() : Vector2
+        +setInitialCharacterPosition(position : Vector2)
+        Area(mapPath : String, initialCharacterPosition : Vector2)
+    }
+
+    Drawable <|.. Area
+    Sprite <|-- Character
+    Drawable <|.. Character
+    Drawable <|.. Item
+    Item <|-- Interactable
+    Drawable <|.. GameMap
+}
+
+package metrics {
+    interface MetricListener {
+        +updateMetricText(metric : Metric, text : String)
+    }
+
+    interface MetricEntry {
+        +getValue() : String
+    }
+
+    class AreaMetric {
+        AreaMetric(initialArea : AreaName)
+    }
+
+    enum DayOfWeek {
+        Monday
+        Tuesday
+        Wednesday
+        Thursday
+        Friday
+        Saturday
+        Sunday
+
+        DayOfWeek()
+    }
+
+    class DOWMetric {
+        DOWMetric()
+    }
+
+    class PlayerMetric {
+        PlayerMetric()
+    }
+
+    class MetricUpdater {
+        +sendUpdate(metric : Metric, value : String)
+        +MetricUpdater(listener : MetricListener)
+    }
+
+    enum Metric {
+        Metric(displayName : String)
+    }
+
+    class MetricController {
+        +incrementPlayerMetric(metric : Metric, multiplier : Integer)
+        +decrementPlayerMetric(metric : Metric, multiplier : Integer)
+        +advanceDOWMetric()
+        +isFinalDay() : Boolean
+        +changeAreaMetric(area : AreaName)
+        +getMetricStringValue(metric : Metric) : String
+        +MetricController(updateAction : MetricUpdater)
+    }
+
+    MetricEntry <|.. AreaMetric
+    MetricEntry <|.. DOWMetric
+    MetricEntry <|.. PlayerMetric
+}
+
+package ui {
+    abstract class Overlay {
+        Overlay(batch : SpriteBatch)
+    }
+
+    class HeadsUpDisplay {
+        HeadsUpDisplay(batch : SpriteBatch, left : Metric[0..*], right : Metric[0..*])
+    }
+
+    class PauseMenu {
+        PauseMenu(batch : SpriteBatch)
+    }
+
+    class GameOverMenu {
+        GameOverMenu(batch : SpriteBatch)
+    }
+
+    class OverlayFactory {
+        +createGameOverMenu() : Overlay
+        +createPauseMenu() : Overlay
+        +createHUD(left : Metric[0..*], right : Metric[0..*]) : Overlay
+        +OverlayFactory(batch : SpriteBatch)
+    }
+
+    Overlay <|-- GameOverMenu
+    Overlay <|-- HeadsUpDisplay
+    Overlay <|-- PauseMenu
+    Drawable <|.. Overlay
+    MetricListener <|.. HeadsUpDisplay
+}
+
+@enduml

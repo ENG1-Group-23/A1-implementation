@@ -1,0 +1,112 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface Drawable {
+    +dispose(batch : SpriteBatch)
+    +render(batch : SpriteBatch)
+}
+
+enum AreaName {
+    TestMap,
+    PiazzaBuilding,
+    CompSciBuilding,
+    BedroomBuilding
+}
+
+class Area {
+    +addInteractable(interactable : Interactable)
+    +triggerInteractables(characterPosition : Vector2)
+    +bound(candidate : Vector2, hGutter : Float, vGutter : Float) : Vector2
+    +updateView(camera : OrthographicCamera)
+    +step()
+    +registerCollisionBody(initialPosition : Vector2, type : BodyType, width : Float, height : Float) : Body
+    +registerCharacter(width : Float, height : Float) : Body
+    +getInitialCharacterPosition() : Vector2
+    +Area(mapPath : String, initialCharacterPosition : Vector2)
+}
+
+class AreaFactory {
+    +createTestMap() : Area
+    +createPiazzaMap() : Area
+    +createCompSciMap() : Area
+    +createBedroomBuilding() : Area
+    +AreaFactory(metricManager : MetricManager)
+}
+
+class Character {
+    +moveUp()
+    +moveDown()
+    +moveLeft()
+    +moveRight()
+    +move()
+    +getPosition() : Vector2
+    +setPosition(position : Vector2)
+    +switchCharacterContext(areaName : AreaName)
+    +Character(areas : Map<AreaName, Area>, defaultArea : AreaName)
+}
+
+abstract class Overlay {
+    +addActor(actor : Actor)
+    +Overlay(batch : SpriteBatch)
+}
+
+class HeadsUpDisplay {
+    +updateMetricElement(metric : MetricName, text : String)
+    +HeadsUpDisplay(batch : SpriteBatch)
+}
+
+class PauseMenu {
+    +PauseMenu(batch : SpriteBatch)
+}
+
+class InvalidAreaException {
+    +InvalidAreaException(message : String)
+}
+
+class Item {
+    +getPosition() : Vector2
+    +Item(position : Vector2, texture : Texture, area : Area, width : Float, height : Float)
+}
+
+class Interactable {
+    +interact()
+    +isClose(candidate : Vector2) : Boolean
+    +Interactable(position : Vector2, texture : Texture, area : Area, width : Float, height : Float, action : Runnable)
+}
+
+class MetricManager {
+    +getMetricValue(metric : MetricName) : Float
+    +incrementMetric(metric : MetricName, multiplier : Integer)
+    +decrementMetric(metric : MetricName, multiplier : Integer)
+    +getLastChangedMetric() : MetricName
+    +MetricManager(updateAction : Runnable)
+}
+
+class GameMap {
+    +getBorderObjects() : RectangleMapObject[0..*]
+    +scale(value : Float) : Float
+    +bound(candidate : Vector2, hGutter : Float, vGutter : Float) : Vector2
+    +updateView(camera : OrthographicCamera)
+    +GameMap(mapPath : String)
+}
+
+class PlayScreen {
+    +update()
+    +resize(width : Integer, height : Integer)
+    +show()
+    +hide()
+    +pause()
+    +resume()
+    +PlayScreen(batch : SpriteBatch)
+}
+
+Drawable <|.. Item
+Drawable <|.. GameMap
+Item <|-- Interactable
+Overlay <|-- PauseMenu
+Overlay <|-- HeadsUpDisplay
+Drawable <|.. Overlay
+Drawable <|.. Character
+Drawable <|.. Area
+
+@enduml

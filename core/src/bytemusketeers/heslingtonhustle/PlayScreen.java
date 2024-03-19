@@ -14,7 +14,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -23,12 +22,30 @@ import java.util.Map;
 
 /**
  * The {@link PlayScreen} class represents a screen which is shown after the game starts, implementing {@link Screen}
- * interface. It manages the various game cameras, the {@link bytemusketeers.heslingtonhustle.scene.Character}, and the {@link Area} vector which the player
+ * interface. It manages the various game cameras, the {@link Character}, and the {@link Area} vector which the player
  * can explore. All assets for the game are preloaded when {@link PlayScreen} is constructed.
  *
  * @author ENG1 Team 23 (Cohort 3)
  */
-class PlayScreen implements Screen {
+public class PlayScreen implements Screen {
+    /**
+     * Distinguish between internal game states; used to inform, among others, the {@link #render(float)}} and
+     * {@link #handleInput()} cycles
+     */
+    private enum GameState {
+        GAME_PLAYING, GAME_PAUSED, GAME_OVER
+    }
+
+    /**
+     * The initial {@link Area} into which the {@link Character} should spawn upon starting the game
+     */
+    private static final Area.Name DEFAULT_AREA = Area.Name.OutdoorMap;
+
+    /**
+     * Stores the transient {@link GameState} being experienced by the player in the {@link PlayScreen}
+     */
+    private GameState state = GameState.GAME_PLAYING;
+
     /**
      * The {@link OrthographicCamera} associated with the parental {@link com.badlogic.gdx.Game} instance
      */
@@ -50,7 +67,7 @@ class PlayScreen implements Screen {
      * @see Character
      * @see OrthographicCamera
      */
-    private final bytemusketeers.heslingtonhustle.scene.Character character;
+    private final Character character;
 
     /**
      * The persistent heads-up display {@link Overlay} presenting real-time metric information to the player
@@ -63,8 +80,17 @@ class PlayScreen implements Screen {
     /**
      * The transient-rendered pause menu {@link Overlay}, intended to be displayed to the user upon request,
      * or a system event such as loss of {@link PlayScreen} focus
+     *
+     * @see GameState#GAME_PAUSED
      */
     private final Overlay pauseMenu;
+
+    /**
+     * The {@link Overlay} rendered upon game completion
+     *
+     * @see GameState#GAME_OVER
+     */
+    private final Overlay gameOverMenu;
 
     /**
      * The relationship between {@link Area} and the {@link Area.Name}
@@ -93,26 +119,15 @@ class PlayScreen implements Screen {
     private final MetricController metricController;
 
     /**
-     * Indicates the game-state; currently a binary selector of 'paused' or 'not paused'; intended to inform the
-     * input-handler and update cycles
-     *
-     * @see #handleInput()
-     * @see #update()
-     */
-    private boolean paused = false;
-
-    private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
-
-    /**
      * Initialise the play {@link Area}s
      *
      * @see Area
      * @see AreaFactory
      */
     private void initialiseAreas() throws InvalidAreaException {
-        AreaFactory factory = new AreaFactory(metricController);
+        AreaFactory factory = new AreaFactory(metricController, this);
 
-        areas.put(Area.Name.TestMap, factory.createTestMap());
+        areas.put(Area.Name.OutdoorMap, factory.createOutdoorMap());
         areas.put(Area.Name.PiazzaBuilding, factory.createPiazzaMap());
         areas.put(Area.Name.CompSciBuilding, factory.createCSMap());
         areas.put(Area.Name.BedroomBuilding, factory.createBedroomMap());
@@ -136,10 +151,13 @@ class PlayScreen implements Screen {
      *           action.
      */
     private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))      Gdx.app.exit();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) paused = !paused;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
+            Gdx.app.exit();
 
-        if (!paused) {
+        if (state != GameState.GAME_OVER) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+                togglePaused();
+
             if (Gdx.input.isKeyPressed(Input.Keys.W)) character.moveUp();
             if (Gdx.input.isKeyPressed(Input.Keys.S)) character.moveDown();
             if (Gdx.input.isKeyPressed(Input.Keys.A)) character.moveLeft();
@@ -147,12 +165,6 @@ class PlayScreen implements Screen {
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.E))
                 activeArea.triggerInteractables(character.getPosition());
-
-            // TODO: just a few temporary tests for switching scene
-            if (Gdx.input.isKeyJustPressed(Input.Keys.P)) switchArea(Area.Name.PiazzaBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.C)) switchArea(Area.Name.CompSciBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.B)) switchArea(Area.Name.BedroomBuilding);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.T)) switchArea(Area.Name.TestMap);
         }
     }
 
@@ -194,9 +206,7 @@ class PlayScreen implements Screen {
      * @see #hide()
      */
     @Override
-    public void show() {
-        System.out.println("PlayScreen shown");
-    }
+    public void show() { }
 
     /**
      * Handles the {@link PlayScreen} being hidden
@@ -204,9 +214,7 @@ class PlayScreen implements Screen {
      * @see #show()
      */
     @Override
-    public void hide() {
-        System.out.println("PlayScreen hidden");
-    }
+    public void hide() { }
 
     /**
      * Handles the {@link PlayScreen}, and hence general gameplay execution, being paused
@@ -216,7 +224,7 @@ class PlayScreen implements Screen {
      */
     @Override
     public void pause() {
-        paused = true;
+        togglePaused();
     }
 
     /**
@@ -226,7 +234,19 @@ class PlayScreen implements Screen {
      */
     @Override
     public void resume() {
-        paused = false;
+        togglePaused();
+    }
+
+    /**
+     * Toggle the {@link #state} such that the game is paused or unpaused, unless the game is over
+     *
+     * @see GameState
+     */
+    private void togglePaused() {
+        if (state == GameState.GAME_PLAYING)
+            state = GameState.GAME_PAUSED;
+        else if (state == GameState.GAME_PAUSED)
+            state = GameState.GAME_PLAYING;
     }
 
     /**
@@ -235,7 +255,11 @@ class PlayScreen implements Screen {
      * @param areaName The {@link Area.Name} of the new {@link Area}
      * @see Area
      */
-    private void switchArea(Area.Name areaName) {
+    public void switchArea(Area.Name areaName) {
+        if (areaName != Area.Name.OutdoorMap)
+            // If going inside, save the outdoor position for when exiting the building
+            activeArea.setInitialCharacterPosition(character.getPosition());
+
         // Switch the active area render target and inform the character of its body context change
         activeArea = areas.get(areaName);
         metricController.changeAreaMetric(areaName);
@@ -245,6 +269,22 @@ class PlayScreen implements Screen {
         // Update the game camera; bounding on map edges will be performed during the render cycle
         gameCam.position.set(activeArea.getInitialCharacterPosition(), 0);
         gameCam.update();
+    }
+
+    /**
+     * Advances the day, or finishes the game as appropriate. The {@link MetricController.Metric#Sleep} is always
+     * incremented, since the game is over after the final sleep, on the morning of the exam!
+     *
+     * @see MetricController#advanceDOWMetric()
+     * @see GameState
+     */
+    public void advanceDay() {
+        metricController.incrementPlayerMetric(MetricController.Metric.Sleep, 1);
+
+        if (metricController.isFinalDay())
+            state = GameState.GAME_OVER;
+        else
+            metricController.advanceDOWMetric();
     }
 
     /**
@@ -283,10 +323,10 @@ class PlayScreen implements Screen {
         batch.end();
         hud.render(batch);
 
-        //debugRenderer.render(activeArea.getWorld(), gameCam.combined); //uncomment to show debug collision lines
-
-        if (paused)
+        if (state == GameState.GAME_PAUSED)
             pauseMenu.render(batch);
+        else if (state == GameState.GAME_OVER)
+            gameOverMenu.render(batch);
     }
 
     /**
@@ -308,6 +348,7 @@ class PlayScreen implements Screen {
         // UI elements
         OverlayFactory overlayFactory = new OverlayFactory(batch);
         pauseMenu = overlayFactory.createPauseMenu();
+        gameOverMenu = overlayFactory.createGameOverMenu();
 
         // Create the HUD and prepare it to receive metrics of the given keys
         hud = overlayFactory.createHUD(
@@ -329,8 +370,9 @@ class PlayScreen implements Screen {
 
         // Initialise final-stage gameplay elements
         initialiseAreas();
-        character = new bytemusketeers.heslingtonhustle.scene.Character(areas);
-        switchArea(Area.Name.TestMap);
+        character = new Character(areas, DEFAULT_AREA);
+        activeArea = areas.get(DEFAULT_AREA);
+        switchArea(DEFAULT_AREA);
 
         // Send an initial pulse of each established metric to the updater
         for (MetricController.Metric metric : MetricController.Metric.values())

@@ -10,10 +10,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A {@link GameMap} represents and manages the {@link Drawable} playing {@link Area} background, principally consisting
@@ -25,7 +21,7 @@ class GameMap implements Drawable {
     /**
      * The fixed width and height of all tiles, in pixels
      */
-    public static final int TILE_AXIS_LENGTH = 16;
+    private static final int TILE_AXIS_LENGTH = 16;
 
     /**
      * The {@link TiledMap} representing the loaded tilemap TMX file
@@ -56,34 +52,14 @@ class GameMap implements Drawable {
      *
      * @return The {@link RectangleMapObject} objects embedded in the requested layer
      */
-    com.badlogic.gdx.utils.Array<RectangleMapObject> getBorderObjects()  {
+    com.badlogic.gdx.utils.Array<RectangleMapObject> getBorderObjects() throws InvalidAreaException {
         final MapLayers layers = tiledMap.getLayers();
-        com.badlogic.gdx.utils.Array<RectangleMapObject> objects = new Array<>();
 
         for (MapLayer layer : layers)
-            //This triggers if the property is there at all, not just if it's true
-            //If you want to make a layer non-collidable, remove the custom property entirely from the tmx file.
-            if (layer.getProperties().containsKey("collidable"))
-                 objects.addAll(layer.getObjects().getByType(RectangleMapObject.class));
+            if (layer.getName().equals("borders"))
+                return layer.getObjects().getByType(RectangleMapObject.class);
 
-        return objects;
-    }
-    /**
-     * Retrieve any layer objects from the {@link TiledMap} of the current {@link GameMap}
-     *
-     * @param nameOfTheLayer the name of the layer where objects are
-     * @return The {@link RectangleMapObject} objects embedded in the requested layer
-     */
-    public com.badlogic.gdx.utils.Array<RectangleMapObject> getLayerObjects(String nameOfTheLayer) throws InvalidAreaException {
-        MapLayers layers = tiledMap.getLayers();
-
-        try {
-            return layers.get(nameOfTheLayer).getObjects().getByType(RectangleMapObject.class);
-        }
-        catch (Exception e) {
-            throw new InvalidAreaException("Map does not contain layer " + nameOfTheLayer);
-        }
-
+        throw new InvalidAreaException("Level does not contain any borders");
     }
 
     /**

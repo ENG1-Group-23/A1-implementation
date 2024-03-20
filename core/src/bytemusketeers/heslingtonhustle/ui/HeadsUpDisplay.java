@@ -86,5 +86,10 @@ class HeadsUpDisplay extends Overlay implements MetricListener {
         outerTable.add(rightTable).expand().right().top();
 
         super.addActor(outerTable);
+
+        final Label advice = new Label("Use W-A-S-D to move; E to interact with nearby objects; " +
+            "and Escape to pause", LABEL_STYLE);
+        advice.setPosition(GENERAL_FORM_PADDING, GENERAL_FORM_PADDING);
+        super.addActor(advice);
     }
 }

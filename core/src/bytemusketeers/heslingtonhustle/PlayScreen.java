@@ -158,13 +158,15 @@ public class PlayScreen implements Screen {
             if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
                 togglePaused();
 
-            if (Gdx.input.isKeyPressed(Input.Keys.W)) character.moveUp();
-            if (Gdx.input.isKeyPressed(Input.Keys.S)) character.moveDown();
-            if (Gdx.input.isKeyPressed(Input.Keys.A)) character.moveLeft();
-            if (Gdx.input.isKeyPressed(Input.Keys.D)) character.moveRight();
+            if (state != GameState.GAME_PAUSED) {
+                if (Gdx.input.isKeyPressed(Input.Keys.W)) character.moveUp();
+                if (Gdx.input.isKeyPressed(Input.Keys.S)) character.moveDown();
+                if (Gdx.input.isKeyPressed(Input.Keys.A)) character.moveLeft();
+                if (Gdx.input.isKeyPressed(Input.Keys.D)) character.moveRight();
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.E))
-                activeArea.triggerInteractables(character.getPosition());
+                if (Gdx.input.isKeyJustPressed(Input.Keys.E))
+                    activeArea.triggerInteractables(character.getPosition());
+            }
         }
     }
 
@@ -238,7 +240,7 @@ public class PlayScreen implements Screen {
     }
 
     /**
-     * Toggle the {@link #state} such that the game is paused or unpaused, unless the game is over
+     * Toggle the {@link #state} such that the game is paused or resumed, unless the game is over
      *
      * @see GameState
      */

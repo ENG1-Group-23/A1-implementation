@@ -105,9 +105,8 @@ final public class AreaFactory {
         ));
 
         // Return to the outside
-        // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
-            new Vector2(19, 0.5f),
+            new Vector2(19, 0.2f),
             new Texture("Piazza-Door.png"),
             area, 6.23f,
             () -> playScreen.switchArea(Area.Name.OutdoorMap)
@@ -149,9 +148,8 @@ final public class AreaFactory {
         ));
 
         // Return to the outside
-        // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
-            new Vector2(25, 0.5f),
+            new Vector2(25, 0.2f),
             new Texture("Comp-Sci-Door.png"),
             area, 6.23f,
             () -> playScreen.switchArea(Area.Name.OutdoorMap)
@@ -187,9 +185,8 @@ final public class AreaFactory {
         ));
 
         // Return to the outside
-        // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
-            new Vector2(6, 0.5f),
+            new Vector2(6, 0.2f),
             new Texture("Bedroom-Door.png"),
             area, 6.23f,
             () -> playScreen.switchArea(Area.Name.OutdoorMap)

@@ -61,15 +61,10 @@ class DesktopLauncher {
      * {@link com.badlogic.gdx.Game}.
      *
      * @param args Textual command-line argument vector
-     * @throws RuntimeException Throws back to the system handler if the runtime is interpreting an unsuitable Java
-     *                          language version.
      */
-    public static void main(String[] args) throws RuntimeException {
+    public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired())
             return; // This handles macOS support and helps on Windows.
-
-        if (Runtime.version().feature() != 11)
-            throw new RuntimeException("Not using Java 11");
 
         new Lwjgl3Application(new HeslingtonHustle(), getDefaultConfiguration());
     }

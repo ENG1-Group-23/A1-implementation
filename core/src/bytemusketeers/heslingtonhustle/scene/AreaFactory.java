@@ -47,7 +47,7 @@ final public class AreaFactory {
         area.addInteractable(new Interactable(
             new Vector2(4, 7),
             new Texture("Piazza-Building.png"),
-            area, 2,
+            area, 3,
             () -> playScreen.switchArea(Area.Name.PiazzaBuilding)
         ));
 
@@ -55,7 +55,7 @@ final public class AreaFactory {
         area.addInteractable(new Interactable(
             new Vector2(23, 11),
             new Texture("Bedroom-Building.png"),
-            area, 2,
+            area, 3,
             () -> playScreen.switchArea(Area.Name.BedroomBuilding)
         ));
 
@@ -63,7 +63,7 @@ final public class AreaFactory {
         area.addInteractable(new Interactable(
             new Vector2(12, 17),
             new Texture("Comp-Sci-Building.png"),
-            area, 2,
+            area, 3,
             () -> playScreen.switchArea(Area.Name.CompSciBuilding)
         ));
 
@@ -107,9 +107,9 @@ final public class AreaFactory {
         // Return to the outside
         // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
-            new Vector2(19, 1),
-            new Texture("Building-1.png"),
-            area, 2,
+            new Vector2(19, 0.5f),
+            new Texture("Piazza-Door.png"),
+            area, 6.23f,
             () -> playScreen.switchArea(Area.Name.OutdoorMap)
         ));
 
@@ -151,9 +151,9 @@ final public class AreaFactory {
         // Return to the outside
         // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
-            new Vector2(25, 1),
-            new Texture("Building-1.png"),
-            area, 2,
+            new Vector2(25, 0.5f),
+            new Texture("Comp-Sci-Door.png"),
+            area, 6.23f,
             () -> playScreen.switchArea(Area.Name.OutdoorMap)
         ));
 
@@ -189,9 +189,9 @@ final public class AreaFactory {
         // Return to the outside
         // TODO: change sprite to exit door
         area.addInteractable(new Interactable(
-            new Vector2(6, 1),
-            new Texture("Building-1.png"),
-            area, 2,
+            new Vector2(6, 0.5f),
+            new Texture("Bedroom-Door.png"),
+            area, 6.23f,
             () -> playScreen.switchArea(Area.Name.OutdoorMap)
         ));
 

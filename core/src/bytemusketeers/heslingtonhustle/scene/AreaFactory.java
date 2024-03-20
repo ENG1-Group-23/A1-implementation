@@ -47,7 +47,7 @@ final public class AreaFactory {
         area.addInteractable(new Interactable(
             new Vector2(4, 7),
             new Texture("Piazza-Building.png"),
-            area, 3,
+            area, 2,
             () -> playScreen.switchArea(Area.Name.PiazzaBuilding)
         ));
 
@@ -55,7 +55,7 @@ final public class AreaFactory {
         area.addInteractable(new Interactable(
             new Vector2(23, 11),
             new Texture("Bedroom-Building.png"),
-            area, 3,
+            area, 2,
             () -> playScreen.switchArea(Area.Name.BedroomBuilding)
         ));
 
@@ -63,7 +63,7 @@ final public class AreaFactory {
         area.addInteractable(new Interactable(
             new Vector2(12, 17),
             new Texture("Comp-Sci-Building.png"),
-            area, 3,
+            area, 2,
             () -> playScreen.switchArea(Area.Name.CompSciBuilding)
         ));
 

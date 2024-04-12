@@ -1,0 +1,74 @@
+Subject: [PATCH] Live demo patch
+---
+Index: core/src/bytemusketeers/heslingtonhustle/scene/AreaFactory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/core/src/bytemusketeers/heslingtonhustle/scene/AreaFactory.java b/core/src/bytemusketeers/heslingtonhustle/scene/AreaFactory.java
+--- a/core/src/bytemusketeers/heslingtonhustle/scene/AreaFactory.java	(revision 7bccd348a383469df10a674095ab6149d8fd8003)
++++ b/core/src/bytemusketeers/heslingtonhustle/scene/AreaFactory.java	(date 1712924788450)
+@@ -46,11 +46,18 @@
+         // The Piazza building entrance
+         area.addInteractable(new Interactable(
+             new Vector2(4, 7),
+-            new Texture("Piazza-Building.png"),
++            new Texture("Piazza-Photo.jpg"),
+             area, 2,
+             () -> playScreen.switchArea(Area.Name.PiazzaBuilding)
+         ));
+ 
++        area.addInteractable(new Interactable(
++            new Vector2(2, 3),
++            new Texture("Alcohol-1.png"),
++            area, 4,
++            () -> metricController.decrementPlayerMetric(MetricController.Metric.Energy, 5)
++        ));
++
+         // The university accommodation/bedroom building entrance
+         area.addInteractable(new Interactable(
+             new Vector2(23, 11),
+Index: core/src/bytemusketeers/heslingtonhustle/PlayScreen.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/core/src/bytemusketeers/heslingtonhustle/PlayScreen.java b/core/src/bytemusketeers/heslingtonhustle/PlayScreen.java
+--- a/core/src/bytemusketeers/heslingtonhustle/PlayScreen.java	(revision 7bccd348a383469df10a674095ab6149d8fd8003)
++++ b/core/src/bytemusketeers/heslingtonhustle/PlayScreen.java	(date 1712924725642)
+@@ -356,7 +356,8 @@
+         hud = overlayFactory.createHUD(
+             new MetricController.Metric[]{
+                 MetricController.Metric.Area,
+-                MetricController.Metric.Day
++                MetricController.Metric.Day,
++                MetricController.Metric.Energy
+             },
+             new MetricController.Metric[]{
+                 MetricController.Metric.Sleep,
+Index: core/src/bytemusketeers/heslingtonhustle/metrics/MetricController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/core/src/bytemusketeers/heslingtonhustle/metrics/MetricController.java b/core/src/bytemusketeers/heslingtonhustle/metrics/MetricController.java
+--- a/core/src/bytemusketeers/heslingtonhustle/metrics/MetricController.java	(revision 7bccd348a383469df10a674095ab6149d8fd8003)
++++ b/core/src/bytemusketeers/heslingtonhustle/metrics/MetricController.java	(date 1712924709751)
+@@ -24,7 +24,8 @@
+         Eat("Number of Meals"),
+         Play("Number of Recreational Sessions"),
+         Area("Current Area"),
+-        Day("Current Day");
++        Day("Current Day"),
++        Energy("Player energy");
+ 
+         /**
+          * A human-readable name for the {@link Metric} ordinal
+@@ -170,6 +171,7 @@
+         metrics.put(Metric.Study, new PlayerMetric(0));
+         metrics.put(Metric.Eat, new PlayerMetric(0));
+         metrics.put(Metric.Play, new PlayerMetric(0));
++        metrics.put(Metric.Energy, new PlayerMetric(100));
+         metrics.put(Metric.Area, new AreaMetric(Area.Name.OutdoorMap));
+         metrics.put(Metric.Day, new DOWMetric());
+     }

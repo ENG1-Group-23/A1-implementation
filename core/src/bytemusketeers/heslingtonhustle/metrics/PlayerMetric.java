@@ -19,7 +19,7 @@ class PlayerMetric implements MetricEntry {
     /**
      * The integral value of the {@link PlayerMetric}
      */
-    private Integer value = 0;
+    private Integer value;
 
     /**
      * Retrieves the {@link Integer} associated with the {@link PlayerMetric}
@@ -48,5 +48,14 @@ class PlayerMetric implements MetricEntry {
     void decrementMetric(int multiplier) {
         if (value > 0)
             value -= STANDARD_INCREMENT * multiplier;
+    }
+
+    /**
+     * Initialise a new {@link PlayerMetric} with a given initial value
+     *
+     * @param initialValue The initial integral value
+     */
+    PlayerMetric(int initialValue) {
+        value = initialValue;
     }
 }

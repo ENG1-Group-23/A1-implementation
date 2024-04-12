@@ -21,8 +21,8 @@ class DesktopLauncher {
     private static final int INITIAL_WINDOW_HEIGHT = 480;
 
     /**
-     * The frames-per-second limit, fixed to ensure a consistent {@link bytemusketeers.heslingtonhustle.scene.Character} move-speed across differing monitor
-     * refresh rates.
+     * The frames-per-second limit, fixed to ensure a consistent {@link bytemusketeers.heslingtonhustle.scene.Character}
+     * move-speed across differing monitor refresh rates.
      */
     private static final int FPS_LIMIT = 60;
 

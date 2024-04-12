@@ -166,10 +166,10 @@ public class MetricController {
     public MetricController(MetricUpdater updateAction) {
         this.updateAction = updateAction;
 
-        metrics.put(Metric.Sleep, new PlayerMetric());
-        metrics.put(Metric.Study, new PlayerMetric());
-        metrics.put(Metric.Eat, new PlayerMetric());
-        metrics.put(Metric.Play, new PlayerMetric());
+        metrics.put(Metric.Sleep, new PlayerMetric(0));
+        metrics.put(Metric.Study, new PlayerMetric(0));
+        metrics.put(Metric.Eat, new PlayerMetric(0));
+        metrics.put(Metric.Play, new PlayerMetric(0));
         metrics.put(Metric.Area, new AreaMetric(Area.Name.OutdoorMap));
         metrics.put(Metric.Day, new DOWMetric());
     }
